@@ -1,26 +1,56 @@
-::: mermaid
+```mermaid
 classDiagram
 
-class Stage
+
+class SceneManager{
+    +Dict~SceneId, Scene~ scenes
+
+    +add_scene(id: SceneId, scene: Scene) None
+    +update(key, mouse) None
+    +draw(screen: Surface) None
+}
+SceneManager*--Scene
+SceneManager--SceneId
+
+class Scene{
+    +update(key, mouse) None
+    +draw(screen: Surface) None
+    +checkSceneSwitch() SceneId|None
+    +startScene() None
+    +stopScene() None
+}
+<<abstract>> Scene
+
+class SceneId
+<<enum>> SceneId
+
+class Stage{
+    +Player player
+    +Group~Enemies~ enemies
+    +Group~SkillParticle~ skill_particles
+}
+Scene<..Stage
 Stage*--Entity
 
 class Transform{
-    +pygame.Vector2 pos
     +float velocity
-    +pygame.Vector2 direction
+    +Vector2 pos
+    +Vector2 direction
 
     +move() None
-    +towards(pygame.Vector2 pos) None
-    +away_from(pygame.Vector2 pos) None
+    +towards(pos: Vector2) None
+    +away_from(pos: Vector2) None
 }
 
 
 class Entity{
-    +float hp
+    +float health
+    +float power
     +Transform transform
 
     +update(key, mouse) None
 }
+Entity*--Transform
 
 class Sprite{
     +Rect rect
@@ -34,7 +64,11 @@ class Enemy
 
 class Player{
     +int xp
+    +int level
     +int money
+    +List~Skill~ skills
+
+    +update(key, mouse) None
 }
 
 
@@ -53,10 +87,27 @@ Enemy--Reward
 class SkillParticle
 class Skill{
     +static Group particleGroup # ref
-    +makeParticle()
+
+    +makeParticle(direction: Vector2) None
 }
 Entity<--SkillParticle
 Skill--SkillParticle
-Player--Skill
+Player*--Skill
 
-:::
+
+%% helpers
+class StopWatch{
+    +int remain_ticks
+    
+    +update(decrement: int = 1) None
+}
+
+class Button{
+    +Callable onHover
+    +Callable onPressed
+
+    +update(mouse) None
+}
+Sprite<--Button
+
+```
