@@ -13,6 +13,8 @@ SceneManager*--Scene
 SceneManager--SceneId
 
 class Scene{
+    +Transform Camera
+    
     +update(key_pressed: List[bool], mouse_pos: Tuple[int, int]) None
     +draw(screen: Surface) None
     +checkSceneSwitch() SceneId|None
@@ -104,6 +106,7 @@ class StopWatch{
 
 class Button{
     +Callable onHover
+    +Callable offHover
     +Callable onPressed
 
     +update(mouse_pos: Tuple[int, int]) None
