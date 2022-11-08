@@ -44,7 +44,7 @@ class Entity(Sprite):
     transform: Transform
     rect: Rect
 
-    def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
+    def __init__(self, img: Surface, health: float, power: float, speed: float, transform: Transform) -> None:
         super().__init__()
         self.image = img
         self.rect = img.get_rect()
@@ -52,6 +52,7 @@ class Entity(Sprite):
         self.rect.center = int(transform.pos.x), int(transform.pos.y)
         self.health = health
         self.power = power
+        self.speed = speed
         self.transform = transform
 
     def update(  # type: ignore
