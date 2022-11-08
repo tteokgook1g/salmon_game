@@ -3,11 +3,11 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Sequence, Tuple
 import pygame as pg
-from entity.abstract_entity import Enemy
-from entity.player import Player, SkillParticle
-from helper.group import Group
+from src.entity.abstract_entity import Enemy
+from src.entity.player import Player, SkillParticle
+from src.helper.group import Group
 
-from scene.scene_id import SceneId
+from src.scene.scene_id import SceneId
 
 
 class Scene(ABC):
@@ -66,7 +66,7 @@ class SceneManager:
 
 class Stage(Scene):
     """abstract class representing game stages."""
-    __slots__ = ("player, enemies, skill_particles")
+    __slots__ = ("player", "enemies", "skill_particles")
     player: Player
     enemies: Group[Enemy]
     skill_particles: Group[SkillParticle]
