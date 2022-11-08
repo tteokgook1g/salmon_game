@@ -5,3 +5,4 @@ from enum import Enum, auto
 
 class SceneId(Enum):
     main_scene = auto()
+    start_scene = auto()
