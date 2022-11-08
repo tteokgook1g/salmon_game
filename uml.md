@@ -6,14 +6,14 @@ class SceneManager{
     +Dict~SceneId, Scene~ scenes
 
     +add_scene(id: SceneId, scene: Scene) None
-    +update(key, mouse) None
+    +update(key_pressed: List[bool], mouse_pos: Tuple[int, int]) None
     +draw(screen: Surface) None
 }
 SceneManager*--Scene
 SceneManager--SceneId
 
 class Scene{
-    +update(key, mouse) None
+    +update(key_pressed: List[bool], mouse_pos: Tuple[int, int]) None
     +draw(screen: Surface) None
     +checkSceneSwitch() SceneId|None
     +startScene() None
@@ -48,7 +48,7 @@ class Entity{
     +float power
     +Transform transform
 
-    +update(key, mouse) None
+    +update(key_pressed: List[bool], mouse_pos: Tuple[int, int]) None
 }
 Entity*--Transform
 
@@ -68,7 +68,7 @@ class Player{
     +int money
     +List~Skill~ skills
 
-    +update(key, mouse) None
+    +update(key_pressed: List[bool], mouse_pos: Tuple[int, int]) None
 }
 
 
@@ -106,7 +106,7 @@ class Button{
     +Callable onHover
     +Callable onPressed
 
-    +update(mouse) None
+    +update(mouse_pos: Tuple[int, int]) None
 }
 Sprite<--Button
 
