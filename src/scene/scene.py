@@ -21,7 +21,7 @@ class Scene(ABC):
         """draw the scene on screen."""
 
     @abstractmethod
-    def checkSceneSwitch(self) -> SceneId | None:
+    def check_scene_switch(self) -> SceneId | None:
         """
         check if the scene need to switch to a different scene.
         it returns SceneId to switch to. it returns None if the scene do not need to switch to a different scene.
@@ -53,7 +53,7 @@ class SceneManager:
         scene = self.scenes[self.current_id]
         scene.update(key_pressed, mouse_pos)
 
-        next_id = scene.checkSceneSwitch()
+        next_id = scene.check_scene_switch()
         if next_id is not None:
             self.current_id = next_id
             scene.stop_scene()

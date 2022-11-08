@@ -13,13 +13,11 @@ SceneManager*--Scene
 SceneManager--SceneId
 
 class Scene{
-    +Transform Camera
-    
     +update(key_pressed: List[bool], mouse_pos: Tuple[int, int]) None
     +draw(screen: Surface) None
-    +checkSceneSwitch() SceneId|None
-    +startScene() None
-    +stopScene() None
+    +check_scene_switch() SceneId|None
+    +start_scene() None
+    +stop_scene() None
 }
 <<abstract>> Scene
 
@@ -30,6 +28,8 @@ class Stage{
     +Player player
     +Group~Enemies~ enemies
     +Group~SkillParticle~ skill_particles
+
+    +draw(screen: Surface) None # in camera area
 }
 Scene<..Stage
 Stage*--Entity
