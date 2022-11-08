@@ -1,7 +1,8 @@
 """defines abstract classes related to Entity and implements basic functionality"""
 
 from typing import Sequence, Tuple
-from pygame import Rect
+from pygame.rect import Rect
+from pygame.surface import Surface
 from pygame.sprite import Sprite
 from pygame.math import Vector2
 
@@ -43,7 +44,12 @@ class Entity(Sprite):
     transform: Transform
     rect: Rect
 
-    def __init__(self, health: float, power: float, transform: Transform) -> None:
+    def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
+        super().__init__()
+        self.image = img
+        self.rect = img.get_rect()
+
+        self.rect.center = int(transform.pos.x), int(transform.pos.y)
         self.health = health
         self.power = power
         self.transform = transform
