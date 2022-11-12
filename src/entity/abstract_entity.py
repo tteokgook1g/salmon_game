@@ -60,6 +60,8 @@ class Entity(Sprite):
         mouse_pos: Tuple[int, int]
     ) -> None:
         """update the entity. you can use key and mouse if you need. """
+        self.key_pressed = key_pressed
+        self.mouse_pos = mouse_pos
         self.transform.move()
         self.rect.center = int(self.transform.pos.x), int(self.transform.pos.y)
 

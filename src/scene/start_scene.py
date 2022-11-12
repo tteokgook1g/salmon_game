@@ -7,10 +7,12 @@ from src.scene.scene_id import SceneId
 
 class StartScene(Scene):
     def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int]) -> None:
+        self.key_pressed = key_pressed
+        self.mouse_pos = mouse_pos
         return
 
     def draw(self, screen: pg.surface.Surface) -> None:
-        screen.fill((255, 255, 255))
+        
 
     def check_scene_switch(self) -> SceneId | None:
         return None
