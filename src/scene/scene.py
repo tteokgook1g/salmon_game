@@ -13,7 +13,7 @@ from src.scene.scene_id import SceneId
 class Scene(ABC):
     """interface Scene"""
     @abstractmethod
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int]) -> None:
+    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int,int,int]) -> None:
         """update the scene. you can use key and mouse if you need. """
 
     @abstractmethod
@@ -48,10 +48,10 @@ class SceneManager:
         """add a scene to the scene manager"""
         self.scenes[scene_id] = scene
 
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int]) -> None:
+    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int,int,int]) -> None:
         """update current scene. you can use key and mouse if you need. """
         scene = self.scenes[self.current_id]
-        scene.update(key_pressed, mouse_pos)
+        scene.update(key_pressed, mouse_pos, mouse_click)
 
         next_id = scene.check_scene_switch()
         if next_id is not None:

@@ -18,7 +18,9 @@ while running:
 
     key_pressed = pygame.key.get_pressed()
     mouse_pos = pygame.mouse.get_pos()
-    scene_manager.update(key_pressed, mouse_pos) 
+    mouse_click = pygame.mouse.get_pressed()
+
+    scene_manager.update(key_pressed, mouse_pos,mouse_click)
 
     scene_manager.draw(screen)
 
