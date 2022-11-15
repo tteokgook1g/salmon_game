@@ -29,10 +29,9 @@ class Player(Entity):
     money: int
     skills: List[Skill]
 
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int]) -> None:
-        super().update(key_pressed, mouse_pos)
+    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int]) -> None:
+        super().update(key_pressed, mouse_pos, mouse_click)
         self.handle_key_input(key_pressed)
-        print(self.transform.pos)
 
     def handle_key_input(self, key_pressed: Sequence[bool]):
         horizontal = -key_pressed[pg.K_a]+key_pressed[pg.K_d]

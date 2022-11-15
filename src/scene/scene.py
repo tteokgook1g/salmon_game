@@ -15,7 +15,7 @@ from src.scene.scene_id import SceneId
 class Scene(ABC):
     """interface Scene"""
     @abstractmethod
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int]) -> None:
+    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int]) -> None:
         """update the scene. you can use key and mouse if you need. """
 
     @abstractmethod
@@ -52,10 +52,10 @@ class SceneManager:
         """add a scene to the scene manager"""
         self.scenes[scene_id] = scene
 
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int]) -> None:
+    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int]) -> None:
         """update current scene. you can use key and mouse if you need. """
         scene = self.scenes[self.current_id]
-        scene.update(key_pressed, mouse_pos)
+        scene.update(key_pressed, mouse_pos, mouse_click)
 
         next_id = scene.check_scene_switch()
         if next_id is not None:
@@ -79,7 +79,10 @@ class SceneManager:
 
             key_pressed = pg.key.get_pressed()
             mouse_pos = pg.mouse.get_pos()
-            self.update(key_pressed, mouse_pos)
+            mouse_click: Tuple[int, int,
+                               int] = pg.mouse.get_pressed()  # type: ignore
+
+            self.update(key_pressed, mouse_pos, mouse_click)
 
             self.draw(self.screen)
 
@@ -105,12 +108,12 @@ class Stage(Scene):
         self.camera_surface = CameraSurface(
             (SCREEN_WIDTH, SCREEN_HEIGHT), player.transform)
 
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int]) -> None:
-        self.player.update(key_pressed, mouse_pos)
+    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int]) -> None:
+        self.player.update(key_pressed, mouse_pos, mouse_click)
         for enemy in self.enemies:
-            enemy.update(key_pressed, mouse_pos)
+            enemy.update(key_pressed, mouse_pos, mouse_click)
         for particle in self.skill_particles:
-            particle.update(key_pressed, mouse_pos)
+            particle.update(key_pressed, mouse_pos, mouse_click)
 
     def draw(self, screen: pg.surface.Surface) -> None:
         self.camera_surface.fill((255, 255, 255))

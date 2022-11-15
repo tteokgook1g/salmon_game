@@ -4,8 +4,9 @@ from pygame.math import Vector2
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from src.entity.abstract_entity import Transform
 from src.entity.player import Player
-from scene.stage_camera_test import StageCameraTest
+from src.scene.stage_camera_test import StageCameraTest
 
+from src.scene.login_scene import LoginScene
 from src.scene.scene import SceneManager
 from src.scene.scene_id import SceneId
 from src.scene.start_scene import StartScene
@@ -17,8 +18,9 @@ player_img.fill((200, 100, 0))
 player = Player(player_img, 100, 10, Transform(
     1, Vector2(100, 100), Vector2(0, 0)))
 
-scene_manager = SceneManager(SceneId.stage1, screen)
+scene_manager = SceneManager(SceneId.start_scene, screen)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
-scene_manager.add_scene(SceneId.stage1, StageCameraTest(player))
+scene_manager.add_scene(SceneId.login_scene, LoginScene())
+scene_manager.add_scene(SceneId.stage_camera_test, StageCameraTest(player))
 
 scene_manager.run()

@@ -7,4 +7,5 @@ from enum import Enum, auto
 class SceneId(Enum):
     main_scene = auto()
     start_scene = auto()
-    stage1= auto()
+    login_scene = auto()
+    stage_camera_test = auto()
