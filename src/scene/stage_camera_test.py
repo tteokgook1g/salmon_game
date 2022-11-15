@@ -1,7 +1,8 @@
 from pygame import Vector2
 from pygame.surface import Surface
+from entity.enemy.basicEnemy import Enemy
 
-from src.entity.abstract_entity import Enemy, Transform
+from src.entity.abstract_entity import Transform
 from src.scene.scene import Stage
 from src.scene.scene_id import SceneId
 

@@ -10,16 +10,16 @@ pg.init()
 
 
 class InputBox(Entity):
-    FONT = pg.font.Font(None, 32)
-    COLOR_INACTIVE = pg.Color('lightskyblue3')
-    COLOR_ACTIVE = pg.Color('dodgerblue2')
 
-    def __init__(self, img: Surface, health: int, power: int, transform: Transform, text: str):
+    def __init__(self, img: Surface, health: int, power: int, transform: Transform, text: str, size:int, color: Tuple[int,int,int],action):
         super().__init__(img, health, power, transform)
-        self.color: pg.Color = self.COLOR_INACTIVE
+        self.color= color
         self.text = text
-        self.txt_surface = self.FONT.render(text, True, self.color)
+        self.font = pg.font.Font(None, size)
+        self.txt_surface = self.font.render(text, True, self.color)
         self.active = False
+        self.coloractive = self.color
+        self.action = action
 
     def handle_event(self, events: Sequence[Event]):
         for event in events:
@@ -31,28 +31,32 @@ class InputBox(Entity):
                 else:
                     self.active = False
                 # Change the current color of the input box.
-                self.color = self.COLOR_ACTIVE if self.active else self.COLOR_INACTIVE
+                self.color = self.coloractive if self.active else self.color
             if event.type == pg.KEYDOWN:
                 if self.active:
                     if event.key == pg.K_RETURN:
-                        print(self.text)
-                        self.text = ''
+                        self.action()
                     elif event.key == pg.K_BACKSPACE:
                         self.text = self.text[:-1]
-                    else:
+                    elif len(self.text)<50:
                         self.text += event.unicode
                     # Re-render the text.
-                    self.txt_surface = self.FONT.render(
-                        self.text, True, self.color)
+                    if len(self.text)<30:
+                        self.txt_surface = self.font.render(
+                            self.text.center(30,' '), True, self.color)
+                    else:
+                        self.txt_surface = self.font.render(
+                            self.text, True, self.color)
 
     def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int], events: Sequence[Event]) -> None:
         # Resize the box if the text is too long.
         self.handle_event(events)
         width = max(200, self.txt_surface.get_width()+10)
         self.rect.w = width
+        self.rect.center = int(self.transform.pos.x), int(self.transform.pos.y)
 
     def draw(self, screen: Surface):
         # Blit the text.
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
-        pg.draw.rect(screen, self.color, self.rect, 2)
+        pg.draw.rect(screen, self.color, pg.rect.Rect(self.rect.x-5,self.rect.y-5,self.rect.w+10,self.rect.h+10),2)

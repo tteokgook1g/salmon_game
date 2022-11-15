@@ -86,9 +86,6 @@ class Entity(Sprite):
             self.kill()
 
 
-class Enemy(Entity):
-    """base class for enemies"""
-
 
 class Reward(Entity):
     """rewards, which is dropped when enemies die"""
