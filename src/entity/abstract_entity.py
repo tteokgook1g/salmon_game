@@ -9,31 +9,42 @@ from pygame.math import Vector2
 
 class Transform:
     """handle position, velocity, and direction"""
-    __slots__ = ("velocity", "pos", "direction")
+    __slots__ = ("velocity", "pos", "_dir")
     velocity: float
     pos: Vector2
-    direction: Vector2
+    _dir: Vector2
 
     def __init__(self, velocity: float, initial_pos: Vector2, initial_direction: Vector2):
         self.velocity = velocity
         self.pos = initial_pos
-        self.direction = initial_direction
+        self._dir = initial_direction
 
     def move(self) -> None:
         """moves towards direction"""
-        self.pos += self.velocity*self.direction
+        self.pos += self.velocity*self._dir
 
     def towards(self, pos: Vector2) -> None:
         """changes direction towards pos"""
         if self.pos == pos:
             return
-        self.direction = (pos-self.pos).normalize()
+        self._dir = (pos-self.pos).normalize()
 
     def away_from(self, pos: Vector2) -> None:
         """changes direction away from pos"""
         if self.pos == pos:
             return
-        self.direction = -(pos-self.pos).normalize()
+        self._dir = -(pos-self.pos).normalize()
+
+    @property
+    def direction(self) -> Vector2:
+        return self._dir
+
+    @direction.setter
+    def direction(self, value: Vector2) -> None:
+        if value.length() == 0:
+            self._dir = value
+        else:
+            self._dir = value.normalize()
 
 
 class Entity(Sprite):
@@ -43,6 +54,7 @@ class Entity(Sprite):
     power: float
     transform: Transform
     rect: Rect
+    image: Surface
 
     def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
         super().__init__()

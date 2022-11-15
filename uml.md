@@ -1,6 +1,11 @@
 ```mermaid
 classDiagram
 
+class CameraSurface{
+    +Transform Camera # ref
+    +blit()
+}
+Surface<--CameraSurface
 
 class SceneManager{
     +Dict~SceneId, Scene~ scenes
@@ -29,10 +34,13 @@ class Stage{
     +Group~Enemies~ enemies
     +Group~SkillParticle~ skill_particles
 
-    +draw(screen: Surface) None # in camera area
+    +CameraSurface camera_surface
+    +draw(screen: Surface) None 
+    +draw_on_camera_surface() None 
 }
 Scene<..Stage
 Stage*--Entity
+Stage--CameraSurface
 
 class Transform{
     +float velocity

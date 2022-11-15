@@ -1,5 +1,10 @@
 import pygame
+from pygame.surface import Surface
+from pygame.math import Vector2
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.entity.abstract_entity import Transform
+from src.entity.player import Player
+from scene.stage_camera_test import StageCameraTest
 
 from src.scene.scene import SceneManager
 from src.scene.scene_id import SceneId
@@ -7,19 +12,13 @@ from src.scene.start_scene import StartScene
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-scene_manager = SceneManager(SceneId.start_scene)
+player_img = Surface((50, 50))
+player_img.fill((200, 100, 0))
+player = Player(player_img, 100, 10, Transform(
+    1, Vector2(100, 100), Vector2(0, 0)))
+
+scene_manager = SceneManager(SceneId.stage1, screen)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
+scene_manager.add_scene(SceneId.stage1, StageCameraTest(player))
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    key_pressed = pygame.key.get_pressed()
-    mouse_pos = pygame.mouse.get_pos()
-    scene_manager.update(key_pressed, mouse_pos)
-
-    scene_manager.draw(screen)
-
-    pygame.display.update()
+scene_manager.run()
