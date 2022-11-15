@@ -11,8 +11,9 @@ from src.scene.scene_id import SceneId
 
 class StartScene(Scene):
 
-    def nextscene(self):
-        self.switch = SceneId.login_scene
+    def action(self,typ : str):
+        if typ=='start_button':
+            self.switch = SceneId.login_scene
 
     def __init__(self):
         self.start_scene()
@@ -32,8 +33,7 @@ class StartScene(Scene):
         return self.switch
 
     def start_scene(self) -> None:
-        pg.init()
-        self.start_button = Button(pg.image.load('.\image\start_button.png'), 0,0,Transform(0,pg.Vector2(SCREEN_WIDTH/2,SCREEN_HEIGHT/2),pg.Vector2(1,0)), lambda : self.nextscene())
+        self.start_button = Button(pg.image.load('.\image\start_button.png'), 0,0,Transform(0,pg.Vector2(SCREEN_WIDTH/2,SCREEN_HEIGHT/2),pg.Vector2(1,0)), lambda : self.action('start_button'))
 
     def stop_scene(self) -> None:
         return

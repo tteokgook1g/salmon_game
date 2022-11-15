@@ -11,6 +11,8 @@ scene_manager = SceneManager(SceneId.start_scene)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
 scene_manager.add_scene(SceneId.login_scene, LoginScene())
 
+pygame.init()
+
 running = True
 while running:
     for event in pygame.event.get():
