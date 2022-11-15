@@ -1,7 +1,9 @@
-from typing import Any, Callable, Tuple
+from typing import Any, Callable, Sequence, Tuple
+
+from pygame.event import Event
 from pygame.rect import Rect
 from pygame.surface import Surface
-from typing import Sequence
+
 from src.entity.abstract_entity import Entity, Transform
 
 
@@ -23,9 +25,10 @@ class Button(Entity):
         self,
         key_pressed: Sequence[bool],
         mouse_pos: Tuple[int, int],
-        mouse_click: Tuple[int, int, int]
+        mouse_click: Tuple[int, int, int],
+        events: Sequence[Event]
     ) -> None:
         """update the entity. you can use key and mouse if you need. """
-        Entity.update(self, key_pressed, mouse_pos, mouse_click)
+        super().update(key_pressed, mouse_pos, mouse_click, events)
         if self.mouse_click[0] and self.isinbox():
             self.action()

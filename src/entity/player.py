@@ -2,8 +2,10 @@
 from abc import ABC, abstractmethod
 from typing import List, Sequence, Tuple
 
-from pygame import Vector2
 import pygame as pg
+from pygame import Vector2
+from pygame.event import Event
+
 from src.entity.abstract_entity import Entity
 from src.helper.group import Group
 
@@ -29,8 +31,8 @@ class Player(Entity):
     money: int
     skills: List[Skill]
 
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int]) -> None:
-        super().update(key_pressed, mouse_pos, mouse_click)
+    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int], events: Sequence[Event]) -> None:
+        super().update(key_pressed, mouse_pos, mouse_click, events)
         self.handle_key_input(key_pressed)
 
     def handle_key_input(self, key_pressed: Sequence[bool]):

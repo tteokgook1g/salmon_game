@@ -2,20 +2,22 @@
 
 from abc import ABC, abstractmethod
 from typing import Dict, Sequence, Tuple
+
 import pygame as pg
+from pygame.event import Event
+
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
-from src.helper.camera_surface import CameraSurface
 from src.entity.abstract_entity import Enemy
 from src.entity.player import Player, SkillParticle
+from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
-
 from src.scene.scene_id import SceneId
 
 
 class Scene(ABC):
     """interface Scene"""
     @abstractmethod
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int]) -> None:
+    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int], events: Sequence[Event]) -> None:
         """update the scene. you can use key and mouse if you need. """
 
     @abstractmethod
@@ -52,10 +54,10 @@ class SceneManager:
         """add a scene to the scene manager"""
         self.scenes[scene_id] = scene
 
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int]) -> None:
+    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int], events: Sequence[Event]) -> None:
         """update current scene. you can use key and mouse if you need. """
         scene = self.scenes[self.current_id]
-        scene.update(key_pressed, mouse_pos, mouse_click)
+        scene.update(key_pressed, mouse_pos, mouse_click, events)
 
         next_id = scene.check_scene_switch()
         if next_id is not None:
@@ -73,7 +75,8 @@ class SceneManager:
 
         running = True
         while running:
-            for event in pg.event.get():
+            events = pg.event.get()
+            for event in events:
                 if event.type == pg.QUIT:
                     running = False
 
@@ -82,7 +85,7 @@ class SceneManager:
             mouse_click: Tuple[int, int,
                                int] = pg.mouse.get_pressed()  # type: ignore
 
-            self.update(key_pressed, mouse_pos, mouse_click)
+            self.update(key_pressed, mouse_pos, mouse_click, events)
 
             self.draw(self.screen)
 
@@ -108,12 +111,12 @@ class Stage(Scene):
         self.camera_surface = CameraSurface(
             (SCREEN_WIDTH, SCREEN_HEIGHT), player.transform)
 
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int]) -> None:
-        self.player.update(key_pressed, mouse_pos, mouse_click)
+    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int], events: Sequence[Event]) -> None:
+        self.player.update(key_pressed, mouse_pos, mouse_click, events)
         for enemy in self.enemies:
-            enemy.update(key_pressed, mouse_pos, mouse_click)
+            enemy.update(key_pressed, mouse_pos, mouse_click, events)
         for particle in self.skill_particles:
-            particle.update(key_pressed, mouse_pos, mouse_click)
+            particle.update(key_pressed, mouse_pos, mouse_click, events)
 
     def draw(self, screen: pg.surface.Surface) -> None:
         self.camera_surface.fill((255, 255, 255))

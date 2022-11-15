@@ -1,10 +1,12 @@
 """defines abstract classes related to Entity and implements basic functionality"""
 
 from typing import Sequence, Tuple
-from pygame.rect import Rect
-from pygame.surface import Surface
-from pygame.sprite import Sprite
+
+from pygame.event import Event
 from pygame.math import Vector2
+from pygame.rect import Rect
+from pygame.sprite import Sprite
+from pygame.surface import Surface
 
 
 class Transform:
@@ -70,7 +72,8 @@ class Entity(Sprite):
         self,
         key_pressed: Sequence[bool],
         mouse_pos: Tuple[int, int],
-        mouse_click: Tuple[int,int,int]
+        mouse_click: Tuple[int, int, int],
+        events: Sequence[Event]
     ) -> None:
         """update the entity. you can use key and mouse if you need. """
         self.key_pressed = key_pressed
