@@ -1,5 +1,6 @@
 from typing import Any, Callable, Sequence, Tuple
 
+import pygame as pg
 from pygame.event import Event
 from pygame.rect import Rect
 from pygame.surface import Surface
@@ -18,9 +19,6 @@ class Button(Entity):
         super().__init__(img, health, power, transform)
         self.action = action
 
-    def isinbox(self):
-        return (self.rect.left < self.mouse_pos[0] < self.rect.right) and (self.rect.top < self.mouse_pos[1] < self.rect.bottom)
-
     def update(  # type: ignore
         self,
         key_pressed: Sequence[bool],
@@ -30,5 +28,8 @@ class Button(Entity):
     ) -> None:
         """update the entity. you can use key and mouse if you need. """
         super().update(key_pressed, mouse_pos, mouse_click, events)
-        if self.mouse_click[0] and self.isinbox():
-            self.action()
+        for event in events:
+            if event.type == pg.MOUSEBUTTONDOWN:
+                # If the user clicked on the input_box rect.
+                if self.rect.collidepoint(event.pos):
+                    self.action()

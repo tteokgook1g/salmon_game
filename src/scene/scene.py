@@ -7,7 +7,7 @@ import pygame as pg
 from pygame.event import Event
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
-from src.entity.abstract_entity import Enemy
+from src.entity.enemy.basicEnemy import Enemy
 from src.entity.player import Player, SkillParticle
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
@@ -122,6 +122,14 @@ class Stage(Scene):
         self.camera_surface.fill((255, 255, 255))
         self.draw_on_camera_surface(self.camera_surface)
         screen.blit(self.camera_surface, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    def collide(self):
+        for enemy in self.enemies:
+            if pg.sprite.collide_rect(self.player, enemy):
+                pass
+        for particle in self.skill_particles:
+            if pg.sprite.collide_rect(self.player,particle):
+                pass
 
     def draw_on_camera_surface(self, camera_surface: CameraSurface) -> None:
         """implement it to draw entities"""
