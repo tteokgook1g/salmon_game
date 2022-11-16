@@ -36,7 +36,7 @@ class Stage(Scene):
         self.background.fill((240, 240, 240))
 
         self.tile = pg.image.load("image/Tile 1.png")
-        self.sound = Sound("sound/Different Heaven - Nekozilla [NCS Release].mp3")
+        self.sound = Sound("sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
         self.sound.play(-1)
 
     def update(self, info: UpdateInfo) -> None:
