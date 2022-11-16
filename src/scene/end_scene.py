@@ -7,7 +7,7 @@ from src.entity.abstract_entity import Transform
 from src.entity.button import Button
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
-
+from src.scene.stage_scene import Stage
 
 class EndScene(Scene):
     def action(self, typ: str):
