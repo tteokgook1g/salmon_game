@@ -1,6 +1,6 @@
 import pygame as pg
 from pygame.surface import Surface
-from src.entity.player import Player
+from src.entity.player import SkillParticle
 from src.entity.health_bar import health_bar
 from src.helper.update_info import UpdateInfo
 from src.entity.abstract_entity import Entity, Transform
@@ -20,3 +20,5 @@ class Enemy(Entity):
         self.transform.direction = info.player.transform.pos - self.transform.pos
         self.hpbar.update()
 
+    def handle_collide(self, particle: SkillParticle):
+        self.health -= particle.power

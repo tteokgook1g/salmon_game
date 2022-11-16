@@ -6,6 +6,7 @@ from typing import List, Sequence, Tuple, TYPE_CHECKING
 import pygame as pg
 from pygame.surface import Surface
 from pygame.math import Vector2
+from constants import *
 
 from src.entity.health_bar import health_bar
 from src.entity.abstract_entity import Entity, Transform
@@ -18,6 +19,20 @@ if TYPE_CHECKING:
 
 class SkillParticle(Entity):
     """base class for particle of skill"""
+    def __init__(self, img: Surface, health : int, power: float, transform: Transform, player: Player, ) -> None:
+        super().__init__(img, health, power, transform)
+        pg.sprite.Sprite.__init__(self)
+        self.player = player
+        self.transform.pos = pg.Vector2(player.transform.pos.xy)
+        self.transform.direction = pg.Vector2(pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH,SCREEN_HEIGHT)/2
+
+    def update(self, info: UpdateInfo) -> None:
+        super().update(info)
+        if not ((0<self.transform.pos.x<WORLD_BORDER) and (0<self.transform.pos.y<WORLD_BORDER)):
+            self.kill()
+
+    def isinbox(self):
+        return True
 
 
 class Skill(ABC):
