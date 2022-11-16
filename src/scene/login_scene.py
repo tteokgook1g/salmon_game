@@ -29,6 +29,7 @@ class LoginScene(Scene):
         self.mouse_click = mouse_click
         self.confirm_button.update(key_pressed, mouse_pos, mouse_click, events)
         self.inputbox.update(key_pressed, mouse_pos, mouse_click, events)
+        
 
     def draw(self, screen: pg.surface.Surface) -> None:
         screen.fill((255, 255, 255))
