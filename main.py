@@ -18,7 +18,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 player_img = Surface((50, 50))
 player_img.fill((200, 100, 0))
 player = Player(player_img, 100, 10, Transform(
-    3, Vector2(100, 100), Vector2(0, 0),),(0,0,0,[]))
+    3, Vector2(100, 100), Vector2(0, 0),), (0, 0, 0, []))
 
 scene_manager = SceneManager(SceneId.start_scene, screen)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
