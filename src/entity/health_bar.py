@@ -1,10 +1,6 @@
 import pygame as pg
 from pygame import Surface, Vector2
-import copy
 from src.entity.abstract_entity import Entity, Transform
-from player import Player
-from constants import *
-import pygame
 
 class health_bar():
     def __init__(self, entity: Entity):
@@ -26,7 +22,7 @@ class health_bar():
         base = Surface((bar_rect[0]+2,bar_rect[1]+2))
         base.fill((0,0,0))
         hp = Surface((hp_per*bar_rect[0],bar_rect[1]))
-        if hp_per<0.2:
+        if hp_per<=0.3:
             hp.fill((255,0,0))
         else:
             hp.fill((0,255,0))

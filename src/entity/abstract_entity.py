@@ -74,17 +74,19 @@ class Entity(Sprite):
         self.key_pressed = info.key_pressed
         self.mouse_pos = info.mouse_pos
         self.mouse_click = info.mouse_click
-
-        next_pos = (self.transform.pos+self.transform.direction *
-                    self.transform.velocity)
-        if (self.rect.size[0]/2 < next_pos.x < WORLD_BORDER-self.rect.size[0]/2 and
-                self.rect.size[1]/2 < next_pos.y < WORLD_BORDER-self.rect.size[1]/2):
+                    
+        if self.isinbox():
             self.transform.move()
         self.rect.center = int(self.transform.pos.x), int(self.transform.pos.y)
 
         if self.health <= 0:
             self.kill()
 
+    def isinbox(self):
+        next_pos = (self.transform.pos+self.transform.direction *
+                    self.transform.velocity)
+        return (self.rect.size[0]/2 < next_pos.x < WORLD_BORDER-self.rect.size[0]/2 and
+                self.rect.size[1]/2 < next_pos.y < WORLD_BORDER-self.rect.size[1]/2)
 
 class Reward(Entity):
     """rewards, which is dropped when enemies die"""

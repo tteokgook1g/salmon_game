@@ -13,6 +13,7 @@ from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
+import schedule
 
 
 class Stage(Scene):
@@ -39,6 +40,7 @@ class Stage(Scene):
         self.sound.play(-1)
 
     def update(self, info: UpdateInfo) -> None:
+        schedule.run_pending()
         info.player = self.player
         self.player.update(info)
         for enemy in self.enemies:
@@ -47,6 +49,7 @@ class Stage(Scene):
             particle.update(info)
         if self.player.health <= 0:
             self.switch = SceneId.end_scene
+            schedule.cancel_job(all)
         self.collide()
 
     def draw(self, screen: pg.surface.Surface) -> None:
@@ -62,8 +65,10 @@ class Stage(Scene):
                 enemy.transform.move()
                 enemy.transform.velocity /= -10
         for particle in self.skill_particles:
-            if pg.sprite.collide_rect(self.player, particle):
-                pass
+            for enemy in self.enemies:
+                if pg.sprite.collide_rect(particle, enemy):
+                    enemy.handle_collide(particle)
+                    particle.kill()
 
     def draw_on_camera_surface(self, camera_surface: CameraSurface) -> None:
         """implement it to draw entities"""
@@ -110,7 +115,12 @@ class Stage(Scene):
         pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 30, 30), 3)
         self.enemies.add(Enemy(enemy_img, 100, 10, Transform(
             1, Vector2(50, 50), Vector2(0, 1))))
-        return
 
+        normal_particle_img = Surface((10,10))
+        normal_particle_img.fill((255,0,0))
+        self.normalparticle = schedule.every(1).seconds.do(lambda: self.skill_particles.add(SkillParticle(normal_particle_img,1, 10, Transform(5,Vector2(self.player.transform.pos.xy), Vector2(1,0)),self.player)))
+    
     def stop_scene(self) -> None:
         return
+
+
