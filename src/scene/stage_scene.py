@@ -42,7 +42,7 @@ class Stage(Scene):
             enemy.update(info)
         for particle in self.skill_particles:
             particle.update(info)
-        if self.player.health < 0:
+        if self.player.health <= 0:
             self.switch = SceneId.end_scene
         self.collide()
 
@@ -65,11 +65,15 @@ class Stage(Scene):
     def draw_on_camera_surface(self, camera_surface: CameraSurface) -> None:
         """implement it to draw entities"""
         self._draw_background(camera_surface)
-        camera_surface.blit(self.player.image, self.player.rect)
         for enemy in self.enemies:
             camera_surface.blit(enemy.image, enemy.rect)
+            for bar in enemy.hpbar.draw():
+                camera_surface.blit(bar[0],bar[1])
         for particle in self.skill_particles:
             camera_surface.blit(particle.image, particle.rect)
+        camera_surface.blit(self.player.image, self.player.rect)
+        for bar in self.player.hpbar.draw():
+            camera_surface.blit(bar[0],bar[1])
 
     def _draw_background(self, camera_surface: CameraSurface):
         rect = Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)

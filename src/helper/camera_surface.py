@@ -1,9 +1,10 @@
-from typing import Tuple
-import pygame
-from pygame.surface import Surface
-from pygame.rect import Rect
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from typing import Sequence, Tuple, Union
 
+import pygame
+from pygame.rect import Rect
+from pygame.surface import Surface
+
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from src.entity.abstract_entity import Transform
 
 

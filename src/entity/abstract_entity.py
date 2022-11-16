@@ -67,6 +67,7 @@ class Entity(Sprite):
         self.health = health
         self.power = power
         self.transform = transform
+        self.fullhp = health
 
     def update(self, info: UpdateInfo) -> None:  # type: ignore
         """update the entity. you can use key and mouse if you need. """
@@ -81,7 +82,7 @@ class Entity(Sprite):
             self.transform.move()
         self.rect.center = int(self.transform.pos.x), int(self.transform.pos.y)
 
-        if self.health < 0:
+        if self.health <= 0:
             self.kill()
 
 

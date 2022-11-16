@@ -7,6 +7,7 @@ import pygame as pg
 from pygame.surface import Surface
 from pygame.math import Vector2
 
+from src.entity.health_bar import health_bar
 from src.entity.abstract_entity import Entity, Transform
 from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
@@ -43,10 +44,12 @@ class Player(Entity):
         self.level = info[1]
         self.money = info[2]
         self.skills = info[3]
+        self.hpbar = health_bar(self)
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
         self.handle_key_input(info.key_pressed)
+        self.hpbar.update()
 
     def handle_key_input(self, key_pressed: Sequence[bool]):
         horizontal = (-key_pressed[pg.K_a]+key_pressed[pg.K_d])
