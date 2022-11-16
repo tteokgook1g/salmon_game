@@ -22,20 +22,11 @@ class LoginScene(Scene):
 
     def update(self, info: UpdateInfo) -> None:
         self.switch = None
-<<<<<<< HEAD
-        self.key_pressed = key_pressed
-        self.mouse_pos = mouse_pos
-        self.mouse_click = mouse_click
-        self.confirm_button.update(key_pressed, mouse_pos, mouse_click, events)
-        self.inputbox.update(key_pressed, mouse_pos, mouse_click, events)
-        
-=======
         self.key_pressed = info.key_pressed
         self.mouse_pos = info.mouse_pos
         self.mouse_click = info.mouse_click
         self.confirm_button.update(info)
         self.inputbox.update(info)
->>>>>>> 267167ae900ff126c928bf7d304a3782ff98c0f8
 
     def draw(self, screen: pg.surface.Surface) -> None:
         screen.fill((255, 255, 255))
