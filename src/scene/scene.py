@@ -5,12 +5,6 @@ from typing import Dict, Sequence, Tuple
 
 import pygame as pg
 from pygame.event import Event
-
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
-from src.entity.enemy.basicEnemy import Enemy
-from src.entity.player import Player, SkillParticle
-from src.helper.camera_surface import CameraSurface
-from src.helper.group import Group
 from src.scene.scene_id import SceneId
 
 
@@ -86,55 +80,10 @@ class SceneManager:
                                int] = pg.mouse.get_pressed()  # type: ignore
 
             self.update(key_pressed, mouse_pos, mouse_click, events)
-
+            
             self.draw(self.screen)
 
             pg.display.update()
             self.timer.tick(60)
 
         self.scenes[self.current_id].stop_scene()
-
-
-class Stage(Scene):
-    """abstract class representing game stages."""
-    __slots__ = ("player", "enemies", "skill_particles", "camera_surface")
-    player: Player
-    enemies: Group[Enemy]
-    skill_particles: Group[SkillParticle]
-    camera_surface: CameraSurface
-
-    def __init__(self, player: Player) -> None:
-        super().__init__()
-        self.player = player
-        self.enemies = Group()
-        self.skill_particles = Group()
-        self.camera_surface = CameraSurface(
-            (SCREEN_WIDTH, SCREEN_HEIGHT), player.transform)
-
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int], events: Sequence[Event]) -> None:
-        self.player.update(key_pressed, mouse_pos, mouse_click, events)
-        for enemy in self.enemies:
-            enemy.update(key_pressed, mouse_pos, mouse_click, events)
-        for particle in self.skill_particles:
-            particle.update(key_pressed, mouse_pos, mouse_click, events)
-
-    def draw(self, screen: pg.surface.Surface) -> None:
-        self.camera_surface.fill((255, 255, 255))
-        self.draw_on_camera_surface(self.camera_surface)
-        screen.blit(self.camera_surface, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
-
-    def collide(self):
-        for enemy in self.enemies:
-            if pg.sprite.collide_rect(self.player, enemy):
-                pass
-        for particle in self.skill_particles:
-            if pg.sprite.collide_rect(self.player,particle):
-                pass
-
-    def draw_on_camera_surface(self, camera_surface: CameraSurface) -> None:
-        """implement it to draw entities"""
-        camera_surface.blit(self.player.image, self.player.rect)
-        for enemy in self.enemies:
-            camera_surface.blit(enemy.image, enemy.rect)
-        for particle in self.skill_particles:
-            camera_surface.blit(particle.image, particle.rect)

@@ -8,8 +8,9 @@ from src.entity.player import Player
 from src.scene.login_scene import LoginScene
 from src.scene.scene import SceneManager
 from src.scene.scene_id import SceneId
-from src.scene.stage_camera_test import StageCameraTest
+from src.scene.stage_scene import Stage
 from src.scene.start_scene import StartScene
+from src.scene.end_scene import EndScene
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -17,11 +18,12 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 player_img = Surface((50, 50))
 player_img.fill((200, 100, 0))
 player = Player(player_img, 100, 10, Transform(
-    1, Vector2(100, 100), Vector2(0, 0)))
+    3, Vector2(100, 100), Vector2(0, 0),),(0,0,0,[]))
 
 scene_manager = SceneManager(SceneId.start_scene, screen)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
 scene_manager.add_scene(SceneId.login_scene, LoginScene())
-scene_manager.add_scene(SceneId.stage_camera_test, StageCameraTest(player))
+scene_manager.add_scene(SceneId.stage_scene, Stage(player))
+scene_manager.add_scene(SceneId.end_scene, EndScene())
 
 scene_manager.run()

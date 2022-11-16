@@ -7,6 +7,7 @@ from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.sprite import Sprite
 from pygame.surface import Surface
+from constants import WORLD_BORDER
 
 
 class Transform:
@@ -79,7 +80,9 @@ class Entity(Sprite):
         self.key_pressed = key_pressed
         self.mouse_pos = mouse_pos
         self.mouse_click = mouse_click
-        self.transform.move()
+        if (self.rect.size[0]/2 < (self.transform.pos+self.transform.direction*self.transform.velocity).x < WORLD_BORDER-self.rect.size[0]/2 and 
+        self.rect.size[1]/2 < (self.transform.pos+self.transform.direction*self.transform.velocity).y < WORLD_BORDER-self.rect.size[0]/2):
+            self.transform.move()
         self.rect.center = int(self.transform.pos.x), int(self.transform.pos.y)
 
         if self.health < 0:

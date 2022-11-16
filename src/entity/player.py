@@ -48,5 +48,10 @@ class Player(Entity):
         vertical = (key_pressed[pg.K_s]-key_pressed[pg.K_w])
         self.transform.direction = Vector2(horizontal, vertical)
 
+
     def iscollide(self,enemy):
         self.health -= enemy.damage
+        print(self.health)
+
+    
+

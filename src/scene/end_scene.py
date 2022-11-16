@@ -3,21 +3,20 @@ from typing import Sequence, Tuple
 import pygame as pg
 from pygame.event import Event
 
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_BORDER
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from src.entity.abstract_entity import Transform
 from src.entity.button import Button
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
 
 
-class StartScene(Scene):
+class EndScene(Scene):
     def action(self, typ: str):
         if typ == 'start_button':
             self.switch = SceneId.login_scene
 
     def __init__(self):
         self.start_scene()
-        self.map = pg.rect.Rect(0,0,WORLD_BORDER,WORLD_BORDER)
 
     def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int], events: Sequence[Event]) -> None:
         self.key_pressed = key_pressed
@@ -28,7 +27,7 @@ class StartScene(Scene):
 
     def draw(self, screen: pg.surface.Surface) -> None:
         screen.fill((255, 255, 255))
-        screen.blit(self.start_button.image, self.start_button.rect.topleft)     
+        screen.blit(self.start_button.image, self.start_button.rect.topleft)
 
     def check_scene_switch(self) -> SceneId | None:
         return self.switch
