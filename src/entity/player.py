@@ -54,4 +54,4 @@ class Player(Entity):
         self.transform.direction = Vector2(horizontal, vertical)
 
     def handle_collide(self, enemy: Enemy):
-        self.health -= enemy.damage
+        self.health -= enemy.power
