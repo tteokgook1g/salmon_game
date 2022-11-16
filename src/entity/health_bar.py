@@ -8,7 +8,6 @@ from constants import *
 import pygame
 
 class health_bar(Entity):
-
     def __init__(self, entity: Entity):
         self.entity = entity
         self.rect = pg.rect.Rect(0,0,40,10)

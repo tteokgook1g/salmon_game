@@ -2,6 +2,7 @@ import pygame as pg
 from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.surface import Surface
+from pygame.mixer import Sound
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.abstract_entity import Transform
@@ -34,6 +35,8 @@ class Stage(Scene):
         self.background.fill((240, 240, 240))
 
         self.tile = pg.image.load("image/Tile 1.png")
+        self.sound = Sound("sound/Different Heaven - Nekozilla [NCS Release].mp3")
+        self.sound.play(-1)
 
     def update(self, info: UpdateInfo) -> None:
         info.player = self.player
