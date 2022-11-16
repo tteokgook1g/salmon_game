@@ -101,7 +101,7 @@ class Stage(Scene):
         enemy_img = Surface((30, 30))
         enemy_img.fill((0, 200, 0))
         pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 30, 30), 3)
-        self.enemies.add(Enemy(enemy_img, 1, 1, Transform(
+        self.enemies.add(Enemy(enemy_img, 100, 10, Transform(
             1, Vector2(50, 50), Vector2(0, 1)), 10))
         return
 
