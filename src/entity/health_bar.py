@@ -2,6 +2,9 @@ import pygame as pg
 from pygame import Surface, Vector2
 import copy
 from src.entity.abstract_entity import Entity, Transform
+from player import Player
+from constants import *
+import pygame
 
 class health_bar():
     def __init__(self, entity: Entity):
