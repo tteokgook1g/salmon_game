@@ -1,9 +1,9 @@
-from typing import Any, Callable, Sequence, Tuple
+from typing import Any, Callable
 
 import pygame as pg
-from pygame.event import Event
 from pygame.rect import Rect
 from pygame.surface import Surface
+from src.helper.update_info import UpdateInfo
 
 from src.entity.abstract_entity import Entity, Transform
 
@@ -21,14 +21,11 @@ class Button(Entity):
 
     def update(  # type: ignore
         self,
-        key_pressed: Sequence[bool],
-        mouse_pos: Tuple[int, int],
-        mouse_click: Tuple[int, int, int],
-        events: Sequence[Event]
+        info: UpdateInfo
     ) -> None:
         """update the entity. you can use key and mouse if you need. """
-        super().update(key_pressed, mouse_pos, mouse_click, events)
-        for event in events:
+        super().update(info)
+        for event in info.events:
             if event.type == pg.MOUSEBUTTONDOWN:
                 # If the user clicked on the input_box rect.
                 if self.rect.collidepoint(event.pos):

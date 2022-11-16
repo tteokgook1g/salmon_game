@@ -1,13 +1,12 @@
 """defines abstract classes related to Entity and implements basic functionality"""
 
-from typing import Sequence, Tuple
 
-from pygame.event import Event
 from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.sprite import Sprite
 from pygame.surface import Surface
 from constants import WORLD_BORDER
+from src.helper.update_info import UpdateInfo
 
 
 class Transform:
@@ -69,25 +68,21 @@ class Entity(Sprite):
         self.power = power
         self.transform = transform
 
-    def update(  # type: ignore
-        self,
-        key_pressed: Sequence[bool],
-        mouse_pos: Tuple[int, int],
-        mouse_click: Tuple[int, int, int],
-        events: Sequence[Event]
-    ) -> None:
+    def update(self, info: UpdateInfo) -> None:  # type: ignore
         """update the entity. you can use key and mouse if you need. """
-        self.key_pressed = key_pressed
-        self.mouse_pos = mouse_pos
-        self.mouse_click = mouse_click
-        if (self.rect.size[0]/2 < (self.transform.pos+self.transform.direction*self.transform.velocity).x < WORLD_BORDER-self.rect.size[0]/2 and 
-        self.rect.size[1]/2 < (self.transform.pos+self.transform.direction*self.transform.velocity).y < WORLD_BORDER-self.rect.size[0]/2):
+        self.key_pressed = info.key_pressed
+        self.mouse_pos = info.mouse_pos
+        self.mouse_click = info.mouse_click
+
+        next_pos = (self.transform.pos+self.transform.direction *
+                    self.transform.velocity)
+        if (self.rect.size[0]/2 < next_pos.x < WORLD_BORDER-self.rect.size[0]/2 and
+                self.rect.size[1]/2 < next_pos.y < WORLD_BORDER-self.rect.size[1]/2):
             self.transform.move()
         self.rect.center = int(self.transform.pos.x), int(self.transform.pos.y)
 
         if self.health < 0:
             self.kill()
-
 
 
 class Reward(Entity):

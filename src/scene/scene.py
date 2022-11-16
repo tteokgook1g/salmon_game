@@ -1,17 +1,17 @@
 """defines Abstract class Scene, class Stage, class SceneManager"""
 
 from abc import ABC, abstractmethod
-from typing import Dict, Sequence, Tuple
+from typing import Dict, Tuple
 
 import pygame as pg
-from pygame.event import Event
+from src.helper.update_info import UpdateInfo
 from src.scene.scene_id import SceneId
 
 
 class Scene(ABC):
     """interface Scene"""
     @abstractmethod
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int], events: Sequence[Event]) -> None:
+    def update(self, info: UpdateInfo) -> None:
         """update the scene. you can use key and mouse if you need. """
 
     @abstractmethod
@@ -48,10 +48,10 @@ class SceneManager:
         """add a scene to the scene manager"""
         self.scenes[scene_id] = scene
 
-    def update(self, key_pressed: Sequence[bool], mouse_pos: Tuple[int, int], mouse_click: Tuple[int, int, int], events: Sequence[Event]) -> None:
+    def update(self, info: UpdateInfo) -> None:
         """update current scene. you can use key and mouse if you need. """
         scene = self.scenes[self.current_id]
-        scene.update(key_pressed, mouse_pos, mouse_click, events)
+        scene.update(info)
 
         next_id = scene.check_scene_switch()
         if next_id is not None:
@@ -79,8 +79,10 @@ class SceneManager:
             mouse_click: Tuple[int, int,
                                int] = pg.mouse.get_pressed()  # type: ignore
 
-            self.update(key_pressed, mouse_pos, mouse_click, events)
-            
+            info = UpdateInfo(key_pressed, mouse_pos,
+                              mouse_click, events, None)
+            self.update(info)
+
             self.draw(self.screen)
 
             pg.display.update()
