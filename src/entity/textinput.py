@@ -3,6 +3,7 @@ from typing import Any, Callable, Sequence, Tuple
 import pygame as pg
 from pygame.event import Event
 from pygame.surface import Surface
+from pygame.mixer import Sound
 
 from src.entity.abstract_entity import Entity, Transform
 from src.helper.update_info import UpdateInfo
