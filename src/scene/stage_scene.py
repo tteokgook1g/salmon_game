@@ -1,8 +1,9 @@
 import pygame as pg
-from pygame import Vector2
+from pygame.math import Vector2
+from pygame.rect import Rect
 from pygame.surface import Surface
 
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_BORDER
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.abstract_entity import Transform
 from src.entity.enemy.basicEnemy import Enemy
 from src.entity.player import Player, SkillParticle
@@ -31,6 +32,8 @@ class Stage(Scene):
         self.switch = None
         self.background = Surface((WORLD_BORDER, WORLD_BORDER))
         self.background.fill((240, 240, 240))
+
+        self.tile = pg.image.load("image/Tile 1.png")
 
     def update(self, info: UpdateInfo) -> None:
         info.player = self.player
@@ -61,17 +64,35 @@ class Stage(Scene):
 
     def draw_on_camera_surface(self, camera_surface: CameraSurface) -> None:
         """implement it to draw entities"""
-        border = Surface((WORLD_BORDER+2, WORLD_BORDER+2))
-        border.fill((0, 0, 0))
-        camera_surface.blit(border, pg.rect.Rect(-1, -1,
-                            WORLD_BORDER+2, WORLD_BORDER+2))
-        camera_surface.blit(self.background, pg.rect.Rect(
-            0, 0, WORLD_BORDER, WORLD_BORDER))
+        self._draw_background(camera_surface)
         camera_surface.blit(self.player.image, self.player.rect)
         for enemy in self.enemies:
             camera_surface.blit(enemy.image, enemy.rect)
         for particle in self.skill_particles:
             camera_surface.blit(particle.image, particle.rect)
+
+    def _draw_background(self, camera_surface: CameraSurface):
+        rect = Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        rect.center = int(camera_surface.camera.pos.x), int(
+            camera_surface.camera.pos.y)
+        topleft = max(rect.left, 0), max(rect.top, 0)
+        rightbottom = (min(rect.right, WORLD_BORDER),
+                       min(rect.bottom, WORLD_BORDER))
+
+        tl_tile = topleft[0]//TILE_WIDTH, topleft[1]//TILE_WIDTH-1
+        rb_tile = ((rightbottom[0]-1)//TILE_WIDTH,
+                   (rightbottom[1]-1)//TILE_WIDTH-1)
+        tile_row_num: int = rb_tile[1]-tl_tile[1]+1
+        tile_col_num: int = rb_tile[0]-tl_tile[0]+1
+
+        row_tile: Surface = Surface((tile_col_num*TILE_WIDTH, TILE_WIDTH))
+        row_rect = row_tile.get_rect()
+        row_rect.topleft = tl_tile[0]*TILE_WIDTH, tl_tile[1]*TILE_WIDTH
+        for i in range(tile_col_num):
+            row_tile.blit(self.tile, (i*TILE_WIDTH, 0))
+        for _ in range(tile_row_num):
+            row_rect.top = row_rect.top+TILE_WIDTH
+            camera_surface.blit(row_tile, row_rect)
 
     def check_scene_switch(self) -> SceneId | None:
         return self.switch
@@ -79,8 +100,9 @@ class Stage(Scene):
     def start_scene(self) -> None:
         enemy_img = Surface((30, 30))
         enemy_img.fill((0, 200, 0))
-        self.enemies.add(Enemy(enemy_img, 100, 10, Transform(
-            1, Vector2(50, 50), Vector2(0, 1))))
+        pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 30, 30), 3)
+        self.enemies.add(Enemy(enemy_img, 1, 1, Transform(
+            1, Vector2(50, 50), Vector2(0, 1)), 10))
         return
 
     def stop_scene(self) -> None:
