@@ -42,7 +42,7 @@ class Stage(Scene):
         self.difficulty = 0
         self.money = 0
 
-        self.tile = pg.image.load("image/Tile 1.png")
+        self.tile = pg.image.load("image/Tile 4.png")
         self.sound = Sound(
             "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
         self.sound.set_volume(0.1)
@@ -66,7 +66,9 @@ class Stage(Scene):
         if self.time % 600 == 0:
             self.difficulty += 1
         if self.time % 200 == 0:
-            self.enemy_spawn()
+            self.normal_spawn()
+        if self.time == 1:
+            self.boss_spawn()
             
 
     def draw(self, screen: pg.surface.Surface) -> None:
@@ -135,12 +137,40 @@ class Stage(Scene):
 
         self.sound.play(-1)
 
-    def enemy_spawn(self) -> None:
-        enemy_img = Surface((30, 30))
-        enemy_img.fill((0, 200, 0))
-        pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 30, 30), 3)
-        self.enemies.add(Enemy(enemy_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
+    def normal_spawn(self) -> None:
+        normal_img = Surface((30, 30))
+        normal_img.fill((0, 200, 0))
+        pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)
+        self.enemies.add(Enemy(normal_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
             1 + self.difficulty * 0.1, Vector2(50, 50), Vector2(0, 1))))
+
+    def rare_spawn(self) -> None:
+        rare_img = Surface((35, 35))
+        rare_img.fill((0, 0, 200))
+        pg.draw.rect(rare_img, (70, 20, 0), (0, 0, 50, 50), 3)
+        self.enemies.add(Enemy(rare_img, 1000, 25, Transform(
+            1.5, Vector2(50, 50), Vector2(0, 1))))
+
+    def epic_spawn(self) -> None:
+        enemy_img = Surface((40, 40))
+        enemy_img.fill((200, 0, 200))
+        pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 50, 50), 3)
+        self.enemies.add(Enemy(enemy_img, 1000, 25, Transform(
+            1.5, Vector2(50, 50), Vector2(0, 1))))
+
+    def epic_spawn(self) -> None:
+        enemy_img = Surface((50, 50))
+        enemy_img.fill((200, 0, 0))
+        pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 50, 50), 3)
+        self.enemies.add(Enemy(enemy_img, 1000, 25, Transform(
+            1.5, Vector2(50, 50), Vector2(0, 1))))
+
+    def boss_spawn(self) -> None:
+        enemy_img = Surface((50, 50))
+        enemy_img.fill((200, 0, 0))
+        pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 50, 50), 3)
+        self.enemies.add(Enemy(enemy_img, 1000, 25, Transform(
+            1.5, Vector2(50, 50), Vector2(0, 1))))
 
     def stop_scene(self) -> None:
         self.sound.stop()

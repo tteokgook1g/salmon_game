@@ -9,7 +9,7 @@ from typing import Tuple
 from pyparsing import Sequence
 from src.entity.abstract_entity import Entity, Transform
 
-class health_potion(Entity):
+class Health_potion(Entity):
     def __init__(self, img: Surface, health: 0, power: 0, transform: Transform, health_plus) -> None:
         self.health_plus = health_plus
         self.num = 0
@@ -22,7 +22,7 @@ class health_potion(Entity):
             self.health += self.health_plus
             self.num -= 1
 
-class speed_potion(Entity):
+class Speed_potion(Entity):
     def __init__(self, img: Surface, health: 0, power: 0, transform: Transform, speed_plus) -> None:
         self.speed_plus = speed_plus
         self.num = 0
