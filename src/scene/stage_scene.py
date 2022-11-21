@@ -140,7 +140,7 @@ class Stage(Scene):
         enemy_img.fill((0, 200, 0))
         pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 30, 30), 3)
         self.enemies.add(Enemy(enemy_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
-            1 + self.difficulty * 0.1, Vector2(rd.randint(50, 9950), rd.randint(50, 9950)), Vector2(0, 1))))
+            1 + self.difficulty * 0.1, Vector2(50, 50), Vector2(0, 1))))
 
     def stop_scene(self) -> None:
         self.sound.stop()

@@ -34,3 +34,9 @@ class speed_potion(Entity):
         if self.num >= 1:
             self.transform.velocity += self.speed_plus
             self.num -= 1
+
+class bomb(Entity):
+    pass
+
+class lightning(Entity):
+    pass
