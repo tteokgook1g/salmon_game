@@ -66,10 +66,7 @@ class Stage(Scene):
     def collide(self):
         for enemy in self.enemies:
             if pg.sprite.collide_rect(self.player, enemy):
-                self.player.handle_collide(enemy)
-                enemy.transform.velocity *= -10
-                enemy.transform.move()
-                enemy.transform.velocity /= -10
+                enemy.handle_collide(self.player)
 
         for reward in self.rewards:
             if pg.sprite.collide_rect(self.player, reward):
@@ -78,8 +75,7 @@ class Stage(Scene):
         for particle in self.skill_particles:
             for enemy in self.enemies:
                 if pg.sprite.collide_rect(particle, enemy):
-                    enemy.handle_collide(particle)
-                    particle.kill()
+                    particle.handle_collide(enemy)
 
     def draw_on_camera_surface(self, camera_surface: CameraSurface) -> None:
         """implement it to draw entities"""

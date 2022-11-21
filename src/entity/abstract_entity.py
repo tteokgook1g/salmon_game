@@ -1,5 +1,6 @@
 """defines abstract classes related to Entity and implements basic functionality"""
 from __future__ import annotations
+from abc import ABC, abstractmethod
 
 from typing import TYPE_CHECKING
 
@@ -97,8 +98,13 @@ class Entity(Sprite):
         return (self.rect.size[0]/2 < next_pos.x < WORLD_BORDER-self.rect.size[0]/2 and
                 self.rect.size[1]/2 < next_pos.y < WORLD_BORDER-self.rect.size[1]/2)
 
+class PlayerCollidable(ABC):
+    @abstractmethod
+    def handle_collide(self, player: Player):
+        """handles collision with player"""
 
-class Reward(Entity):
+
+class Reward(Entity, PlayerCollidable):
     """rewards, which is dropped when enemies die"""
     __slots__ = ("xp", "money")
     xp: int

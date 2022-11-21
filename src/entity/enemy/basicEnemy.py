@@ -1,13 +1,20 @@
-import pygame as pg
-from pygame.surface import Surface
-from src.helper.group import Group
-from src.entity.player import SkillParticle
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from src.entity.abstract_entity import Entity, PlayerCollidable, Reward
 from src.entity.health_bar import HealthBar
-from src.helper.update_info import UpdateInfo
-from src.entity.abstract_entity import Entity, Reward, Transform
+
+if TYPE_CHECKING:
+    from pygame.surface import Surface
+
+    from src.entity.abstract_entity import Transform
+    from src.entity.player import Player
+    from src.helper.group import Group
+    from src.helper.update_info import UpdateInfo
 
 
-class Enemy(Entity):
+class Enemy(Entity, PlayerCollidable):
     """base class for enemies"""
     __slots__ = ("hpbar",)
     reward_group: Group[Reward]  # ref
@@ -25,8 +32,12 @@ class Enemy(Entity):
         super().draw(screen)
         self.hpbar.draw(screen)
 
-    def handle_collide(self, particle: SkillParticle):
-        self.health -= particle.power
+    def handle_collide(self, player: Player):
+        super().handle_collide(player)
+        player.health -= self.power
+        self.transform.velocity *= -10
+        self.transform.move()
+        self.transform.velocity /= -10
 
     def kill(self) -> None:
         super().kill()
