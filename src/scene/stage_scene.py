@@ -3,6 +3,7 @@ from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.surface import Surface
 from pygame.mixer import Sound
+import random as rd
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.abstract_entity import Reward, Transform
@@ -39,6 +40,7 @@ class Stage(Scene):
         self.background.fill((240, 240, 240))
         self.time = 0
         self.difficulty = 0
+        self.money = 0
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
@@ -79,6 +81,8 @@ class Stage(Scene):
         for reward in self.rewards:
             if pg.sprite.collide_rect(self.player, reward):
                 reward.handle_collide(self.player)
+                self.money += 100
+                print(self.money)
 
         for particle in self.skill_particles:
             for enemy in self.enemies:
