@@ -1,12 +1,18 @@
 """defines abstract classes related to Entity and implements basic functionality"""
+from __future__ import annotations
 
+from typing import TYPE_CHECKING
 
 from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.sprite import Sprite
 from pygame.surface import Surface
+
 from constants import WORLD_BORDER
-from src.helper.update_info import UpdateInfo
+
+if TYPE_CHECKING:
+    from src.entity.player import Player
+    from src.helper.update_info import UpdateInfo
 
 
 class Transform:
@@ -74,7 +80,7 @@ class Entity(Sprite):
         self.key_pressed = info.key_pressed
         self.mouse_pos = info.mouse_pos
         self.mouse_click = info.mouse_click
-                    
+
         if self.isinbox():
             self.transform.move()
         self.rect.center = int(self.transform.pos.x), int(self.transform.pos.y)
@@ -82,11 +88,15 @@ class Entity(Sprite):
         if self.health <= 0:
             self.kill()
 
+    def draw(self, screen: Surface):
+        screen.blit(self.image, self.rect)
+
     def isinbox(self):
         next_pos = (self.transform.pos+self.transform.direction *
                     self.transform.velocity)
         return (self.rect.size[0]/2 < next_pos.x < WORLD_BORDER-self.rect.size[0]/2 and
                 self.rect.size[1]/2 < next_pos.y < WORLD_BORDER-self.rect.size[1]/2)
+
 
 class Reward(Entity):
     """rewards, which is dropped when enemies die"""
@@ -94,6 +104,15 @@ class Reward(Entity):
     xp: int
     money: int
 
-    def __init__(self, xp: int, money: int):
+    img = Surface((20, 20))
+    img.fill((200, 200, 50))
+
+    def __init__(self, xp: int, money: int, pos: Vector2):
+        super().__init__(Reward.img, 1, 0, Transform(0, pos, Vector2(0, 0)))
         self.xp = xp
         self.money = money
+
+    def handle_collide(self, player: Player):
+        player.money += self.money
+        player.xp += self.xp
+        self.kill()

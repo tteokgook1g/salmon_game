@@ -5,7 +5,7 @@ from pygame.surface import Surface
 from pygame.mixer import Sound
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
-from src.entity.abstract_entity import Transform
+from src.entity.abstract_entity import Reward, Transform
 from src.entity.enemy.basicEnemy import Enemy
 from src.entity.player import Player, SkillParticle
 from src.helper.camera_surface import CameraSurface
@@ -18,10 +18,12 @@ import schedule
 
 class Stage(Scene):
     """abstract class representing game stages."""
-    __slots__ = ("player", "enemies", "skill_particles", "camera_surface")
+    __slots__ = ("player", "enemies", "skill_particles",
+                 "camera_surface", "rewards")
     player: Player
     enemies: Group[Enemy]
     skill_particles: Group[SkillParticle]
+    rewards: Group[Reward]
     camera_surface: CameraSurface
 
     def __init__(self, player: Player) -> None:
@@ -29,6 +31,7 @@ class Stage(Scene):
         self.player = player
         self.enemies = Group()
         self.skill_particles = Group()
+        self.rewards = Group()
         self.camera_surface = CameraSurface(
             (SCREEN_WIDTH, SCREEN_HEIGHT), player.transform)
         self.switch = None
@@ -36,8 +39,11 @@ class Stage(Scene):
         self.background.fill((240, 240, 240))
 
         self.tile = pg.image.load("image/Tile 1.png")
-        self.sound = Sound("sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
-        self.sound.play(-1)
+        self.sound = Sound(
+            "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
+
+        # binding references
+        Enemy.reward_group = self.rewards
 
     def update(self, info: UpdateInfo) -> None:
         schedule.run_pending()
@@ -64,6 +70,11 @@ class Stage(Scene):
                 enemy.transform.velocity *= -10
                 enemy.transform.move()
                 enemy.transform.velocity /= -10
+
+        for reward in self.rewards:
+            if pg.sprite.collide_rect(self.player, reward):
+                reward.handle_collide(self.player)
+
         for particle in self.skill_particles:
             for enemy in self.enemies:
                 if pg.sprite.collide_rect(particle, enemy):
@@ -74,14 +85,12 @@ class Stage(Scene):
         """implement it to draw entities"""
         self._draw_background(camera_surface)
         for enemy in self.enemies:
-            camera_surface.blit(enemy.image, enemy.rect)
-            for bar in enemy.hpbar.draw():
-                camera_surface.blit(bar[0],bar[1])
+            enemy.draw(camera_surface)
         for particle in self.skill_particles:
-            camera_surface.blit(particle.image, particle.rect)
-        camera_surface.blit(self.player.image, self.player.rect)
-        for bar in self.player.hpbar.draw():
-            camera_surface.blit(bar[0],bar[1])
+            particle.draw(camera_surface)
+        for reward in self.rewards:
+            reward.draw(camera_surface)
+        self.player.draw(camera_surface)
 
     def _draw_background(self, camera_surface: CameraSurface):
         rect = Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -116,11 +125,12 @@ class Stage(Scene):
         self.enemies.add(Enemy(enemy_img, 100, 10, Transform(
             1, Vector2(50, 50), Vector2(0, 1))))
 
-        normal_particle_img = Surface((10,10))
-        normal_particle_img.fill((255,0,0))
-        self.normalparticle = schedule.every(1).seconds.do(lambda: self.skill_particles.add(SkillParticle(normal_particle_img,1, 10, Transform(5,Vector2(self.player.transform.pos.xy), Vector2(1,0)),self.player)))
-    
+        normal_particle_img = Surface((10, 10))
+        normal_particle_img.fill((255, 0, 0))
+        self.normalparticle = schedule.every(1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
+            normal_particle_img, 1, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player)))
+
+        self.sound.play(-1)
+
     def stop_scene(self) -> None:
-        return
-
-
+        self.sound.stop()

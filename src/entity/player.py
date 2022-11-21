@@ -8,7 +8,7 @@ from pygame.surface import Surface
 from pygame.math import Vector2
 from constants import *
 
-from src.entity.health_bar import health_bar
+from src.entity.health_bar import HealthBar
 from src.entity.abstract_entity import Entity, Transform
 from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
@@ -19,16 +19,18 @@ if TYPE_CHECKING:
 
 class SkillParticle(Entity):
     """base class for particle of skill"""
-    def __init__(self, img: Surface, health : int, power: float, transform: Transform, player: Player, ) -> None:
+
+    def __init__(self, img: Surface, health: int, power: float, transform: Transform, player: Player, ) -> None:
         super().__init__(img, health, power, transform)
         pg.sprite.Sprite.__init__(self)
         self.player = player
         self.transform.pos = pg.Vector2(player.transform.pos.xy)
-        self.transform.direction = pg.Vector2(pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH,SCREEN_HEIGHT)/2
+        self.transform.direction = pg.Vector2(
+            pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
-        if not ((0<self.transform.pos.x<WORLD_BORDER) and (0<self.transform.pos.y<WORLD_BORDER)):
+        if not ((0 < self.transform.pos.x < WORLD_BORDER) and (0 < self.transform.pos.y < WORLD_BORDER)):
             self.kill()
 
     def isinbox(self):
@@ -59,12 +61,16 @@ class Player(Entity):
         self.level = info[1]
         self.money = info[2]
         self.skills = info[3]
-        self.hpbar = health_bar(self)
+        self.hpbar = HealthBar(self)
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
         self.handle_key_input(info.key_pressed)
         self.hpbar.update()
+
+    def draw(self, screen: Surface):
+        super().draw(screen)
+        self.hpbar.draw(screen)
 
     def handle_key_input(self, key_pressed: Sequence[bool]):
         horizontal = (-key_pressed[pg.K_a]+key_pressed[pg.K_d])
