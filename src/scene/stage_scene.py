@@ -129,7 +129,7 @@ class Stage(Scene):
         normal_particle_img.fill((255, 0, 0))
         self.normalparticle = schedule.every(1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
             normal_particle_img, 1, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player)))
-
+            
         self.sound.play(-1)
 
     def stop_scene(self) -> None:
