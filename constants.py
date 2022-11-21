@@ -1,8 +1,11 @@
+from pygame.rect import Rect
+
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 TILE_WIDTH = 32
 WORLD_BORDER = TILE_WIDTH*300
+WORLD_RECT = Rect(0, 0, WORLD_BORDER, WORLD_BORDER)
 
-#colors
+# colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)

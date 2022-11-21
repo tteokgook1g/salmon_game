@@ -1,6 +1,5 @@
 import pygame
 from pygame.math import Vector2
-from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from src.entity.abstract_entity import Transform
@@ -15,8 +14,7 @@ from src.scene.end_scene import EndScene
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-player_img = Surface((50, 50))
-player_img.fill((200, 100, 0))
+player_img = pygame.image.load("image/Salmon 1.png")
 player = Player(player_img, 100, 10, Transform(
     3, Vector2(100, 100), Vector2(0, 0),), (0, 0, 0, []))
 
