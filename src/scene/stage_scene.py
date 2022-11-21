@@ -37,6 +37,8 @@ class Stage(Scene):
         self.switch = None
         self.background = Surface((WORLD_BORDER, WORLD_BORDER))
         self.background.fill((240, 240, 240))
+        self.time = 0
+        self.difficulty = 0
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
@@ -57,6 +59,12 @@ class Stage(Scene):
             self.switch = SceneId.end_scene
             schedule.cancel_job(all)
         self.collide()
+        self.time += 1
+        if self.time % 600 == 0:
+            self.difficulty += 1
+        if self.time % 200 == 0:
+            self.enemy_spawn()
+            
 
     def draw(self, screen: pg.surface.Surface) -> None:
         self.camera_surface.fill((255, 255, 255))
@@ -115,18 +123,19 @@ class Stage(Scene):
         return self.switch
 
     def start_scene(self) -> None:
-        enemy_img = Surface((30, 30))
-        enemy_img.fill((0, 200, 0))
-        pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 30, 30), 3)
-        self.enemies.add(Enemy(enemy_img, 100, 10, Transform(
-            1, Vector2(50, 50), Vector2(0, 1))))
-
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 0))
         self.normalparticle = schedule.every(1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
             normal_particle_img, 1, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player)))
 
         self.sound.play(-1)
+
+    def enemy_spawn(self) -> None:
+        enemy_img = Surface((30, 30))
+        enemy_img.fill((0, 200, 0))
+        pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 30, 30), 3)
+        self.enemies.add(Enemy(enemy_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
+            1, Vector2(50, 50), Vector2(0, 1))))
 
     def stop_scene(self) -> None:
         self.sound.stop()
