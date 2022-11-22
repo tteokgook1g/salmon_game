@@ -37,7 +37,7 @@ class Scene(ABC):
 
 class SceneManager:
     """manages scenes and game"""
-    __slots__ = ("scenes", "current_id", "screen", "timer", "paused")
+    __slots__ = ("scenes", "current_id", "screen", "timer", "paused",'running')
 
     def __init__(self, initial_scene_id: SceneId, screen: pg.surface.Surface):
         self.scenes: Dict[SceneId, Scene] = {}
@@ -45,6 +45,7 @@ class SceneManager:
         self.screen = screen
         self.timer = pg.time.Clock()
         self.paused: bool = False
+        self.running = True
 
     def add_scene(self, scene_id: SceneId, scene: Scene) -> None:
         """add a scene to the scene manager"""
@@ -68,9 +69,8 @@ class SceneManager:
     def run(self):
         """runs the game loop"""
         self.scenes[self.current_id].start_scene()
-
-        running = True
-        while running:
+        
+        while self.running:
             events = pg.event.get()
             key_pressed = pg.key.get_pressed()
             mouse_pos = pg.mouse.get_pos()
@@ -79,7 +79,7 @@ class SceneManager:
 
             for event in events:
                 if event.type == pg.QUIT:
-                    running = False
+                    self.running = False
                 if event.type == pg.KEYDOWN and key_pressed[pg.K_ESCAPE]:
                     self.paused = not self.paused
 
