@@ -25,7 +25,7 @@ class HealthBar():
         hp_per = self.health/self.fullhp
         result.fill((0, 0, 0))
         hp = Surface((hp_per*bar_width, bar_height))
-        if hp_per <= 0.5:
+        if hp_per <= 0.3:
             hp.fill((255, 0, 0))
         else:
             hp.fill((0, 255, 0))
