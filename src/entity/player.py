@@ -73,6 +73,7 @@ class Player(Entity):
         self.handle_key_input(info.key_pressed)
         self.hpbar.update()
 
+
     def draw(self, screen: Surface):
         super().draw(screen)
         self.hpbar.draw(screen)
@@ -81,3 +82,5 @@ class Player(Entity):
         horizontal = (-key_pressed[pg.K_a]+key_pressed[pg.K_d])
         vertical = (key_pressed[pg.K_s]-key_pressed[pg.K_w])
         self.transform.direction = Vector2(horizontal, vertical)
+
+    

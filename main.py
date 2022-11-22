@@ -22,6 +22,6 @@ scene_manager = SceneManager(SceneId.start_scene, screen)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
 scene_manager.add_scene(SceneId.login_scene, LoginScene())
 scene_manager.add_scene(SceneId.stage1_scene, Stage(player))
-scene_manager.add_scene(SceneId.end_scene, EndScene())
+scene_manager.add_scene(SceneId.end_scene, EndScene(player))
 
 scene_manager.run()
