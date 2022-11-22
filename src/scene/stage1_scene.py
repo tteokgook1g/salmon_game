@@ -73,9 +73,6 @@ class Stage(Scene):
             self.epic_spawn()
         if self.time == 6000:
             self.boss_spawn()
-        if self.time == 1:
-            self.boss_spawn()
-            
 
     def draw(self, screen: pg.surface.Surface) -> None:
         self.camera_surface.fill((255, 255, 255))
