@@ -38,7 +38,7 @@ class HealthPotion(Entity):
             self.num -= 1
 
 
-class SpeedPotion(Entity):
+class speed_potion(Entity):
     def __init__(self, img: Surface, health: 0, power: 0, transform: Transform, speed_plus) -> None:
         self.speed_plus = speed_plus
         self.num = 0
