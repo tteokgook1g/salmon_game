@@ -58,8 +58,8 @@ class Transform:
 
 class Entity(Sprite):
     """base class for entities"""
-    __slots__ = ("health", "power", "transform")
-    health: float
+    __slots__ = ("_health", "power", "transform", "fullhp")
+    _health: float
     power: float
     transform: Transform
     rect: Rect
@@ -71,10 +71,18 @@ class Entity(Sprite):
         self.rect = img.get_rect()
 
         self.rect.center = int(transform.pos.x), int(transform.pos.y)
-        self.health = health
+        self._health = health
         self.power = power
         self.transform = transform
         self.fullhp = health
+
+    @property
+    def health(self):
+        return self._health
+
+    @health.setter
+    def health(self, value: float) -> None:
+        self._health = min(value, self.fullhp)
 
     def update(self, info: UpdateInfo) -> None:  # type: ignore
         """update the entity. you can use key and mouse if you need. """
@@ -97,6 +105,7 @@ class Entity(Sprite):
                     self.transform.velocity)
         return (self.rect.size[0]/2 < next_pos.x < WORLD_BORDER-self.rect.size[0]/2 and
                 self.rect.size[1]/2 < next_pos.y < WORLD_BORDER-self.rect.size[1]/2)
+
 
 class PlayerCollidable(ABC):
     @abstractmethod

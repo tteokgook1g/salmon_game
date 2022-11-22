@@ -11,7 +11,6 @@ from src.scene.scene_id import SceneId
 
 
 class LoginScene(Scene):
-
     def action(self, typ: str):
         if typ == 'confirm_button':
             self.switch = SceneId.stage1_scene
@@ -22,9 +21,6 @@ class LoginScene(Scene):
 
     def update(self, info: UpdateInfo) -> None:
         self.switch = None
-        self.key_pressed = info.key_pressed
-        self.mouse_pos = info.mouse_pos
-        self.mouse_click = info.mouse_click
         self.confirm_button.update(info)
         self.inputbox.update(info)
 
