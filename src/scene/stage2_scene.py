@@ -8,7 +8,7 @@ import random as rd
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.shop.shop import Shop
 from src.entity.abstract_entity import Reward, Transform
-from src.entity.enemy.basicEnemy import Enemy
+from src.entity.enemy import Enemy, Boss
 from src.entity.player import Player, SkillParticle
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
@@ -28,7 +28,7 @@ class Stage2(Scene):
     rewards: Group[Reward]
     camera_surface: CameraSurface
 
-    def __init__(self, player: Player) -> None:
+    def __init__(self, player: Player, boss: Boss) -> None:
         super().__init__()
         self.player = player
         self.enemies = Group()
@@ -41,8 +41,10 @@ class Stage2(Scene):
         self.background.fill((240, 240, 240))
         self.time = 0
         self.difficulty = 0
-        self.money = 0
         self.shop = Shop(player)
+        self.shootspeed = 1
+        self.player.money = 100
+        self.boss = boss
 
         self.tile = pg.image.load("image/Tile 4.png")
         self.sound = Sound(

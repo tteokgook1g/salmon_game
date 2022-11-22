@@ -42,3 +42,21 @@ class Enemy(Entity, PlayerCollidable):
     def kill(self) -> None:
         super().kill()
         self.reward_group.add(Reward(1, 1, self.transform.pos.copy()))
+
+class Boss(Enemy):
+    def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
+        super().__init__(img, health, power, transform)
+        self.hpbar = HealthBar(self)
+        self.gun = 100
+
+    def update(self, info: UpdateInfo) -> None:
+        super().update(info)
+
+    def draw(self, screen: Surface):
+        super().draw(screen)
+
+    def handle_collide(self, player: Player):
+        super().handle_collide(player)
+
+    def kill(self) -> None:
+        super().kill()

@@ -19,7 +19,7 @@ class Shop():
         self.items.append(HealthPotion(
             pygame.image.load("image/potion 1.png"), 10, 1))
         self.items.append(SpeedPotion(
-            pygame.image.load("image/potion 2.png"), 3, 1))
+            pygame.image.load("image/potion 2.png"), 0.05, 1))
 
         HealthPotion.player = player
         SpeedPotion.player = player

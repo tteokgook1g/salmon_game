@@ -12,7 +12,7 @@ from src.entity.health_bar import HealthBar
 from src.entity.abstract_entity import Entity, Transform
 
 if TYPE_CHECKING:
-    from src.entity.enemy.basicEnemy import Enemy
+    from entity.enemy import Enemy
     from src.helper.group import Group
     from src.helper.update_info import UpdateInfo
 

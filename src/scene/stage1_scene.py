@@ -8,7 +8,7 @@ import random as rd
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.shop.shop import Shop
 from src.entity.abstract_entity import Reward, Transform
-from src.entity.enemy.basicEnemy import Enemy
+from src.entity.enemy import Enemy, Boss
 from src.entity.player import Player, SkillParticle
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
@@ -21,14 +21,15 @@ import schedule
 class Stage1(Scene):
     """abstract class representing game stages."""
     __slots__ = ("player", "enemies", "skill_particles",
-                 "camera_surface", "rewards")
+                 "camera_surface", "rewards", "boss")
     player: Player
     enemies: Group[Enemy]
     skill_particles: Group[SkillParticle]
     rewards: Group[Reward]
     camera_surface: CameraSurface
+    boss: Boss
 
-    def __init__(self, player: Player) -> None:
+    def __init__(self, player: Player, boss: Boss) -> None:
         super().__init__()
         self.player = player
         self.enemies = Group()
@@ -41,8 +42,10 @@ class Stage1(Scene):
         self.background.fill((240, 240, 240))
         self.time = 0
         self.difficulty = 0
-        self.money = 0
         self.shop = Shop(player)
+        self.shootspeed = 1
+        self.player.money = 100
+        self.boss = boss
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
@@ -56,6 +59,7 @@ class Stage1(Scene):
         schedule.run_pending()
         info.player = self.player
         self.player.update(info)
+        self.boss.update(info)
         for enemy in self.enemies:
             enemy.update(info)
         for particle in self.skill_particles:
@@ -65,17 +69,6 @@ class Stage1(Scene):
             self.switch = SceneId.stage2_scene
             schedule.cancel_job(all)
         self.collide()
-        self.time += 1
-        if self.time % 1500 == 0:
-            self.difficulty += 1
-        if self.time % 300 == 0:
-            self.normal_spawn()
-        if self.time % 600 == 0:
-            self.rare_spawn()
-        if self.time % 1500 == 0:
-            self.epic_spawn()
-        if self.time == 6000:
-            self.boss_spawn()
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
@@ -95,9 +88,7 @@ class Stage1(Scene):
 
         for reward in self.rewards:
             if pg.sprite.collide_rect(self.player, reward):
-                reward.handle_collide(self.player)
-                self.money += 100
-                print(self.money)
+                reward.handle_collide(self.enemies)
 
         for particle in self.skill_particles:
             for enemy in self.enemies:
@@ -144,39 +135,40 @@ class Stage1(Scene):
     def start_scene(self) -> None:
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 0))
-        self.normalparticle = schedule.every(1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
-            normal_particle_img, 1, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player)))
+        self.normalparticle = schedule.every(0.1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
+            normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player)))
+        self.normalparticle = schedule.every(0.1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
+            normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.boss)))
+
 
         self.sound.play(-1)
 
-        # spawn enemy
-    def normal_spawn(self) -> None:
         normal_img = Surface((30, 30))
         normal_img.fill((0, 200, 0))
         pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)
-        self.enemies.add(Enemy(normal_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
-            1 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1))))
+        schedule.every(3).seconds.do(lambda: self.enemies.add(Enemy(normal_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
+            1 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1)))))
 
-    def rare_spawn(self) -> None:
         rare_img = Surface((35, 35))
         rare_img.fill((0, 0, 200))
         pg.draw.rect(rare_img, (70, 20, 0), (0, 0, 35, 35), 3)
-        self.enemies.add(Enemy(rare_img, 150 + self.difficulty, 12 + self.difficulty, Transform(
-            1.1 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1))))
+        schedule.every(10).seconds.do(lambda: self.enemies.add(Enemy(rare_img, 150 + self.difficulty, 15 + self.difficulty, Transform(
+            1.4 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1)))))
 
-    def epic_spawn(self) -> None:
         epic_img = Surface((40, 40))
         epic_img.fill((200, 0, 200))
         pg.draw.rect(epic_img, (70, 20, 0), (0, 0, 40, 40), 3)
-        self.enemies.add(Enemy(epic_img, 400, 15 + self.difficulty, Transform(
-            1.2 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1))))
+        schedule.every(20).seconds.do(lambda: self.enemies.add(Enemy(epic_img, 400 + self.difficulty, 20 + self.difficulty, Transform(
+            2 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1)))))
 
-    def boss_spawn(self) -> None:
         boss_img = Surface((50, 50))
         boss_img.fill((200, 0, 0))
         pg.draw.rect(boss_img, (70, 20, 0), (0, 0, 50, 50), 3)
-        self.enemies.add(Enemy(boss_img, 1000, 25, Transform(
-            1.5, Vector2(50, 50), Vector2(0, 1))))
+        # schedule.every(120).seconds.do(lambda: self.enemies.add(Boss(boss_img, 10000, 50, Transform(
+        #     3 + self.difficulty, Vector2(50, 50), Vector2(0, 1), 100))))
+        
+        self.enemies.add(Boss(boss_img, 10000, 50, Transform(
+            3 + self.difficulty, Vector2(50, 50), Vector2(0, 1))))
 
     def stop_scene(self) -> None:
         self.sound.stop()
