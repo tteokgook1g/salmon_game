@@ -63,10 +63,18 @@ class Stage(Scene):
             schedule.cancel_job(all)
         self.collide()
         self.time += 1
-        if self.time % 600 == 0:
+        if self.time % 1500 == 0:
             self.difficulty += 1
-        if self.time % 200 == 0:
-            self.enemy_spawn()
+        if self.time % 300 == 0:
+            self.normal_spawn()
+        if self.time % 600 == 0:
+            self.rare_spawn()
+        if self.time % 1500 == 0:
+            self.epic_spawn()
+        if self.time == 6000:
+            self.boss_spawn()
+        if self.time == 1:
+            self.boss_spawn()
             
 
     def draw(self, screen: pg.surface.Surface) -> None:
@@ -135,12 +143,33 @@ class Stage(Scene):
 
         self.sound.play(-1)
 
-    def enemy_spawn(self) -> None:
-        enemy_img = Surface((30, 30))
-        enemy_img.fill((0, 200, 0))
-        pg.draw.rect(enemy_img, (70, 20, 0), (0, 0, 30, 30), 3)
-        self.enemies.add(Enemy(enemy_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
-            1 + self.difficulty * 0.1, Vector2(50, 50), Vector2(0, 1))))
+    def normal_spawn(self) -> None:
+        normal_img = Surface((30, 30))
+        normal_img.fill((0, 200, 0))
+        pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)
+        self.enemies.add(Enemy(normal_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
+            1 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1))))
+
+    def rare_spawn(self) -> None:
+        rare_img = Surface((35, 35))
+        rare_img.fill((0, 0, 200))
+        pg.draw.rect(rare_img, (70, 20, 0), (0, 0, 35, 35), 3)
+        self.enemies.add(Enemy(rare_img, 150 + self.difficulty, 12 + self.difficulty, Transform(
+            1.1 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1))))
+
+    def epic_spawn(self) -> None:
+        epic_img = Surface((40, 40))
+        epic_img.fill((200, 0, 200))
+        pg.draw.rect(epic_img, (70, 20, 0), (0, 0, 40, 40), 3)
+        self.enemies.add(Enemy(epic_img, 400, 15 + self.difficulty, Transform(
+            1.2 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1))))
+
+    def boss_spawn(self) -> None:
+        boss_img = Surface((50, 50))
+        boss_img.fill((200, 0, 0))
+        pg.draw.rect(boss_img, (70, 20, 0), (0, 0, 50, 50), 3)
+        self.enemies.add(Enemy(boss_img, 1000, 25, Transform(
+            1.5, Vector2(50, 50), Vector2(0, 1))))
 
     def stop_scene(self) -> None:
         self.sound.stop()

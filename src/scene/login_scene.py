@@ -14,7 +14,7 @@ class LoginScene(Scene):
 
     def action(self, typ: str):
         if typ == 'confirm_button':
-            self.switch = SceneId.stage_scene
+            self.switch = SceneId.stage1_scene
         elif typ == 'id_button':
             self.txt = self.inputbox.text
             self.inputbox = TextBox(pg.font.Font(None, 40).render(self.txt, True, (0, 0, 0), (0, 0, 0)), 0, 0, Transform(
