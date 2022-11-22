@@ -8,6 +8,7 @@ from src.scene.login_scene import LoginScene
 from src.scene.scene import SceneManager
 from src.scene.scene_id import SceneId
 from src.scene.stage1_scene import Stage
+# from src.scene.stage2_scene import Stage
 from src.scene.start_scene import StartScene
 from src.scene.end_scene import EndScene
 
@@ -22,6 +23,7 @@ scene_manager = SceneManager(SceneId.start_scene, screen)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
 scene_manager.add_scene(SceneId.login_scene, LoginScene())
 scene_manager.add_scene(SceneId.stage1_scene, Stage(player))
+# scene_manager.add_scene(SceneId.stage2_scene, Stage(player))
 scene_manager.add_scene(SceneId.end_scene, EndScene(player,scene_manager))
 
 scene_manager.run()
