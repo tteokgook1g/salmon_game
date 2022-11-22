@@ -24,19 +24,17 @@ class EndScene(Scene):
     def update(self, info: UpdateInfo) -> None:
         self.switch = None
         if info.key_pressed[pg.K_r]:
-            print(os.path.realpath(__file__))
-            s=os.path.realpath(__file__).split(os.sep)[:-3]
-            s.append('main.py')
-            print(s)
-            s=os.sep.join(s)
-            print(s)
-            subprocess.call([sys.executable, s] + sys.argv[1:])
+            pg.quit()
             self.scene_manager.running=False
+            path=os.sep.join(os.path.realpath(__file__).split(os.sep)[:-3]+['main.py'])
+            subprocess.call([sys.executable, path] + sys.argv[1:])
+            
 
 
     def draw(self, screen: pg.surface.Surface) -> None:
         screen.blit(self.backgroundimg,(0,0))
         screen.blit(self.scorebox.image,self.scorebox.rect.topleft)
+        screen.blit(self.textbox.image,self.textbox.rect.topleft)
 
     def check_scene_switch(self) -> SceneId | None:
         return self.switch
@@ -44,6 +42,8 @@ class EndScene(Scene):
     def start_scene(self) -> None:
         self.scorebox = TextBox(pg.font.Font(None, 40).render(f'Your Score : {self.player.xp}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
             SCREEN_WIDTH/2, SCREEN_HEIGHT/2+200), pg.Vector2(1, 0)), f'Your Score : {self.player.xp}', 40, (255,255,255))
+        self.textbox = TextBox(pg.font.Font(None, 40).render('press R to restart',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2, SCREEN_HEIGHT/2+250), pg.Vector2(1, 0)), 'press R to restart', 40, (255,255,255))
         self.backgroundimg = pg.image.load('./image/Game Over.jpg')
 
     def stop_scene(self) -> None:

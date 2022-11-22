@@ -11,7 +11,6 @@ from src.scene.stage1_scene import Stage
 from src.scene.start_scene import StartScene
 from src.scene.end_scene import EndScene
 
-
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
