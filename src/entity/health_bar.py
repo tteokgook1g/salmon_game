@@ -6,7 +6,6 @@ from src.entity.abstract_entity import Entity, Transform
 
 class HealthBar():
     padding = 20
-
     def __init__(self, entity: Entity):
         self.entity = entity
         self.fullhp = self.entity.fullhp
