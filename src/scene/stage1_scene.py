@@ -140,6 +140,7 @@ class Stage(Scene):
 
         self.sound.play(-1)
 
+        # spawn enemy
     def normal_spawn(self) -> None:
         normal_img = Surface((30, 30))
         normal_img.fill((0, 200, 0))
