@@ -72,7 +72,7 @@ class Player(Entity):
         super().update(info)
         self.handle_key_input(info.key_pressed)
         self.hpbar.update()
-        print(self.xp)
+
 
     def draw(self, screen: Surface):
         super().draw(screen)
