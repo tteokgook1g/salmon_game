@@ -6,6 +6,7 @@ from pygame.mixer import Sound
 import random as rd
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
+from src.entity.shop.shop import Shop
 from src.entity.abstract_entity import Reward, Transform
 from src.entity.enemy.basicEnemy import Enemy
 from src.entity.player import Player, SkillParticle
@@ -41,6 +42,7 @@ class Stage(Scene):
         self.time = 0
         self.difficulty = 0
         self.money = 0
+        self.shop = Shop(player)
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
@@ -74,10 +76,16 @@ class Stage(Scene):
         if self.time == 6000:
             self.boss_spawn()
 
+    def update_paused(self, info: UpdateInfo) -> None:
+        self.shop.update(info)
+
     def draw(self, screen: pg.surface.Surface) -> None:
         self.camera_surface.fill((255, 255, 255))
         self.draw_on_camera_surface(self.camera_surface)
         screen.blit(self.camera_surface, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    def draw_paused(self, screen: pg.surface.Surface) -> None:
+        self.shop.draw(screen)
 
     def collide(self):
         for enemy in self.enemies:

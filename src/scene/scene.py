@@ -15,9 +15,17 @@ class Scene(ABC):
     def update(self, info: UpdateInfo) -> None:
         """update the scene. you can use key and mouse if you need. """
 
+    def update_paused(self, info: UpdateInfo) -> None:
+        """when paused, update the scene. you can use key and mouse if you need. """
+        pass
+
     @abstractmethod
     def draw(self, screen: pg.surface.Surface) -> None:
         """draw the scene on screen."""
+
+    def draw_paused(self, screen: pg.surface.Surface) -> None:
+        """when paused, draw the scene on screen after draw method called."""
+        pass
 
     @abstractmethod
     def check_scene_switch(self) -> SceneId | None:
@@ -61,9 +69,28 @@ class SceneManager:
             scene.stop_scene()
             self.scenes[next_id].start_scene()
 
+    def update_paused(self, info: UpdateInfo) -> None:
+        """when paused, update current scene. you can use key and mouse if you need. """
+        scene = self.scenes[self.current_id]
+        scene.update_paused(info)
+
+        next_id = scene.check_scene_switch()
+        if next_id is not None:
+            self.current_id = next_id
+            scene.stop_scene()
+            self.scenes[next_id].start_scene()
+
     def draw(self, screen: pg.surface.Surface) -> None:
         """draw current scene on screen."""
         self.scenes[self.current_id].draw(screen)
+
+    def draw_paused(self):
+        self.draw(self.screen)
+        temp = Surface((800, 600))
+        temp.set_alpha(128)
+        temp.fill((100, 100, 100))
+        self.screen.blit(temp, temp.get_rect())
+        self.scenes[self.current_id].draw_paused(self.screen)
 
     def run(self):
         """runs the game loop"""
@@ -84,10 +111,11 @@ class SceneManager:
                     self.paused = not self.paused
 
             info = UpdateInfo(key_pressed, mouse_pos,
-                              mouse_click, events, None)
+                              mouse_click, events, None, self.paused)
 
             if self.paused:
                 self.draw_paused()
+                self.update_paused(info)
             else:
                 self.update(info)
                 self.draw(self.screen)
@@ -96,10 +124,3 @@ class SceneManager:
             self.timer.tick(60)
 
         self.scenes[self.current_id].stop_scene()
-
-    def draw_paused(self):
-        self.draw(self.screen)
-        temp = Surface((800, 600))
-        temp.set_alpha(128)
-        temp.fill((100, 100, 100))
-        self.screen.blit(temp, temp.get_rect())
