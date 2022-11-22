@@ -1,15 +1,30 @@
 """defines classes related to player"""
 from abc import ABC, abstractmethod
-from typing import List
-
-from pygame import Vector2, Rect, Surface
+import pygame as pg
+from pygame.sprite import Sprite
+from pygame.math import Vector2
+from pygame.surface import Surface
+from src.entity.button import Button
 from src.entity.abstract_entity import Entity
-from src.helper.group import Group
-from typing import Tuple
-from pyparsing import Sequence
 from src.entity.abstract_entity import Entity, Transform
 
-class health_potion(Entity):
+
+class ShopItem(Sprite, ABC):
+    button_img: Surface = pg.image.load("image/buy_button.png")
+
+    def __init__(self, img: Surface):
+        super().__init__()
+        self.img = img
+        self.rect = img.get_rect()
+        self.button = Button(self.button_img, 1, 0, Transform(
+            0, Vector2(0, 0), Vector2(0, 0)), self.buy)
+
+    @abstractmethod
+    def buy(self):
+        """handles when buy button is clicked"""
+
+
+class HealthPotion(Entity):
     def __init__(self, img: Surface, health: 0, power: 0, transform: Transform, health_plus) -> None:
         self.health_plus = health_plus
         self.num = 0
@@ -22,7 +37,8 @@ class health_potion(Entity):
             self.health += self.health_plus
             self.num -= 1
 
-class speed_potion(Entity):
+
+class SpeedPotion(Entity):
     def __init__(self, img: Surface, health: 0, power: 0, transform: Transform, speed_plus) -> None:
         self.speed_plus = speed_plus
         self.num = 0
@@ -35,8 +51,10 @@ class speed_potion(Entity):
             self.transform.velocity += self.speed_plus
             self.num -= 1
 
+
 class bomb(Entity):
     pass
+
 
 class lightning(Entity):
     pass
