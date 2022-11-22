@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 
 from typing import TYPE_CHECKING
+import schedule
 
 from pygame.math import Vector2
 from pygame.rect import Rect
@@ -109,6 +110,7 @@ class Reward(Entity, PlayerCollidable):
     __slots__ = ("xp", "money")
     xp: int
     money: int
+    lifetime = 5
 
     img = Surface((20, 20))
     img.fill((200, 200, 50))
@@ -117,8 +119,11 @@ class Reward(Entity, PlayerCollidable):
         super().__init__(Reward.img, 1, 0, Transform(0, pos, Vector2(0, 0)))
         self.xp = xp
         self.money = money
+        schedule.every(self.lifetime).seconds.do(self.kill)
+
 
     def handle_collide(self, player: Player):
         player.money += self.money
         player.xp += self.xp
         self.kill()
+    
