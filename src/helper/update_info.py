@@ -11,9 +11,11 @@ if TYPE_CHECKING:
 
 @dataclass
 class UpdateInfo:
-    __slots__ = ("key_pressed", "mouse_pos", "mouse_click", "events", "player")
+    __slots__ = ("key_pressed", "mouse_pos", "mouse_click",
+                 "events", "player", "is_paused")
     key_pressed: Sequence[bool]
     mouse_pos: Tuple[int, int]
     mouse_click: Tuple[int, int, int]
     events: List[Event]
     player: Player | None
+    is_paused: bool

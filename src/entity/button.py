@@ -9,8 +9,7 @@ from src.entity.abstract_entity import Entity, Transform
 
 
 class Button(Entity):
-    __slots__ = ("health", "power", "transform", 'string', 'color')
-    health: float
+    __slots__ = ("power", "transform", 'string', 'color')
     power: float
     transform: Transform
     rect: Rect
