@@ -18,7 +18,7 @@ from src.scene.scene_id import SceneId
 import schedule
 
 
-class Stage1(Scene):
+class Stage2(Scene):
     """abstract class representing game stages."""
     __slots__ = ("player", "enemies", "skill_particles",
                  "camera_surface", "rewards")
@@ -44,9 +44,9 @@ class Stage1(Scene):
         self.money = 0
         self.shop = Shop(player)
 
-        self.tile = pg.image.load("image/Tile 1.png")
+        self.tile = pg.image.load("image/Tile 4.png")
         self.sound = Sound(
-            "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
+            "sound/bgm/Clarx - Zig Zag [NCS Release].mp3")
         self.sound.set_volume(0.1)
 
         # binding references
@@ -61,8 +61,7 @@ class Stage1(Scene):
         for particle in self.skill_particles:
             particle.update(info)
         if self.player.health <= 0:
-            self.player.health += 10
-            self.switch = SceneId.stage2_scene
+            self.switch = SceneId.end_scene
             schedule.cancel_job(all)
         self.collide()
         self.time += 1
