@@ -8,7 +8,7 @@ import random as rd
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.shop.shop import Shop
 from src.entity.abstract_entity import Reward, Transform
-from src.entity.enemy import Enemy, Boss
+from src.entity.enemy import Enemy, Boss, BossSkillParticle
 from src.entity.player import Player, SkillParticle
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
@@ -66,6 +66,9 @@ class Stage1(Scene):
             particle.update(info)
         if self.player.health <= 0:
             self.player.health += 10
+            self.switch = SceneId.end_scene
+            schedule.cancel_job(all)
+        if self.boss.health <= 0:
             self.switch = SceneId.stage2_scene
             schedule.cancel_job(all)
         self.collide()
@@ -135,11 +138,10 @@ class Stage1(Scene):
     def start_scene(self) -> None:
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 0))
-        self.normalparticle = schedule.every(0.1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
+        schedule.every(0.1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
             normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player)))
-        self.normalparticle = schedule.every(0.1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
+        schedule.every(0.1).seconds.do(lambda: self.skill_particles.add(BossSkillParticle(
             normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.boss)))
-
 
         self.sound.play(-1)
 
@@ -164,11 +166,8 @@ class Stage1(Scene):
         boss_img = Surface((50, 50))
         boss_img.fill((200, 0, 0))
         pg.draw.rect(boss_img, (70, 20, 0), (0, 0, 50, 50), 3)
-        # schedule.every(120).seconds.do(lambda: self.enemies.add(Boss(boss_img, 10000, 50, Transform(
-        #     3 + self.difficulty, Vector2(50, 50), Vector2(0, 1), 100))))
-        
-        self.enemies.add(Boss(boss_img, 10000, 50, Transform(
-            3 + self.difficulty, Vector2(50, 50), Vector2(0, 1))))
+        schedule.every(120).seconds.do(lambda: self.enemies.add(Boss(boss_img, 10000, 50, Transform(
+            3 + self.difficulty, Vector2(50, 50), Vector2(0, 1), 100))))
 
     def stop_scene(self) -> None:
         self.sound.stop()

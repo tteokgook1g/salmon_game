@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
+from typing import TYPE_CHECKING, List, Sequence, Tuple
+from pygame.math import Vector2
 from src.entity.abstract_entity import Entity, PlayerCollidable, Reward
 from src.entity.health_bar import HealthBar
+import pygame as pg
+from abc import ABC, abstractmethod
+from constants import *
 
 if TYPE_CHECKING:
     from pygame.surface import Surface
@@ -18,6 +21,7 @@ class Enemy(Entity, PlayerCollidable):
     """base class for enemies"""
     __slots__ = ("hpbar",)
     reward_group: Group[Reward]  # ref
+    skills: List[BossSkill]
 
     def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
         super().__init__(img, health, power, transform)
@@ -48,6 +52,7 @@ class Boss(Enemy):
         super().__init__(img, health, power, transform)
         self.hpbar = HealthBar(self)
         self.gun = 100
+        # self.skill = BossSkill()
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
@@ -60,3 +65,34 @@ class Boss(Enemy):
 
     def kill(self) -> None:
         super().kill()
+
+class BossSkill(ABC):
+    """base class for skill"""
+    particle_group: Group[BossSkillParticle]
+
+    @abstractmethod
+    def make_particle(self, direction: Vector2) -> None:
+        """attacks. make a particle, whose direction is given by the parameter"""
+
+class BossSkillParticle(Entity):
+    """base class for particle of skill"""
+    
+    def __init__(self, img: Surface, health: int, power: float, transform: Transform, boss: Boss) -> None:
+        super().__init__(img, health, power, transform)
+        pg.sprite.Sprite.__init__(self)
+        self.boss = boss
+        self.transform.pos = pg.Vector2(boss.transform.pos.xy)
+        self.transform.direction = pg.Vector2(
+            pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
+
+    def update(self, info: UpdateInfo) -> None:
+        super().update(info)
+        if not WORLD_RECT.collidepoint(self.transform.pos.x, self.transform.pos.y):
+            self.kill()
+
+    def isinbox(self):
+        return True
+
+    def handle_collide(self, enemy: Enemy):
+        enemy.health -= self.power
+        self.kill()
