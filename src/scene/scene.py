@@ -6,6 +6,7 @@ from typing import Dict, Tuple
 import pygame as pg
 from src.helper.update_info import UpdateInfo
 from src.scene.scene_id import SceneId
+from pygame.surface import Surface
 
 
 class Scene(ABC):
@@ -36,13 +37,14 @@ class Scene(ABC):
 
 class SceneManager:
     """manages scenes and game"""
-    __slots__ = ("scenes", "current_id", "screen", "timer")
+    __slots__ = ("scenes", "current_id", "screen", "timer", "paused")
 
     def __init__(self, initial_scene_id: SceneId, screen: pg.surface.Surface):
         self.scenes: Dict[SceneId, Scene] = {}
         self.current_id: SceneId = initial_scene_id
         self.screen = screen
         self.timer = pg.time.Clock()
+        self.paused: bool = False
 
     def add_scene(self, scene_id: SceneId, scene: Scene) -> None:
         """add a scene to the scene manager"""
@@ -70,22 +72,34 @@ class SceneManager:
         running = True
         while running:
             events = pg.event.get()
-            for event in events:
-                if event.type == pg.QUIT:
-                    running = False
-
             key_pressed = pg.key.get_pressed()
             mouse_pos = pg.mouse.get_pos()
             mouse_click: Tuple[int, int,
                                int] = pg.mouse.get_pressed()  # type: ignore
 
+            for event in events:
+                if event.type == pg.QUIT:
+                    running = False
+                if event.type == pg.KEYDOWN and key_pressed[pg.K_ESCAPE]:
+                    self.paused = not self.paused
+
             info = UpdateInfo(key_pressed, mouse_pos,
                               mouse_click, events, None)
-            self.update(info)
 
-            self.draw(self.screen)
+            if self.paused:
+                self.draw_paused()
+            else:
+                self.update(info)
+                self.draw(self.screen)
 
             pg.display.update()
             self.timer.tick(60)
 
         self.scenes[self.current_id].stop_scene()
+
+    def draw_paused(self):
+        self.draw(self.screen)
+        temp = Surface((800, 600))
+        temp.set_alpha(128)
+        temp.fill((100, 100, 100))
+        self.screen.blit(temp, temp.get_rect())
