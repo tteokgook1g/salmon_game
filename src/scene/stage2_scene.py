@@ -69,9 +69,9 @@ class Stage2(Scene):
             self.player.health += 100
             self.switch = SceneId.end_scene
             schedule.cancel_job(all)
-        if self.boss.health <= 0:
-            self.switch = SceneId.end_scene
-            schedule.cancel_job(all)
+        # if self.boss.health <= 0:
+        #     self.switch = SceneId.end_scene
+        #     schedule.cancel_job(all)
         self.collide()
         self.time += 1
 

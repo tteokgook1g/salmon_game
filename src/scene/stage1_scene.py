@@ -47,7 +47,7 @@ class Stage1(Scene):
         self.cooltime = 0
         self.normal_cooltime = 600
         self.playercooltime = self.player.shootspeed
-        self.bossspawntime = 3000
+        self.bossspawntime = 30
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
             "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
@@ -175,7 +175,7 @@ class Stage1(Scene):
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 255))
         schedule.every(0.1).seconds.do(lambda: self.boss_particles.add(BossSkillParticle(
-            normal_particle_img, 3, 10, Transform(5, Vector2(self.boss.transform.pos.xy), Vector2(1, 0)), self.boss)))
+            normal_particle_img, 3, 10, Transform(5, Vector2(self.boss.transform.pos.xy), Vector2(self.player.transform.pos.xy)), self.boss)))
 
         # binding references
         Enemy.reward_group = self.rewards
