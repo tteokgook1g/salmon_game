@@ -116,8 +116,6 @@ class Stage1(Scene):
         for reward in self.rewards:
             if pg.sprite.collide_rect(self.player, reward):
                 reward.handle_collide(self.player)
-                self.player.money += 1
-                self.player.xp += 1
 
         for particle in self.skill_particles:
             for enemy in self.enemies:

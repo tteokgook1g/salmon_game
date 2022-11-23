@@ -69,7 +69,7 @@ class SpeedPotion(ShopItem):
     def buy(self):
         if self.player.money >= self.price:
             self.player.money -= self.price
-            self.player.transform.velocity += self.speed_plus
+            self.player.transform.velocity *= self.speed_plus
 
 
 class PowerPotion(ShopItem):
