@@ -50,7 +50,7 @@ class Stage1(Scene):
         self.cooltime = 0
         self.normal_cooltime = 600
         self.playercooltime = self.player.shootspeed
-        self.bossspawntime = 30
+        self.bossspawntime = 3000
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
@@ -69,12 +69,14 @@ class Stage1(Scene):
             enemy.update(info)
         for particle in self.skill_particles:
             particle.update(info)
+        for reward in self.rewards:
+            reward.update(info)
         if self.player.health <= 0:
             self.player.health += 100
             self.switch = SceneId.end_scene
             schedule.cancel_job(all)
         if self.boss.health <= 0:
-            self.switch = SceneId.stage1to2_scene
+            self.switch = SceneId.stage2_scene
             schedule.cancel_job(all)
         self.collide()
         self.time += 1

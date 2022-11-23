@@ -120,7 +120,7 @@ class Reward(Entity, PlayerCollidable):
     __slots__ = ("xp", "money")
     xp: int
     money: int
-    lifetime = 5
+    lifetime = 5000
 
     img = Surface((20, 20))
     img.fill((200, 200, 50))
@@ -133,7 +133,5 @@ class Reward(Entity, PlayerCollidable):
 
 
     def handle_collide(self, player: Player):
-        player.money += self.money
-        player.xp += self.xp
         self.kill()
     

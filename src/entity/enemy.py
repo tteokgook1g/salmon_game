@@ -67,13 +67,6 @@ class Boss(Enemy):
         self.transform.velocity *= -10
         self.transform.move()
         self.transform.velocity /= -10
-
-    def handle_collide_boss(self, player: Player):
-        super().handle_collide(player)
-        player.health -= self.power
-        self.transform.velocity *= -10
-        self.transform.move()
-        self.transform.velocity /= -10
     
     def kill(self) -> None:
         super().kill()

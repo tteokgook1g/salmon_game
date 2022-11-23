@@ -21,7 +21,7 @@ class Shop():
         self.items.append(SpeedPotion(
             pygame.image.load("image/potion 2.png"), 0.05, 1))
         self.items.append(PowerPotion(
-            pygame.image.load("image/potion 3.png"), 10, 1))
+            pygame.image.load("image/potion 3.png"), 10000, 1))
         self.items.append(ShootSpeedPotion(
             pygame.image.load("image/potion 4.png"), 0.95, 1))
 
