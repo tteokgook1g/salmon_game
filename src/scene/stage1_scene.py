@@ -16,7 +16,6 @@ from src.helper.update_info import UpdateInfo
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
 import schedule
-import time
 
 
 class Stage1(Scene):
@@ -51,7 +50,7 @@ class Stage1(Scene):
         self.cooltime = 0
         self.normal_cooltime = 600
         self.playercooltime = self.player.shootspeed
-        self.bossspawntime = 12
+        self.bossspawntime = 30
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
@@ -75,7 +74,7 @@ class Stage1(Scene):
             self.switch = SceneId.end_scene
             schedule.cancel_job(all)
         if self.boss.health <= 0:
-            self.switch = SceneId.stage2_scene
+            self.switch = SceneId.stage1to2_scene
             schedule.cancel_job(all)
         self.collide()
         self.time += 1
