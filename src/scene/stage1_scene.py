@@ -8,7 +8,7 @@ from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.shop.shop import Shop
 from src.entity.abstract_entity import Reward, Transform
 from src.entity.enemy import Enemy, Boss, BossSkillParticle
-from src.entity.player import GunSkill, Player, SkillParticle
+from src.entity.player import BombSkill, GunSkill, Player, SkillParticle
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
@@ -168,16 +168,18 @@ class Stage1(Scene):
         return self.switch
 
     def start_scene(self) -> None:
-        gun_skill = GunSkill(10, 10)
-        gun_skill.bind(self.skill_particles, self.player)
-        self.player.skills.append(gun_skill)
-
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 255))
         schedule.every(0.1).seconds.do(lambda: self.boss_particles.add(BossSkillParticle(
             normal_particle_img, 3, 10, Transform(5, Vector2(self.boss.transform.pos.xy), Vector2(1, 0)), self.boss)))
 
         # binding references
+        gun_skill = GunSkill(10)
+        self.player.skills.append(gun_skill)
+        gun_skill.bind(self.skill_particles, self.player)
+        # bomb_skill = BombSkill(1)
+        # self.player.skills.append(bomb_skill)
+        # bomb_skill.bind(self.skill_particles, self.player)
         Enemy.reward_group = self.rewards
         Boss.reward_group = self.rewards
 
