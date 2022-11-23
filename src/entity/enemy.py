@@ -7,6 +7,7 @@ from src.entity.health_bar import HealthBar
 import pygame as pg
 from abc import ABC, abstractmethod
 from constants import *
+import schedule
 
 if TYPE_CHECKING:
     from pygame.surface import Surface
@@ -94,11 +95,15 @@ class BossSkillParticle(Entity, PlayerCollidable):
 
     def __init__(self, img: Surface, health: int, power: float, transform: Transform, boss: Boss) -> None:
         super().__init__(img, health, power, transform)
-        pg.sprite.Sprite.__init__(self)
         self.boss = boss
         self.transform.pos = pg.Vector2(boss.transform.pos.xy)
         self.transform.direction = pg.Vector2(
             pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
+        schedule.every(10).seconds.do(self._kill)
+
+    def _kill(self):
+        super().kill()
+        return schedule.CancelJob
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)

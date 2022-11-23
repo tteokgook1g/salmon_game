@@ -55,7 +55,6 @@ class Transform:
 
 class Entity(Sprite):
     """base class for entities"""
-    __slots__ = ("_health", "power", "transform", "fullhp")
 
     rect: Rect
     image: Surface

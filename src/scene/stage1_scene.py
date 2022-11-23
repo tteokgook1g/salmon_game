@@ -8,7 +8,7 @@ from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.shop.shop import Shop
 from src.entity.abstract_entity import Reward, Transform
 from src.entity.enemy import Enemy, Boss, BossSkillParticle
-from src.entity.player import BombSkill, GunSkill, Player, SkillParticle
+from src.entity.player import BombSkill, GunSkill, LightningSkill, Player, SkillParticle
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
@@ -121,9 +121,9 @@ class Stage1(Scene):
 
         for particle in self.skill_particles:
             for enemy in self.enemies:
-                if pg.sprite.collide_rect(particle, enemy):
+                if particle.check_collide(enemy):
                     particle.handle_collide(enemy)
-            if pg.sprite.collide_rect(particle, self.boss) and self.time >= self.bossspawntime:
+            if particle.check_collide(self.boss) and self.time >= self.bossspawntime:
                 particle.handle_collide(self.boss)
 
     def draw_on_camera_surface(self, camera_surface: CameraSurface) -> None:
@@ -177,9 +177,12 @@ class Stage1(Scene):
         gun_skill = GunSkill(10)
         self.player.skills.append(gun_skill)
         gun_skill.bind(self.skill_particles, self.player)
-        # bomb_skill = BombSkill(1)
-        # self.player.skills.append(bomb_skill)
-        # bomb_skill.bind(self.skill_particles, self.player)
+        bomb_skill = BombSkill(1)
+        self.player.skills.append(bomb_skill)
+        bomb_skill.bind(self.skill_particles, self.player)
+        lightning_skill = LightningSkill(10)
+        self.player.skills.append(lightning_skill)
+        lightning_skill.bind(self.skill_particles, self.player)
         Enemy.reward_group = self.rewards
         Boss.reward_group = self.rewards
 
