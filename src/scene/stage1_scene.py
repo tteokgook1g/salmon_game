@@ -46,7 +46,7 @@ class Stage1(Scene):
         self.time = 0
         self.cooltime = 0
         self.normal_cooltime = 600
-        self.bossspawntime = 12
+        self.bossspawntime = 30
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
@@ -69,7 +69,7 @@ class Stage1(Scene):
             self.switch = SceneId.end_scene
             schedule.cancel_job(all)
         if self.boss.health <= 0:
-            self.switch = SceneId.stage2_scene
+            self.switch = SceneId.stage1to2_scene
             schedule.cancel_job(all)
         self.collide()
         self.time += 1
