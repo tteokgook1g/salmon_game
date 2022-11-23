@@ -27,23 +27,19 @@ class Transform:
     def __init__(self, velocity: float, initial_pos: Vector2, initial_direction: Vector2):
         self.velocity = velocity
         self.pos = initial_pos
-        self._dir = initial_direction
+        self.direction = initial_direction
 
     def move(self) -> None:
         """moves towards direction"""
-        self.pos += self.velocity*self._dir
+        self.pos += self.velocity*self.direction
 
     def towards(self, pos: Vector2) -> None:
         """changes direction towards pos"""
-        if self.pos == pos:
-            return
-        self._dir = (pos-self.pos).normalize()
+        self.direction = (pos-self.pos)
 
     def away_from(self, pos: Vector2) -> None:
         """changes direction away from pos"""
-        if self.pos == pos:
-            return
-        self._dir = -(pos-self.pos).normalize()
+        self.direction = -(pos-self.pos)
 
     @property
     def direction(self) -> Vector2:
@@ -85,10 +81,6 @@ class Entity(Sprite):
 
     def update(self, info: UpdateInfo) -> None:  # type: ignore
         """update the entity. you can use key and mouse if you need. """
-        self.key_pressed = info.key_pressed
-        self.mouse_pos = info.mouse_pos
-        self.mouse_click = info.mouse_click
-
         if self.isinbox():
             self.transform.move()
         self.rect.center = int(self.transform.pos.x), int(self.transform.pos.y)
@@ -129,4 +121,6 @@ class Reward(Entity, PlayerCollidable):
         schedule.every(self.lifetime).seconds.do(self.kill)
 
     def handle_collide(self, player: Player):
+        player.xp += self.xp
+        player.money += self.money
         self.kill()

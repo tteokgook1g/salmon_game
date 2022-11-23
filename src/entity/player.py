@@ -14,7 +14,7 @@ from src.entity.health_bar import HealthBar
 from src.entity.abstract_entity import Entity, Transform
 
 if TYPE_CHECKING:
-    from entity.enemy import Enemy, Boss
+    from entity.enemy import Enemy
     from src.helper.group import Group
     from src.helper.update_info import UpdateInfo
 
@@ -26,14 +26,44 @@ class SkillParticle(Entity, ABC):
 
 
 class GunParticle(SkillParticle):
-    """base class for particle of skill"""
+    def __init__(self, img: Surface, health: int, power: float, velocity: float, player: Player) -> None:
+        super().__init__(img, health, power, Transform(
+            velocity, pg.Vector2(player.transform.pos.xy), pg.Vector2(
+                pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
+        ))
+        self.player = player
 
-    def __init__(self, img: Surface, health: int, power: float, transform: Transform, player: Player) -> None:
+    def update(self, info: UpdateInfo) -> None:
+        super().update(info)
+        if not WORLD_RECT.collidepoint(self.transform.pos.x, self.transform.pos.y):
+            self.kill()
+        print(self.transform.pos, self.transform.velocity,
+              self.transform.direction)
+
+    def isinbox(self):
+        return True
+
+    def handle_collide(self, enemy: Enemy):
+        enemy.health -= self.power
+        self.kill()
+
+
+class BombParticle(SkillParticle):
+    def __init__(self, img: Surface, health: int, power: float, velocity: float, player: Player) -> None:
+        transform = Transform(
+            10, pg.Vector2(player.transform.pos.xy), pg.Vector2(
+                pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
+        )
+        transform.move()
+        transform.velocity = velocity
+
         super().__init__(img, health, power, transform)
         self.player = player
-        self.transform.pos = pg.Vector2(player.transform.pos.xy)
-        self.transform.direction = pg.Vector2(
-            pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
+        schedule.every(0.5).seconds.do(self._kill)  # type: ignore
+
+    def _kill(self):
+        super().kill()
+        return schedule.CancelJob
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
@@ -45,11 +75,6 @@ class GunParticle(SkillParticle):
 
     def handle_collide(self, enemy: Enemy):
         enemy.health -= self.power
-        self.kill()
-
-    def handle_collide_boss(self, boss: Boss):
-        boss.health -= self.power
-        self.kill()
 
 
 class Skill(ABC):
@@ -71,35 +96,56 @@ class GunSkill(Skill):
     bullet_img = Surface((10, 10))
     bullet_img.fill((255, 0, 0))
 
-    def __init__(self, bullet_power: float, attack_speed: float):
+    def __init__(self, bullet_power: float):
         super().__init__()
         self.power = bullet_power
-        self._speed = attack_speed
+        self._speed = 10
 
     def _make_particle(self):
         self.particle_group.add(GunParticle(
-            self.bullet_img, 3, self.power, Transform(5, Vector2(
-                self.player.transform.pos.xy), Vector2(1, 0)), self.player
+            self.bullet_img, 3, self.power, 5, self.player
         ))
-
-    @property
-    def speed(self):
-        return self._speed
-
-    @speed.setter
-    def speed(self, value: float):
-        self._speed = value
-        schedule.cancel_job(self.job)
-        self.job = schedule.every(
-            1/self.speed).seconds.do(self._make_particle)  # type: ignore
 
     def bind(self, particle_group: Group[SkillParticle], player: Player):
         super().bind(particle_group, player)
+        self._speed = self.player.shootspeed
         self.job = schedule.every(
-            1/self.speed).seconds.do(self._make_particle)  # type: ignore
+            self.player.shootspeed/60).seconds.do(self._make_particle)  # type: ignore
 
     def update(self, info: UpdateInfo) -> None:
-        pass
+        if self._speed != self.player.shootspeed:
+            self._speed = self.player.shootspeed
+            schedule.cancel_job(self.job)
+            self.job = schedule.every(
+                self.player.shootspeed/60).seconds.do(self._make_particle)  # type: ignore
+
+
+class BombSkill(Skill):
+    __slots__ = ("power", "_speed", "job")
+    bomb_img = pg.image.load("image/bomb.png")
+
+    def __init__(self, bullet_power: float):
+        super().__init__()
+        self.power = bullet_power
+        self._speed = 10
+
+    def _make_particle(self):
+        self.particle_group.add(BombParticle(
+            self.bomb_img, 1, self.power, 0, self.player
+        ))
+
+    def bind(self, particle_group: Group[SkillParticle], player: Player):
+        super().bind(particle_group, player)
+        self._speed = self.player.shootspeed
+        self.job = schedule.every(
+            self.player.shootspeed/60).seconds.do(self._make_particle)  # type: ignore
+
+    def update(self, info: UpdateInfo) -> None:
+        if self._speed != self.player.shootspeed:
+            self._speed = self.player.shootspeed
+            schedule.cancel_job(self.job)
+            self.job = schedule.every(
+                self.player.shootspeed/60).seconds.do(self._make_particle)  # type: ignore
 
 
 class Player(Entity):
@@ -119,6 +165,8 @@ class Player(Entity):
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
         self.handle_key_input(info.key_pressed)
+        for skill in self.skills:
+            skill.update(info)
         self.hpbar.update()
 
     def draw(self, screen: Surface):
