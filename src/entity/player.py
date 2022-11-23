@@ -14,7 +14,7 @@ from src.entity.health_bar import HealthBar
 from src.entity.abstract_entity import Entity, Transform
 
 if TYPE_CHECKING:
-    from entity.enemy import Enemy
+    from entity.enemy import Enemy, Boss
     from src.helper.group import Group
     from src.helper.update_info import UpdateInfo
 
@@ -45,6 +45,10 @@ class GunParticle(SkillParticle):
 
     def handle_collide(self, enemy: Enemy):
         enemy.health -= self.power
+        self.kill()
+
+    def handle_collide_boss(self, boss: Boss):
+        boss.health -= self.power
         self.kill()
 
 
@@ -110,6 +114,7 @@ class Player(Entity):
         self.money: int = info[2]
         self.skills: List[Skill] = info[3]
         self.hpbar = HealthBar(self)
+        self.shootspeed: float = 60
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)

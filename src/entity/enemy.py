@@ -57,12 +57,24 @@ class Boss(Enemy):
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
+        self.hpbar.update()
 
     def draw(self, screen: Surface):
         super().draw(screen)
 
     def handle_collide(self, player: Player):
         super().handle_collide(player)
+        player.health -= self.power
+        self.transform.velocity *= -10
+        self.transform.move()
+        self.transform.velocity /= -10
+
+    def handle_collide_boss(self, player: Player):
+        super().handle_collide(player)
+        player.health -= self.power
+        self.transform.velocity *= -10
+        self.transform.move()
+        self.transform.velocity /= -10
 
     def kill(self) -> None:
         super().kill()
@@ -77,7 +89,7 @@ class BossSkill(ABC):
         """attacks. make a particle, whose direction is given by the parameter"""
 
 
-class BossSkillParticle(Entity):
+class BossSkillParticle(Entity, PlayerCollidable):
     """base class for particle of skill"""
 
     def __init__(self, img: Surface, health: int, power: float, transform: Transform, boss: Boss) -> None:
@@ -96,6 +108,6 @@ class BossSkillParticle(Entity):
     def isinbox(self):
         return True
 
-    def handle_collide(self, enemy: Enemy):
-        enemy.health -= self.power
+    def handle_collide(self, player: Player):
+        player.health -= self.power
         self.kill()
