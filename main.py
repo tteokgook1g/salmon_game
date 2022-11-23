@@ -21,16 +21,20 @@ player_img = pygame.image.load("image/Salmon 1.png")
 player = Player(player_img, 100, 10, Transform(
     3, Vector2(200, 100), Vector2(0, 0),), (0, 0, 0, []))
 boss_img = pygame.image.load("image/Boss.png")
-boss = Boss(boss_img, 20, 20, Transform(
+boss1 = Boss(boss_img, 1000, 20, Transform(
+    2.5, Vector2(50, 50), Vector2(0, 0)))
+boss2 = Boss(boss_img, 1500, 25, Transform(
+    2.5, Vector2(50, 50), Vector2(0, 0)))
+boss3 = Boss(boss_img, 3000, 50, Transform(
     2.5, Vector2(50, 50), Vector2(0, 0)))
 
 scene_manager = SceneManager(SceneId.start_scene, screen)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
 scene_manager.add_scene(SceneId.login_scene, LoginScene())
-scene_manager.add_scene(SceneId.stage1_scene, Stage1(player, boss))
+scene_manager.add_scene(SceneId.stage1_scene, Stage1(player, boss1))
 scene_manager.add_scene(SceneId.stage1to2_scene,
                         Stage1to2(player, scene_manager))
-scene_manager.add_scene(SceneId.stage2_scene, Stage2(player, boss))
+scene_manager.add_scene(SceneId.stage2_scene, Stage2(player, boss2))
 scene_manager.add_scene(SceneId.end_scene, EndScene(player, scene_manager))
 
 scene_manager.run()
