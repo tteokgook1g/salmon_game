@@ -3,7 +3,6 @@ from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.surface import Surface
 from pygame.mixer import Sound
-import random as rd
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.shop.shop import Shop
@@ -51,9 +50,6 @@ class Stage2(Scene):
             "sound/bgm/Clarx - Zig Zag [NCS Release].mp3")
         self.sound.set_volume(0.1)
 
-        # binding references
-        Enemy.reward_group = self.rewards
-
     def update(self, info: UpdateInfo) -> None:
         schedule.run_pending()
         info.player = self.player
@@ -97,8 +93,6 @@ class Stage2(Scene):
         for reward in self.rewards:
             if pg.sprite.collide_rect(self.player, reward):
                 reward.handle_collide(self.player)
-                self.money += 100
-                print(self.money)
 
         for particle in self.skill_particles:
             for enemy in self.enemies:
@@ -143,15 +137,15 @@ class Stage2(Scene):
         return self.switch
 
     def start_scene(self) -> None:
-        normal_particle_img = Surface((10, 10))
-        normal_particle_img.fill((255, 0, 0))
-        self.normalparticle = schedule.every(1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
-            normal_particle_img, 1, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player)))
-
+        for skill in self.player.skills:
+            skill.bind(self.skill_particles, self.player)
         self.sound.play(-1)
 
-        # spawn enemy
+        # binding references
+        Enemy.reward_group = self.rewards
+
     def normal_spawn(self) -> None:
+        """spawn enemy"""
         normal_img = Surface((30, 30))
         normal_img.fill((0, 200, 0))
         pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)

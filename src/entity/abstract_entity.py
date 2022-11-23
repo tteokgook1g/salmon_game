@@ -60,9 +60,7 @@ class Transform:
 class Entity(Sprite):
     """base class for entities"""
     __slots__ = ("_health", "power", "transform", "fullhp")
-    _health: float
-    power: float
-    transform: Transform
+
     rect: Rect
     image: Surface
 
@@ -72,10 +70,10 @@ class Entity(Sprite):
         self.rect = img.get_rect()
 
         self.rect.center = int(transform.pos.x), int(transform.pos.y)
-        self._health = health
-        self.power = power
-        self.transform = transform
-        self.fullhp = health
+        self._health: float = health
+        self.power: float = power
+        self.transform: Transform = transform
+        self.fullhp: float = health
 
     @property
     def health(self):
@@ -130,9 +128,7 @@ class Reward(Entity, PlayerCollidable):
         self.money = money
         schedule.every(self.lifetime).seconds.do(self.kill)
 
-
     def handle_collide(self, player: Player):
         player.money += self.money
         player.xp += self.xp
         self.kill()
-    

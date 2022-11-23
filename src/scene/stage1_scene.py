@@ -3,13 +3,12 @@ from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.surface import Surface
 from pygame.mixer import Sound
-import random as rd
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.shop.shop import Shop
 from src.entity.abstract_entity import Reward, Transform
 from src.entity.enemy import Enemy, Boss, BossSkillParticle
-from src.entity.player import Player, SkillParticle
+from src.entity.player import GunParticle, GunSkill, Player, SkillParticle
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
@@ -52,9 +51,6 @@ class Stage1(Scene):
             "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
         self.sound.set_volume(0.1)
 
-        # binding references
-        Enemy.reward_group = self.rewards
-
     def update(self, info: UpdateInfo) -> None:
         schedule.run_pending()
         info.player = self.player
@@ -91,7 +87,7 @@ class Stage1(Scene):
 
         for reward in self.rewards:
             if pg.sprite.collide_rect(self.player, reward):
-                reward.handle_collide(self.enemies)
+                reward.handle_collide(self.player)
 
         for particle in self.skill_particles:
             for enemy in self.enemies:
@@ -136,12 +132,14 @@ class Stage1(Scene):
         return self.switch
 
     def start_scene(self) -> None:
+        gun_skill = GunSkill(10, 10)
+        gun_skill.bind(self.skill_particles, self.player)
+        self.player.skills.append(gun_skill)
+
         normal_particle_img = Surface((10, 10))
-        normal_particle_img.fill((255, 0, 0))
-        schedule.every(0.1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
-            normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player)))
+        normal_particle_img.fill((255, 0, 255))
         schedule.every(0.1).seconds.do(lambda: self.skill_particles.add(BossSkillParticle(
-            normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.boss)))
+            normal_particle_img, 3, 10, Transform(5, Vector2(self.boss.transform.pos.xy), Vector2(1, 0)), self.boss)))
 
         self.sound.play(-1)
 
@@ -168,6 +166,9 @@ class Stage1(Scene):
         pg.draw.rect(boss_img, (70, 20, 0), (0, 0, 50, 50), 3)
         schedule.every(120).seconds.do(lambda: self.enemies.add(Boss(boss_img, 10000, 50, Transform(
             3 + self.difficulty, Vector2(50, 50), Vector2(0, 1), 100))))
+
+        # binding references
+        Enemy.reward_group = self.rewards
 
     def stop_scene(self) -> None:
         self.sound.stop()
