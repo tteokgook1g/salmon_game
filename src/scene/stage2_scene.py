@@ -3,7 +3,6 @@ from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.surface import Surface
 from pygame.mixer import Sound
-import random as rd
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.shop.shop import Shop
@@ -16,7 +15,6 @@ from src.helper.update_info import UpdateInfo
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
 import schedule
-import time
 
 
 class Stage2(Scene):
@@ -35,12 +33,11 @@ class Stage2(Scene):
         self.player = player
         self.enemies = Group()
         self.skill_particles = Group()
+        self.boss_particles: Group[BossSkillParticle] = Group()
         self.rewards = Group()
         self.camera_surface = CameraSurface(
             (SCREEN_WIDTH, SCREEN_HEIGHT), player.transform)
         self.switch = None
-        self.background = Surface((WORLD_BORDER, WORLD_BORDER))
-        self.background.fill((240, 240, 240))
         self.time = 0
         self.difficulty = 0
         self.shop = Shop(player)
@@ -50,16 +47,12 @@ class Stage2(Scene):
         self.time = 0
         self.cooltime = 0
         self.normal_cooltime = 600
-        self.playercooltime = self.player.shootspeed
         self.bossspawntime = 1200
 
         self.tile = pg.image.load("image/Tile 2.png")
         self.sound = Sound(
-            "sound/bgm/Diviners - Savannah (feat. Philly K) [NCS Release].mp3")
-        self.sound.set_volume(0.5)
-
-        # binding references
-        Enemy.reward_group = self.rewards
+            "sound/bgm/Clarx - Zig Zag [NCS Release].mp3")
+        self.sound.set_volume(0.1)
 
     def update(self, info: UpdateInfo) -> None:
         schedule.run_pending()
@@ -70,36 +63,35 @@ class Stage2(Scene):
             enemy.update(info)
         for particle in self.skill_particles:
             particle.update(info)
+        for particle in self.boss_particles:
+            particle.update(info)
         if self.player.health <= 0:
             self.player.health += 100
             self.switch = SceneId.end_scene
             schedule.cancel_job(all)
         if self.boss.health <= 0:
-            self.switch = SceneId.stage1_scene
+            self.switch = SceneId.end_scene
             schedule.cancel_job(all)
         self.collide()
         self.time += 1
 
-        print(self.player.health)
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 0))
         self.cooltime += 1
         if self.cooltime >= self.player.shootspeed:
-            self.skill_particles.add(SkillParticle(
-            normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player))
             if self.bossspawn == True:
-                self.skill_particles.add(BossSkillParticle(
-                normal_particle_img, 3, 10, Transform(5, Vector2(self.boss.transform.pos.xy), Vector2(1, 0)), self.boss))
+                self.boss_particles.add(BossSkillParticle(
+                    normal_particle_img, 3, 10, Transform(5, Vector2(self.boss.transform.pos.xy), Vector2(1, 0)), self.boss))
             self.cooltime = 0
 
         if self.time % 600 == 0:
             self.difficulty += 1
         if self.time % 120 == 0:
-            self.spawn_normal()
+            self.normal_spawn()
         if self.time % 300 == 0:
             self.spawn_rare()
         if self.time == self.bossspawntime:
-            self.boss.transform.pos.xy = [100, 100]
+            self.boss.transform.pos = Vector2([100, 100])
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
@@ -116,13 +108,16 @@ class Stage2(Scene):
         for enemy in self.enemies:
             if pg.sprite.collide_rect(self.player, enemy):
                 enemy.handle_collide(self.player)
+        for boss_particle in self.boss_particles:
+            if pg.sprite.collide_rect(self.player, boss_particle):
+                boss_particle.handle_collide(self.player)
 
         if pg.sprite.collide_rect(self.player, self.boss) and self.time >= self.bossspawntime:
             self.boss.handle_collide(self.player)
 
         for reward in self.rewards:
             if pg.sprite.collide_rect(self.player, reward):
-                reward.handle_collide(self.enemies)
+                reward.handle_collide(self.player)
 
         for particle in self.skill_particles:
             for enemy in self.enemies:
@@ -137,6 +132,8 @@ class Stage2(Scene):
         for enemy in self.enemies:
             enemy.draw(camera_surface)
         for particle in self.skill_particles:
+            particle.draw(camera_surface)
+        for particle in self.boss_particles:
             particle.draw(camera_surface)
         for reward in self.rewards:
             reward.draw(camera_surface)
@@ -170,10 +167,16 @@ class Stage2(Scene):
     def check_scene_switch(self) -> SceneId | None:
         return self.switch
 
-    def start_scene(self) -> None:        
+    def start_scene(self) -> None:
+        for skill in self.player.skills:
+            skill.bind(self.skill_particles, self.player)
         self.sound.play(-1)
 
-    def spawn_normal(self) -> None:
+        # binding references
+        Enemy.reward_group = self.rewards
+
+    def normal_spawn(self) -> None:
+        """spawn enemy"""
         normal_img = Surface((30, 30))
         normal_img.fill((0, 200, 0))
         pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)
@@ -193,6 +196,6 @@ class Stage2(Scene):
         pg.draw.rect(epic_img, (70, 20, 0), (0, 0, 40, 40), 3)
         self.enemies.add(Enemy(epic_img, 400 + self.difficulty, 20 + self.difficulty, Transform(
             1.8 + min(self.difficulty * 0.02, 0.3), Vector2(50, 50), Vector2(0, 1))))
-        
+
     def stop_scene(self) -> None:
         self.sound.stop()

@@ -13,6 +13,7 @@ from src.entity.abstract_entity import Entity, Transform
 if TYPE_CHECKING:
     from src.entity.player import Player
 
+
 class ShopItem(Sprite, ABC):
     button_img: Surface = pg.image.load("image/buy_button.png")
     player: Player
@@ -70,6 +71,7 @@ class SpeedPotion(ShopItem):
             self.player.money -= self.price
             self.player.transform.velocity += self.speed_plus
 
+
 class PowerPotion(ShopItem):
     def __init__(self, img: Surface, power_plus: float, price: int) -> None:
         super().__init__(img)
@@ -80,6 +82,7 @@ class PowerPotion(ShopItem):
         if self.player.money >= self.price:
             self.player.money -= self.price
             self.player.power += self.power_plus
+
 
 class ShootSpeedPotion(ShopItem):
     def __init__(self, img: Surface, shootspeed_decrese: float, price: int) -> None:
@@ -92,8 +95,10 @@ class ShootSpeedPotion(ShopItem):
             self.player.money -= self.price
             self.player.shootspeed *= self.shootspeed_decrease
 
+
 class bomb(Entity):
     pass
+
 
 class lightning(Entity):
     pass

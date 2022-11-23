@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Sequence, Tuple
+from typing import TYPE_CHECKING, List
 from pygame.math import Vector2
 from src.entity.abstract_entity import Entity, PlayerCollidable, Reward
 from src.entity.health_bar import HealthBar
@@ -19,7 +19,6 @@ if TYPE_CHECKING:
 
 class Enemy(Entity, PlayerCollidable):
     """base class for enemies"""
-    __slots__ = ("hpbar",)
     reward_group: Group[Reward]  # ref
     skills: List[BossSkill]
 
@@ -29,7 +28,8 @@ class Enemy(Entity, PlayerCollidable):
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
-        self.transform.direction = info.player.transform.pos - self.transform.pos
+        if info.player is not None:
+            self.transform.direction = info.player.transform.pos - self.transform.pos
         self.hpbar.update()
 
     def draw(self, screen: Surface):
@@ -44,8 +44,9 @@ class Enemy(Entity, PlayerCollidable):
         self.transform.velocity /= -10
 
     def kill(self) -> None:
-        self.reward_group.add(Reward(1, 1, self.transform.pos.copy()))
         super().kill()
+        self.reward_group.add(Reward(1, 1, self.transform.pos.copy()))
+
 
 class Boss(Enemy):
     def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
@@ -67,9 +68,17 @@ class Boss(Enemy):
         self.transform.velocity *= -10
         self.transform.move()
         self.transform.velocity /= -10
-    
+
+    def handle_collide_boss(self, player: Player):
+        super().handle_collide(player)
+        player.health -= self.power
+        self.transform.velocity *= -10
+        self.transform.move()
+        self.transform.velocity /= -10
+
     def kill(self) -> None:
         super().kill()
+
 
 class BossSkill(ABC):
     """base class for skill"""
@@ -79,9 +88,10 @@ class BossSkill(ABC):
     def make_particle(self, direction: Vector2) -> None:
         """attacks. make a particle, whose direction is given by the parameter"""
 
-class BossSkillParticle(Entity):
+
+class BossSkillParticle(Entity, PlayerCollidable):
     """base class for particle of skill"""
-    
+
     def __init__(self, img: Surface, health: int, power: float, transform: Transform, boss: Boss) -> None:
         super().__init__(img, health, power, transform)
         pg.sprite.Sprite.__init__(self)
@@ -97,3 +107,7 @@ class BossSkillParticle(Entity):
 
     def isinbox(self):
         return True
+
+    def handle_collide(self, player: Player):
+        player.health -= self.power
+        self.kill()
