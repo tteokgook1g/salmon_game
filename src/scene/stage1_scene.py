@@ -51,6 +51,7 @@ class Stage1(Scene):
         self.cooltime = 0
         self.normal_cooltime = 600
         self.playercooltime = self.player.shootspeed
+        self.bossspawntime = 1200
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
@@ -95,6 +96,8 @@ class Stage1(Scene):
             self.difficulty += 1
         if self.time % 120 == 0:
             self.spawn_normal()
+        if self.time == self.bossspawntime:
+            self.boss.transform.pos.xy = [100, 100]
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
@@ -112,7 +115,7 @@ class Stage1(Scene):
             if pg.sprite.collide_rect(self.player, enemy):
                 enemy.handle_collide(self.player)
 
-        if pg.sprite.collide_rect(self.player, self.boss):
+        if pg.sprite.collide_rect(self.player, self.boss) and self.time >= self.bossspawntime:
             self.boss.handle_collide(self.player)
 
         for reward in self.rewards:
@@ -123,6 +126,8 @@ class Stage1(Scene):
             for enemy in self.enemies:
                 if pg.sprite.collide_rect(particle, enemy):
                     particle.handle_collide(enemy)
+            if pg.sprite.collide_rect(particle, self.boss) and self.time >= self.bossspawntime:
+                particle.handle_collide(self.boss)
 
     def draw_on_camera_surface(self, camera_surface: CameraSurface) -> None:
         """implement it to draw entities"""
@@ -134,7 +139,8 @@ class Stage1(Scene):
         for reward in self.rewards:
             reward.draw(camera_surface)
         self.player.draw(camera_surface)
-        self.boss.draw(camera_surface)
+        if self.time >= self.bossspawntime:
+            self.boss.draw(camera_surface)
 
     def _draw_background(self, camera_surface: CameraSurface):
         rect = Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
