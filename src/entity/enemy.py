@@ -56,13 +56,25 @@ class Boss(Enemy):
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
+        self.hpbar.update()
 
     def draw(self, screen: Surface):
         super().draw(screen)
 
     def handle_collide(self, player: Player):
         super().handle_collide(player)
+        player.health -= self.power
+        self.transform.velocity *= -10
+        self.transform.move()
+        self.transform.velocity /= -10
 
+    def handle_collide_boss(self, player: Player):
+        super().handle_collide(player)
+        player.health -= self.power
+        self.transform.velocity *= -10
+        self.transform.move()
+        self.transform.velocity /= -10
+    
     def kill(self) -> None:
         super().kill()
 
@@ -92,7 +104,3 @@ class BossSkillParticle(Entity):
 
     def isinbox(self):
         return True
-
-    def handle_collide(self, enemy: Enemy):
-        enemy.health -= self.power
-        self.kill()

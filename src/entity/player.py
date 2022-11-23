@@ -12,7 +12,7 @@ from src.entity.health_bar import HealthBar
 from src.entity.abstract_entity import Entity, Transform
 
 if TYPE_CHECKING:
-    from entity.enemy import Enemy
+    from entity.enemy import Enemy, Boss
     from src.helper.group import Group
     from src.helper.update_info import UpdateInfo
 
@@ -39,6 +39,11 @@ class SkillParticle(Entity):
     def handle_collide(self, enemy: Enemy):
         enemy.health -= self.power
         self.kill()
+
+    def handle_collide_boss(self, boss: Boss):
+        boss.health -= self.power
+        self.kill()
+
 
 
 class Skill(ABC):
