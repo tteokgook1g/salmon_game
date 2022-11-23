@@ -82,13 +82,6 @@ class Stage1(Scene):
         self.cooltime += 1
         if self.time >= self.bossspawntime:
             self.bossspawn = True
-        if self.time % 6 == 0 and self.bossspawn == True:
-            self.boss_particles.add(BossSkillParticle(
-                normal_particle_img, 3, 10, Transform(5, Vector2(self.boss.transform.pos.xy), Vector2(self.player.transform.pos.xy)), self.boss))
-        if self.cooltime >= self.player.shootspeed:
-            # self.boss_particles.add(SkillParticle(
-            #     normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player))
-            self.cooltime = 0
 
         if self.time % 600 == 0:
             self.difficulty += 1
