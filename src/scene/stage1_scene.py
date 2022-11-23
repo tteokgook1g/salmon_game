@@ -15,6 +15,7 @@ from src.helper.update_info import UpdateInfo
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
 import schedule
+import random
 
 
 class Stage1(Scene):
@@ -47,7 +48,7 @@ class Stage1(Scene):
         self.cooltime = 0
         self.normal_cooltime = 600
         self.playercooltime = self.player.shootspeed
-        self.bossspawntime = 30
+        self.bossspawntime = 3000
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
             "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
@@ -79,10 +80,14 @@ class Stage1(Scene):
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 0))
         self.cooltime += 1
+        if self.time >= self.bossspawntime:
+            self.bossspawn = True
+        if self.time % 6 == 0 and self.bossspawn == True:
+            self.boss_particles.add(BossSkillParticle(
+                normal_particle_img, 3, 10, Transform(5, Vector2(self.boss.transform.pos.xy), Vector2(self.player.transform.pos.xy)), self.boss))
         if self.cooltime >= self.player.shootspeed:
-            if self.bossspawn == True:
-                self.boss_particles.add(BossSkillParticle(
-                    normal_particle_img, 3, 10, Transform(5, Vector2(self.boss.transform.pos.xy), Vector2(1, 0)), self.boss))
+            # self.boss_particles.add(SkillParticle(
+            #     normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player))
             self.cooltime = 0
 
         if self.time % 600 == 0:
@@ -118,6 +123,8 @@ class Stage1(Scene):
         for reward in self.rewards:
             if pg.sprite.collide_rect(self.player, reward):
                 reward.handle_collide(self.player)
+                self.player.money += 1
+                self.player.xp += 1
 
         for particle in self.skill_particles:
             for enemy in self.enemies:
@@ -174,35 +181,45 @@ class Stage1(Scene):
 
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 255))
-        schedule.every(0.1).seconds.do(lambda: self.boss_particles.add(BossSkillParticle(
-            normal_particle_img, 3, 10, Transform(5, Vector2(self.boss.transform.pos.xy), Vector2(self.player.transform.pos.xy)), self.boss)))
 
         # binding references
         Enemy.reward_group = self.rewards
         Boss.reward_group = self.rewards
 
         self.sound.play(-1)
+        
+    def position_set(self) -> None:
+        pos = random.randint(30, WORLD_BORDER-30)
+        direction = random.randint(1,4)
+        if direction == 1:
+            return Vector2(30, pos)
+        elif direction == 2:
+            return Vector2(WORLD_BORDER-30, pos)
+        elif direction == 3:
+            return Vector2(pos, 30)
+        else:
+            return Vector2(pos, WORLD_BORDER-30)
 
     def spawn_normal(self) -> None:
         normal_img = Surface((30, 30))
         normal_img.fill((0, 200, 0))
         pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)
         self.enemies.add(Enemy(normal_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
-            1 + min(self.difficulty * 0.02, 0.3), Vector2(50, 50), Vector2(0, 1))))
-
+            1 + min(self.difficulty * 0.02, 0.3), self.position_set(), Vector2(0, 1))))
+        
     def spawn_rare(self) -> None:
         rare_img = Surface((35, 35))
         rare_img.fill((0, 0, 200))
         pg.draw.rect(rare_img, (70, 20, 0), (0, 0, 35, 35), 3)
         self.enemies.add(Enemy(rare_img, 150 + self.difficulty, 15 + self.difficulty, Transform(
-            1.4 + min(self.difficulty * 0.02, 0.3), Vector2(50, 50), Vector2(0, 1))))
+            1.4 + min(self.difficulty * 0.02, 0.3), self.position_set(), Vector2(0, 1))))
 
     def spawn_epic(self) -> None:
         epic_img = Surface((40, 40))
         epic_img.fill((200, 0, 200))
         pg.draw.rect(epic_img, (70, 20, 0), (0, 0, 40, 40), 3)
         self.enemies.add(Enemy(epic_img, 400 + self.difficulty, 20 + self.difficulty, Transform(
-            1.8 + min(self.difficulty * 0.02, 0.3), Vector2(50, 50), Vector2(0, 1))))
+            1.8 + min(self.difficulty * 0.02, 0.3), self.position_set(), Vector2(0, 1))))
 
     def stop_scene(self) -> None:
         self.sound.stop()
