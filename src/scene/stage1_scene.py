@@ -51,7 +51,7 @@ class Stage1(Scene):
         self.cooltime = 0
         self.normal_cooltime = 600
         self.playercooltime = self.player.shootspeed
-        self.bossspawntime = 1200
+        self.bossspawntime = 12
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
