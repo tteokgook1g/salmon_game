@@ -49,7 +49,7 @@ class Stage2(Scene):
         self.tile = pg.image.load("image/Tile 4.png")
         self.sound = Sound(
             "sound/bgm/Clarx - Zig Zag [NCS Release].mp3")
-        self.sound.set_volume(0.1)
+        self.sound.set_volume(0.5)
 
         # binding references
         Enemy.reward_group = self.rewards

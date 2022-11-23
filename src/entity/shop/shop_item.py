@@ -81,15 +81,16 @@ class PowerPotion(ShopItem):
             self.player.money -= self.price
             self.player.power += self.power_plus
 
-# class SpeedPotion(ShopItem):
-#     def __init__(self, img: Surface, attackspeed_plus: float, price: int) -> None:
-#         super().__init__(img)
-#         self.speed_plus = attackspeed_plus
-#         self.price = price
+class ShootSpeedPotion(ShopItem):
+    def __init__(self, img: Surface, shootspeed_decrese: float, price: int) -> None:
+        super().__init__(img)
+        self.shootspeed_decrease = shootspeed_decrese
+        self.price = price
 
-#     def buy(self):
-#         if self.player.money >= self.price:
-#             self.player.money -= self.price
+    def buy(self):
+        if self.player.money >= self.price:
+            self.player.money -= self.price
+            self.player.shootspeed *= self.shootspeed_decrease
 
 class bomb(Entity):
     pass

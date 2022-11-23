@@ -16,6 +16,7 @@ from src.helper.update_info import UpdateInfo
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
 import schedule
+import time
 
 
 class Stage1(Scene):
@@ -43,14 +44,16 @@ class Stage1(Scene):
         self.time = 0
         self.difficulty = 0
         self.shop = Shop(player)
-        self.shootspeed = 1
         self.player.money = 100
         self.boss = boss
+        self.time = 0
+        self.cooltime = 0
+        self.playercooltime = self.player.shootspeed
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
             "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
-        self.sound.set_volume(0.1)
+        self.sound.set_volume(0.5)
 
         # binding references
         Enemy.reward_group = self.rewards
@@ -72,6 +75,13 @@ class Stage1(Scene):
             self.switch = SceneId.stage2_scene
             schedule.cancel_job(all)
         self.collide()
+        normal_particle_img = Surface((10, 10))
+        normal_particle_img.fill((255, 0, 0))
+        self.cooltime += 1
+        if self.cooltime >= self.player.shootspeed:
+            self.skill_particles.add(SkillParticle(
+            normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player))
+            self.cooltime = 0
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
@@ -135,14 +145,7 @@ class Stage1(Scene):
     def check_scene_switch(self) -> SceneId | None:
         return self.switch
 
-    def start_scene(self) -> None:
-        normal_particle_img = Surface((10, 10))
-        normal_particle_img.fill((255, 0, 0))
-        schedule.every(0.1).seconds.do(lambda: self.skill_particles.add(SkillParticle(
-            normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.player)))
-        schedule.every(0.1).seconds.do(lambda: self.skill_particles.add(BossSkillParticle(
-            normal_particle_img, 3, 10, Transform(5, Vector2(self.player.transform.pos.xy), Vector2(1, 0)), self.boss)))
-
+    def start_scene(self) -> None:        
         self.sound.play(-1)
 
         normal_img = Surface((30, 30))
@@ -155,19 +158,19 @@ class Stage1(Scene):
         rare_img.fill((0, 0, 200))
         pg.draw.rect(rare_img, (70, 20, 0), (0, 0, 35, 35), 3)
         schedule.every(10).seconds.do(lambda: self.enemies.add(Enemy(rare_img, 150 + self.difficulty, 15 + self.difficulty, Transform(
-            1.4 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1)))))
+            1.3 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1)))))
 
         epic_img = Surface((40, 40))
         epic_img.fill((200, 0, 200))
         pg.draw.rect(epic_img, (70, 20, 0), (0, 0, 40, 40), 3)
         schedule.every(20).seconds.do(lambda: self.enemies.add(Enemy(epic_img, 400 + self.difficulty, 20 + self.difficulty, Transform(
-            2 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1)))))
+            1.8 + self.difficulty * 0.02, Vector2(50, 50), Vector2(0, 1)))))
 
         boss_img = Surface((50, 50))
         boss_img.fill((200, 0, 0))
         pg.draw.rect(boss_img, (70, 20, 0), (0, 0, 50, 50), 3)
-        schedule.every(120).seconds.do(lambda: self.enemies.add(Boss(boss_img, 10000, 50, Transform(
-            3 + self.difficulty, Vector2(50, 50), Vector2(0, 1), 100))))
+        schedule.every(20).seconds.do(lambda: self.enemies.add(Boss(boss_img, 10000000, 50, Transform(
+            2.5 + self.difficulty, Vector2(50, 50), Vector2(0, 1)))))
 
     def stop_scene(self) -> None:
         self.sound.stop()

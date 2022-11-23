@@ -59,7 +59,7 @@ class Transform:
 
 class Entity(Sprite):
     """base class for entities"""
-    __slots__ = ("_health", "power", "transform", "fullhp")
+    __slots__ = ("_health", "power", "transform", "fullhp", "shootspeed")
     _health: float
     power: float
     transform: Transform
@@ -76,6 +76,7 @@ class Entity(Sprite):
         self.power = power
         self.transform = transform
         self.fullhp = health
+        self.shootspeed = 60
 
     @property
     def health(self):

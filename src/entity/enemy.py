@@ -44,8 +44,8 @@ class Enemy(Entity, PlayerCollidable):
         self.transform.velocity /= -10
 
     def kill(self) -> None:
-        super().kill()
         self.reward_group.add(Reward(1, 1, self.transform.pos.copy()))
+        super().kill()
 
 class Boss(Enemy):
     def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
