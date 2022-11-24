@@ -49,11 +49,11 @@ class Stage1(Scene):
         self.time = 0
         self.cooltime = 0
         self.playercooltime = self.player.shootspeed
-        self.bossspawntime = 3600
+        self.bossspawntime = 36
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
             "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
-        self.sound.set_volume(0.1)
+        self.sound.set_volume(0.2)
 
     def update(self, info: UpdateInfo) -> None:
         schedule.run_pending()

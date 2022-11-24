@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from math import pi
-from typing import TYPE_CHECKING, Dict, List, Sequence, Tuple
+from typing import TYPE_CHECKING, Dict, Sequence, Tuple
 
 import pygame as pg
 import schedule  # type: ignore
@@ -203,7 +203,7 @@ class GunSkill(Skill):
 
     def __init__(self, bullet_power: float):
         super().__init__(bullet_power)
-        self._speed = 10
+        self._speed = 5
 
     def _make_particle(self):
         self.particle_group.add(GunParticle(

@@ -10,4 +10,5 @@ class SceneId(Enum):
     login_scene = auto()
     stage1_scene = auto()
     stage2_scene = auto()
+    stage3_scene = auto()
     end_scene = auto()

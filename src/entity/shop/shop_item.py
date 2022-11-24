@@ -7,7 +7,6 @@ from pygame.sprite import Sprite
 from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.surface import Surface
-from src.entity.player import Skill
 from src.helper.update_info import UpdateInfo
 from src.entity.button import Button
 from src.entity.abstract_entity import Entity, Transform

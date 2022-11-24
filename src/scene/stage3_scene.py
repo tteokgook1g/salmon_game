@@ -17,7 +17,7 @@ from src.scene.scene_id import SceneId
 import schedule  # type: ignore
 
 
-class Stage2(Scene):
+class Stage3(Scene):
     """abstract class representing game stages."""
     __slots__ = ("player", "enemies", "skill_particles",
                  "camera_surface", "rewards", "boss")
@@ -47,10 +47,11 @@ class Stage2(Scene):
         self.time = 0
         self.cooltime = 0
         self.normal_cooltime = 600
-        self.bossspawntime = 36
-        self.tile = pg.image.load("image/Tile 2.png")
+        self.bossspawntime = 1200
+
+        self.tile = pg.image.load("image/Tile 3.png")
         self.sound = Sound(
-            "sound/bgm/Clarx - Zig Zag [NCS Release].mp3")
+            "sound/bgm/Diviners - Savannah (feat. Philly K) [NCS Release].mp3")
         self.sound.set_volume(0.2)
 
     def update(self, info: UpdateInfo) -> None:
@@ -68,9 +69,9 @@ class Stage2(Scene):
             self.player.health += 100
             self.switch = SceneId.end_scene
             schedule.cancel_job(all)  # type: ignore
-        if self.boss.health <= 0:
-            self.switch = SceneId.stage3_scene
-            schedule.cancel_job(all)
+        # if self.boss.health <= 0:
+        #     self.switch = SceneId.end_scene
+        #     schedule.cancel_job(all)
         self.collide()
         self.time += 1
 
@@ -167,14 +168,12 @@ class Stage2(Scene):
         return self.switch
 
     def start_scene(self) -> None:
-        for skill in self.player.skills.values():
+        for skill in self.player.skills:
             skill.bind(self.skill_particles, self.player)
         self.sound.play(-1)
 
         # binding references
-        self.camera_surface.target = self.player.transform
         Enemy.reward_group = self.rewards
-        Boss.reward_group = self.rewards
 
     def normal_spawn(self) -> None:
         """spawn enemy"""
