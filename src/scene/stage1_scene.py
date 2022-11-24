@@ -175,6 +175,7 @@ class Stage1(Scene):
         gun_skill = GunSkill(10)
         self.player.skills["gun"] = gun_skill
         gun_skill.bind(self.skill_particles, self.player)
+
         bomb_skill = BombSkill(1)
         self.player.skills["bomb"] = bomb_skill
         bomb_skill.bind(self.skill_particles, self.player)
@@ -182,6 +183,7 @@ class Stage1(Scene):
         self.player.skills["lightning"] = lightning_skill
         lightning_skill.bind(self.skill_particles, self.player)
 
+        self.player.skill_particles = self.skill_particles
         Enemy.reward_group = self.rewards
         Boss.reward_group = self.rewards
 

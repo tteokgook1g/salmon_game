@@ -225,7 +225,7 @@ class GunSkill(Skill):
 
 
 class BombSkill(Skill):
-    __slots__ = ("power",  "cooltime")
+    __slots__ = ("power", "cooltime")
     skill_key = pg.K_e
 
     def __init__(self, bomb_power: float):
@@ -284,6 +284,12 @@ class Player(Entity):
         self.skills: Dict[str, Skill] = info[3]
         self.hpbar = HealthBar(self)
         self.shootspeed: float = 60
+        self.skill_particles: Group[SkillParticle]  # ref
+
+    def bind(self, skill_particles: Group[SkillParticle]):
+        self.skill_particles = skill_particles
+        for skill in self.skills.values():
+            skill.bind(self.skill_particles, self)
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)

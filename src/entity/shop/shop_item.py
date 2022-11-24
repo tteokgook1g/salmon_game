@@ -1,16 +1,22 @@
 """defines classes related to player"""
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
+
 import pygame as pg
-from pygame.sprite import Sprite
 from pygame.math import Vector2
-from pygame.rect import Rect
+from pygame.sprite import Sprite
 from pygame.surface import Surface
-from src.helper.update_info import UpdateInfo
-from src.entity.button import Button
+
 from src.entity.abstract_entity import Entity, Transform
+from src.entity.button import Button
+from src.entity.player import GunSkill
+from src.helper.update_info import UpdateInfo
+
 if TYPE_CHECKING:
+    from pygame.rect import Rect
+
     from src.entity.player import Player
 
 
@@ -26,17 +32,19 @@ class ShopItem(Sprite, ABC):
         self.button = Button(self.button_img, 1, 0, self.transform, self.buy)
 
         img_rect = img.get_rect()
-        button_rect = self.button.rect.copy()
+        button_rect = self.button.rect
         padding = 20
 
         temp = Surface((max(img_rect.w, button_rect.w+2*padding),
                        img_rect.h+button_rect.h+3*padding), pg.SRCALPHA)
         temp.fill((255, 255, 255, 200))
         temp_rect = temp.get_rect()
+        self.button.click_rect.w, self.button.click_rect.h = temp_rect.w, temp_rect.h
 
         img_rect.center = temp_rect.centerx, temp_rect.top+2*padding
         temp.blit(img, img_rect)
-        button_rect.midtop = img_rect.centerx, img_rect.bottom+padding
+
+        button_rect.midtop = temp_rect.centerx+padding, img_rect.bottom+padding
         temp.blit(self.button.image, button_rect)
 
         self.image = temp
@@ -83,11 +91,23 @@ class GunPowerUpgrade(ShopItem):
         super().__init__(img)
         self.power_plus = power_plus
         self.price = price
+        self.gun: GunSkill | None = None
 
     def buy(self):
+        try:
+            self.gun = self.player.skills["gun"]  # type: ignore
+        except KeyError:
+            pass
+
         if self.player.money >= self.price:
             self.player.money -= self.price
-            # self.gun.power += self.power_plus
+            if self.gun is None:
+                gun_skill = GunSkill(10)
+                self.player.skills["gun"] = gun_skill
+                gun_skill.bind(self.player.skill_particles, self.player)
+                self.gun = gun_skill
+            else:
+                self.gun.power += self.power_plus
 
 
 class ShootSpeedPotion(ShopItem):
