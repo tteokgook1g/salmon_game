@@ -18,7 +18,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 player_img = pygame.image.load("image/Salmon 1 big.png")
 player = Player(player_img, 100, 10, Transform(
-    3, Vector2(WORLD_BORDER/2, WORLD_BORDER/2), Vector2(0, 0),), (0, 0, 0, []))
+    3, Vector2(WORLD_BORDER/2, WORLD_BORDER/2), Vector2(0, 0),), (0, 0, 0, {}))
 boss_img = pygame.image.load("image/Boss.png")
 boss1 = Boss(boss_img, 100000, 20, Transform(
     2.5, Vector2(50, 50), Vector2(0, 0)))

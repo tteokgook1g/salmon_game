@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from math import pi
-from typing import TYPE_CHECKING, List, Sequence, Tuple
+from typing import TYPE_CHECKING, Dict, List, Sequence, Tuple
 
 import pygame as pg
 import schedule  # type: ignore
@@ -181,7 +181,10 @@ class LightningParticle(SkillParticle):
 
 class Skill(ABC):
     """base class for skill"""
-    __slots__ = ("particle_group", "player")
+    __slots__ = ("particle_group", "player", "power")
+
+    def __init__(self, power: float):
+        self.power = power
 
     @abstractmethod
     def update(self, info: UpdateInfo) -> None:
@@ -199,8 +202,7 @@ class GunSkill(Skill):
     bullet_img = pg.transform.scale(bullet_img, (15, 15))
 
     def __init__(self, bullet_power: float):
-        super().__init__()
-        self.power = bullet_power
+        super().__init__(bullet_power)
         self._speed = 10
 
     def _make_particle(self):
@@ -226,9 +228,8 @@ class BombSkill(Skill):
     __slots__ = ("power",  "cooltime")
     skill_key = pg.K_e
 
-    def __init__(self, bullet_power: float):
-        super().__init__()
-        self.power = bullet_power
+    def __init__(self, bomb_power: float):
+        super().__init__(bomb_power)
         self.cooltime: int = 0
 
     def _make_particle(self):
@@ -251,9 +252,8 @@ class LightningSkill(Skill):
     lightning_img = pg.image.load("image/lightning.png")
     skill_key = pg.K_SPACE
 
-    def __init__(self, bullet_power: float):
-        super().__init__()
-        self.power = bullet_power
+    def __init__(self, lightning_power: float):
+        super().__init__(lightning_power)
         self.cooltime: int = 0
 
     def _make_particle(self):
@@ -275,20 +275,20 @@ class Player(Entity):
     """class for player"""
     __slots__ = ("xp", "level", "money", "skills")
 
-    def __init__(self, img: Surface, health: float, power: float, transform: Transform, info: Tuple[int, int, int, List[Skill]]) -> None:
+    def __init__(self, img: Surface, health: float, power: float, transform: Transform, info: Tuple[int, int, int, Dict[str, Skill]]) -> None:
         """info[0] is xp, info[1] is level, info[2] is money"""
         super().__init__(img, health, power, transform)
         self.xp: int = info[0]
         self.level: int = info[1]
         self.money: int = info[2]
-        self.skills: List[Skill] = info[3]
+        self.skills: Dict[str, Skill] = info[3]
         self.hpbar = HealthBar(self)
         self.shootspeed: float = 60
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
         self.handle_key_input(info.key_pressed)
-        for skill in self.skills:
+        for skill in self.skills.values():
             skill.update(info)
         self.hpbar.update()
 

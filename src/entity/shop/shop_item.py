@@ -7,6 +7,7 @@ from pygame.sprite import Sprite
 from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.surface import Surface
+from src.entity.player import Skill
 from src.helper.update_info import UpdateInfo
 from src.entity.button import Button
 from src.entity.abstract_entity import Entity, Transform
@@ -18,26 +19,32 @@ class ShopItem(Sprite, ABC):
     button_img: Surface = pg.image.load("image/buy_button.png")
     player: Player
     rect: Rect
+    image: Surface
 
     def __init__(self, img: Surface):
         super().__init__()
         self.transform = Transform(0, Vector2(0, 0), Vector2(0, 0))
         self.button = Button(self.button_img, 1, 0, self.transform, self.buy)
 
-        temp = Surface((60, 60), pg.SRCALPHA)
-        temp.fill((255, 255, 255, 255))
-
         img_rect = img.get_rect()
-        temp.blit(img, img_rect)
         button_rect = self.button.rect.copy()
-        button_rect.midtop = img_rect.centerx, img_rect.bottom+10
+        padding = 20
+
+        temp = Surface((max(img_rect.w, button_rect.w+2*padding),
+                       img_rect.h+button_rect.h+3*padding), pg.SRCALPHA)
+        temp.fill((255, 255, 255, 200))
+        temp_rect = temp.get_rect()
+
+        img_rect.center = temp_rect.centerx, temp_rect.top+2*padding
+        temp.blit(img, img_rect)
+        button_rect.midtop = img_rect.centerx, img_rect.bottom+padding
         temp.blit(self.button.image, button_rect)
 
-        self.img = temp
-        self.rect = self.img.get_rect()
+        self.image = temp
+        self.rect = self.image.get_rect()
 
     def draw(self, screen: Surface):
-        screen.blit(self.img, self.rect)
+        screen.blit(self.image, self.rect)
 
     def update(self, info: UpdateInfo):  # type: ignore
         self.rect.center = int(self.transform.pos.x), int(self.transform.pos.y)
@@ -72,7 +79,7 @@ class SpeedPotion(ShopItem):
             self.player.transform.velocity *= self.speed_plus
 
 
-class PowerPotion(ShopItem):
+class GunPowerUpgrade(ShopItem):
     def __init__(self, img: Surface, power_plus: float, price: int) -> None:
         super().__init__(img)
         self.power_plus = power_plus
@@ -81,7 +88,7 @@ class PowerPotion(ShopItem):
     def buy(self):
         if self.player.money >= self.price:
             self.player.money -= self.price
-            self.player.power += self.power_plus
+            # self.gun.power += self.power_plus
 
 
 class ShootSpeedPotion(ShopItem):
@@ -94,6 +101,7 @@ class ShootSpeedPotion(ShopItem):
         if self.player.money >= self.price:
             self.player.money -= self.price
             self.player.shootspeed *= self.shootspeed_decrease
+
 
 class MaxHealthPotion(ShopItem):
     def __init__(self, img: Surface, max_health_plus: float, price: int) -> None:

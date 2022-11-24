@@ -173,14 +173,15 @@ class Stage1(Scene):
 
         # binding references
         gun_skill = GunSkill(10)
-        self.player.skills.append(gun_skill)
+        self.player.skills["gun"] = gun_skill
         gun_skill.bind(self.skill_particles, self.player)
         bomb_skill = BombSkill(1)
-        self.player.skills.append(bomb_skill)
+        self.player.skills["bomb"] = bomb_skill
         bomb_skill.bind(self.skill_particles, self.player)
         lightning_skill = LightningSkill(10)
-        self.player.skills.append(lightning_skill)
+        self.player.skills["lightning"] = lightning_skill
         lightning_skill.bind(self.skill_particles, self.player)
+
         Enemy.reward_group = self.rewards
         Boss.reward_group = self.rewards
 
