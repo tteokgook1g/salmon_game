@@ -60,7 +60,7 @@ class GunParticle(SkillParticle):
 
 
 class BombParticle(SkillParticle):
-    distance = 75
+    distance = 200
 
     def __init__(self, img: Surface,  power: float, velocity: float, player: Player) -> None:
         transform = Transform(
@@ -168,9 +168,9 @@ class Skill(ABC):
 
 
 class GunSkill(Skill):
-    __slots__ = ("power", "_speed", "job")
-    bullet_img = Surface((10, 10))
-    bullet_img.fill((255, 0, 0))
+    __slots__ = ("power", "_speed", "job", "bullet_sound")
+    bullet_img = pg.image.load("image/salmon_egg.png")
+    bullet_img = pg.transform.scale(bullet_img, (15, 15))
 
     def __init__(self, bullet_power: float):
         super().__init__()
@@ -179,7 +179,7 @@ class GunSkill(Skill):
 
     def _make_particle(self):
         self.particle_group.add(GunParticle(
-            self.bullet_img, self.power, 5, self.player
+            self.bullet_img, self.power, 10, self.player
         ))
 
     def bind(self, particle_group: Group[SkillParticle], player: Player):
