@@ -1,20 +1,20 @@
 import pygame as pg
+import schedule  # type: ignore
 from pygame.math import Vector2
+from pygame.mixer import Sound
 from pygame.rect import Rect
 from pygame.surface import Surface
-from pygame.mixer import Sound
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
-from src.entity.shop.shop import Shop
 from src.entity.abstract_entity import Reward, Transform
-from src.entity.enemy import Enemy, Boss, BossSkillParticle
+from src.entity.enemy import Boss, BossSkillParticle, Enemy
 from src.entity.player import Player, SkillParticle
+from src.entity.shop.shop import Shop
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
-import schedule  # type: ignore
 
 
 class Stage2(Scene):
@@ -46,8 +46,8 @@ class Stage2(Scene):
         self.bossspawn = False
         self.time = 0
         self.cooltime = 0
-        self.normal_cooltime = 600
         self.bossspawntime = 36
+
         self.tile = pg.image.load("image/Tile 2.png")
         self.sound = Sound(
             "sound/bgm/Clarx - Zig Zag [NCS Release].mp3")
@@ -70,7 +70,7 @@ class Stage2(Scene):
             schedule.cancel_job(all)  # type: ignore
         if self.boss.health <= 0:
             self.switch = SceneId.stage3_scene
-            schedule.cancel_job(all)
+            schedule.cancel_job(all)  # type: ignore
         self.collide()
         self.time += 1
 
