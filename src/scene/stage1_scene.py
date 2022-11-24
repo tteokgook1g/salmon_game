@@ -78,6 +78,7 @@ class Stage1(Scene):
             schedule.cancel_job(all)  # type: ignore
         self.collide()
         self.time += 1
+        print(self.boss.health)
 
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 0))
