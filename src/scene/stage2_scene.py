@@ -48,7 +48,7 @@ class Stage2(Scene):
         self.boss = boss
         self.bossspawn = False
         self.time = 0
-        self.bossspawntime = 12240
+        self.bossspawntime = 3600
         self.tile = pg.image.load("image/Tile 2.png")
         self.sound = Sound(
             "sound/bgm/Diviners - Savannah (feat. Philly K) [NCS Release].mp3")

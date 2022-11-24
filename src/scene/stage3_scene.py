@@ -48,7 +48,7 @@ class Stage3(Scene):
         self.boss = boss
         self.bossspawn = False
         self.time = 0
-        self.bossspawntime = 16380
+        self.bossspawntime = 3600
         self.tile = pg.image.load("image/Tile 3.png")
         self.sound = Sound(
             "sound/bgm/DEAF KEV - Invincible [NCS Release].mp3")
