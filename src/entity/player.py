@@ -172,7 +172,8 @@ class Skill(ABC):
 class GunSkill(Skill):
     __slots__ = ("power", "_speed", "job")
     bullet_img = pg.image.load("image/salmon_egg.png")
-
+    bullet_img = pg.transform.scale(bullet_img, (15, 15))
+    
     def __init__(self, bullet_power: float):
         super().__init__()
         self.power = bullet_power
