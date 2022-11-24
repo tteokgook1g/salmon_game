@@ -23,7 +23,7 @@ player = Player(player_img, 100, 10, Transform(
 boss_img = pygame.image.load("image/Boss 1.png")
 boss_img = pygame.transform.scale(boss_img, (100, 100))
 boss1 = Boss(boss_img, 50000, 10, Transform(
-    2.5, Vector2(50, 50), Vector2(0, 0)))
+    5, Vector2(50, 50), Vector2(0, 0)))
 boss2 = Boss(boss_img, 250000, 12.5, Transform(
     3.0, Vector2(50, 50), Vector2(0, 0)))
 boss3 = Boss(boss_img, 1000000, 20, Transform(
