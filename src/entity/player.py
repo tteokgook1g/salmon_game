@@ -201,7 +201,7 @@ class GunSkill(Skill):
     def __init__(self, bullet_power: float):
         super().__init__()
         self.power = bullet_power
-        self._speed = 10
+        self._speed = 5
 
     def _make_particle(self):
         self.particle_group.add(GunParticle(
