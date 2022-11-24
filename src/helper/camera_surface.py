@@ -5,6 +5,7 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.helper.functions import lerp
 from src.entity.abstract_entity import Transform
 
 
@@ -14,11 +15,9 @@ class CameraSurface(Surface):
         super().__init__(size=size, flags=flags | pygame.SRCALPHA)
         self.target = camera  # ref
         self.pos = camera.pos.copy()
-        self.ratio = 0.1
 
     def update(self):
-        self.pos = (self.pos*(1-self.ratio)+self.target.pos*self.ratio)
-        print(self.pos, self.target.pos)
+        self.pos = lerp(self.pos, self.target.pos, 0.03)
 
     def blit(self, source: Surface, dest: Rect) -> None:  # type: ignore
         dst = dest.copy()

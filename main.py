@@ -16,7 +16,7 @@ from src.scene.end_scene import EndScene
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-player_img = pygame.image.load("image/Salmon 1.png")
+player_img = pygame.image.load("image/Salmon 1 big.png")
 player = Player(player_img, 100, 10, Transform(
     3, Vector2(WORLD_BORDER/2, WORLD_BORDER/2), Vector2(0, 0),), (0, 0, 0, []))
 boss_img = pygame.image.load("image/Boss.png")

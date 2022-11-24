@@ -1,21 +1,23 @@
+import random
+
 import pygame as pg
+import schedule  # type: ignore
 from pygame.math import Vector2
+from pygame.mixer import Sound
 from pygame.rect import Rect
 from pygame.surface import Surface
-from pygame.mixer import Sound
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
-from src.entity.shop.shop import Shop
 from src.entity.abstract_entity import Reward, Transform
-from src.entity.enemy import Enemy, Boss, BossSkillParticle
-from src.entity.player import BombSkill, GunSkill, LightningSkill, Player, SkillParticle
+from src.entity.enemy import Boss, BossSkillParticle, Enemy
+from src.entity.player import (BombSkill, GunSkill, LightningSkill, Player,
+                               SkillParticle)
+from src.entity.shop.shop import Shop
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
-import schedule
-import random
 
 
 class Stage1(Scene):
@@ -70,10 +72,10 @@ class Stage1(Scene):
         if self.player.health <= 0:
             self.player.health += 100
             self.switch = SceneId.end_scene
-            schedule.cancel_job(all)
+            schedule.cancel_job(all)  # type: ignore
         if self.boss.health <= 0:
             self.switch = SceneId.stage2_scene
-            schedule.cancel_job(all)
+            schedule.cancel_job(all)  # type: ignore
         self.collide()
         self.time += 1
 

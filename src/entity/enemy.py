@@ -7,7 +7,7 @@ from src.entity.health_bar import HealthBar
 import pygame as pg
 from abc import ABC, abstractmethod
 from constants import *
-import schedule
+import schedule  # type: ignore
 
 if TYPE_CHECKING:
     from pygame.surface import Surface
@@ -44,9 +44,9 @@ class Enemy(Entity, PlayerCollidable):
         self.transform.move()
         self.transform.velocity /= -10
 
-    def kill(self) -> None:
-        super().kill()
+    def kill(self):
         self.reward_group.add(Reward(1, 1, self.transform.pos.copy()))
+        return super().kill()
 
 
 class Boss(Enemy):
@@ -77,9 +77,6 @@ class Boss(Enemy):
         self.transform.move()
         self.transform.velocity /= -10
 
-    def kill(self) -> None:
-        super().kill()
-
 
 class BossSkill(ABC):
     """base class for skill"""
@@ -99,11 +96,7 @@ class BossSkillParticle(Entity, PlayerCollidable):
         self.transform.pos = pg.Vector2(boss.transform.pos.xy)
         self.transform.direction = pg.Vector2(
             pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
-        schedule.every(10).seconds.do(self._kill)
-
-    def _kill(self):
-        super().kill()
-        return schedule.CancelJob
+        schedule.every(10).seconds.do(self.kill)  # type: ignore
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)

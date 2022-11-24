@@ -14,7 +14,7 @@ from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
-import schedule
+import schedule  # type: ignore
 
 
 class Stage2(Scene):
@@ -68,7 +68,7 @@ class Stage2(Scene):
         if self.player.health <= 0:
             self.player.health += 100
             self.switch = SceneId.end_scene
-            schedule.cancel_job(all)
+            schedule.cancel_job(all)  # type: ignore
         # if self.boss.health <= 0:
         #     self.switch = SceneId.end_scene
         #     schedule.cancel_job(all)

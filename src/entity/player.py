@@ -1,19 +1,20 @@
 """defines classes related to player"""
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
+from math import pi
 from typing import TYPE_CHECKING, List, Sequence, Tuple
 
 import pygame as pg
-from pygame.surface import Surface
+import schedule  # type: ignore
 from pygame.math import Vector2
 from pygame.rect import Rect
-from constants import WORLD_RECT, SCREEN_WIDTH, SCREEN_HEIGHT
-import schedule  # type: ignore
-from math import pi
+from pygame.surface import Surface
 
-
-from src.entity.health_bar import HealthBar
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_RECT
 from src.entity.abstract_entity import Entity, Transform
+from src.entity.health_bar import HealthBar
+from src.helper.functions import convert_color, lerp, vector_to_tuple
 
 if TYPE_CHECKING:
     from entity.enemy import Enemy
@@ -24,18 +25,20 @@ if TYPE_CHECKING:
 class SkillParticle(Entity, ABC):
     def __init__(self, img: Surface, power: float, transform: Transform) -> None:
         super().__init__(img, 1, power, transform)
-        schedule.every(10).seconds.do(self._kill)  # type: ignore
-
-    def _kill(self):
-        super().kill()
-        return schedule.CancelJob
+        schedule.every(10).seconds.do(self.kill)  # type: ignore
 
     def check_collide(self, enemy: Enemy) -> bool:
         return pg.sprite.collide_rect(self, enemy)
 
-    @abstractmethod
     def handle_collide(self, enemy: Enemy):
         """handle collision with enemy"""
+        enemy.image = convert_color(
+            enemy.original_img, lambda x: x.lerp((255, 0, 0, 128), 0.5))
+
+        def temp():
+            enemy.image = enemy.original_img.copy()
+            return schedule.CancelJob
+        schedule.every(0.2).seconds.do(temp)  # type: ignore
 
 
 class GunParticle(SkillParticle):
@@ -55,14 +58,20 @@ class GunParticle(SkillParticle):
         return True
 
     def handle_collide(self, enemy: Enemy):
+        super().handle_collide(enemy)
         enemy.health -= self.power
         self.kill()
 
 
 class BombParticle(SkillParticle):
     distance = 200
+    max_radius = 64
+    activation_time = 0.25
+    explosion_time = 0.4
+    bomb_img = pg.image.load("image/bomb.png")
+    explosion_img = pg.image.load("image/explode.png")
 
-    def __init__(self, img: Surface,  power: float, velocity: float, player: Player) -> None:
+    def __init__(self,  power: float, velocity: float, player: Player) -> None:
         transform = Transform(
             self.distance, pg.Vector2(player.transform.pos.xy), pg.Vector2(
                 pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
@@ -70,28 +79,48 @@ class BombParticle(SkillParticle):
         transform.move()
         transform.velocity = velocity
 
-        super().__init__(img, power, transform)
+        self.active = False
+        super().__init__(self.bomb_img, power, transform)
         self.player = player
-        schedule.every(0.5).seconds.do(self._kill)  # type: ignore
+        self.view_radius: float = 0
 
-    def _kill(self):
-        super().kill()
-        return schedule.CancelJob
+        def set_active():
+            self.active = True
+            self.view_radius = self.max_radius/16
+            return schedule.CancelJob
+        schedule.every(self.activation_time).seconds.do(  # type: ignore
+            set_active)
+        schedule.every(self.activation_time +  # type: ignore
+                       self.explosion_time).seconds.do(self.kill)
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
-        if not WORLD_RECT.collidepoint(self.transform.pos.x, self.transform.pos.y):
+        if self.active:
+            # self.view_radius += self.max_radius * \
+            # (15/16)/(self.explosion_time*60)
+            self.view_radius = lerp(self.view_radius, self.max_radius, 0.12)
+            self.image = pg.transform.scale(
+                self.explosion_img, (self.view_radius*2, self.view_radius*2))
+            self.rect = self.image.get_rect()
+            self.rect.center = vector_to_tuple(self.transform.pos)
+        if not WORLD_RECT.collidepoint(vector_to_tuple(self.transform.pos)):
             self.kill()
+
+    def check_collide(self, enemy: Enemy) -> bool:
+        if not self.active:
+            return False
+        return super().check_collide(enemy)
 
     def isinbox(self):
         return True
 
     def handle_collide(self, enemy: Enemy):
+        super().handle_collide(enemy)
         enemy.health -= self.power
 
 
 class LightningParticle(SkillParticle):
-    length_range = 100
+    length_range = 200
     angle_range = 40  # -angle_range to +angle_range
     lifetime = 0.5
 
@@ -110,7 +139,7 @@ class LightningParticle(SkillParticle):
 
         super().__init__(lightning_img, power, self.transform)
         self.player = player
-        schedule.every(self.lifetime).seconds.do(self._kill)  # type: ignore
+        schedule.every(self.lifetime).seconds.do(self.kill)  # type: ignore
 
     def get_arc(self):
         lightning_img = Surface(
@@ -127,12 +156,8 @@ class LightningParticle(SkillParticle):
 
         return lightning_img, rect  # type: ignore
 
-    def _kill(self):
-        super().kill()
-        return schedule.CancelJob
-
     def update(self, info: UpdateInfo) -> None:
-        self.view_radius += self.length_range*9//10/(self.lifetime*60)
+        self.view_radius = lerp(self.view_radius, self.length_range, 0.1)
         self.image, self.rect = self.get_arc()
         super().update(info)
         if not WORLD_RECT.collidepoint(self.transform.pos.x, self.transform.pos.y):
@@ -144,12 +169,13 @@ class LightningParticle(SkillParticle):
     def check_collide(self, enemy: Enemy) -> bool:
         displacement = enemy.transform.pos-self.transform.pos
         angle = displacement.angle_to(self.transform.direction) % 360
-        if displacement.length() <= self.length_range \
+        if displacement.length() <= self.view_radius\
                 and (0 <= angle <= self.angle_range or 360-self.angle_range <= angle < 360):
             return True
         return False
 
     def handle_collide(self, enemy: Enemy):
+        super().handle_collide(enemy)
         enemy.health -= self.power
 
 
@@ -198,7 +224,6 @@ class GunSkill(Skill):
 
 class BombSkill(Skill):
     __slots__ = ("power",  "cooltime")
-    bomb_img = pg.image.load("image/bomb.png")
     skill_key = pg.K_e
 
     def __init__(self, bullet_power: float):
@@ -208,7 +233,7 @@ class BombSkill(Skill):
 
     def _make_particle(self):
         self.particle_group.add(BombParticle(
-            self.bomb_img,  self.power, 0, self.player
+            self.power, 0, self.player
         ))
 
     def bind(self, particle_group: Group[SkillParticle], player: Player):
@@ -224,7 +249,7 @@ class BombSkill(Skill):
 class LightningSkill(Skill):
     __slots__ = ("power", "cooltime")
     lightning_img = pg.image.load("image/lightning.png")
-    skill_key = pg.K_f
+    skill_key = pg.K_SPACE
 
     def __init__(self, bullet_power: float):
         super().__init__()
