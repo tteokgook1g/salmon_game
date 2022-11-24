@@ -7,7 +7,6 @@ import pygame as pg
 from pygame.surface import Surface
 from pygame.math import Vector2
 from pygame.rect import Rect
-from sympy import li
 from constants import WORLD_RECT, SCREEN_WIDTH, SCREEN_HEIGHT
 import schedule  # type: ignore
 from math import pi
@@ -134,7 +133,6 @@ class LightningParticle(SkillParticle):
 
     def update(self, info: UpdateInfo) -> None:
         self.view_radius += self.length_range*9//10/(self.lifetime*60)
-        print(self.view_radius)
         self.image, self.rect = self.get_arc()
         super().update(info)
         if not WORLD_RECT.collidepoint(self.transform.pos.x, self.transform.pos.y):
@@ -199,13 +197,14 @@ class GunSkill(Skill):
 
 
 class BombSkill(Skill):
-    __slots__ = ("power", "_speed", "job")
+    __slots__ = ("power",  "cooltime")
     bomb_img = pg.image.load("image/bomb.png")
+    skill_key = pg.K_e
 
     def __init__(self, bullet_power: float):
         super().__init__()
         self.power = bullet_power
-        self._speed = 10
+        self.cooltime: int = 0
 
     def _make_particle(self):
         self.particle_group.add(BombParticle(
@@ -214,26 +213,23 @@ class BombSkill(Skill):
 
     def bind(self, particle_group: Group[SkillParticle], player: Player):
         super().bind(particle_group, player)
-        self._speed = self.player.shootspeed
-        self.job = schedule.every(
-            self.player.shootspeed/60).seconds.do(self._make_particle)  # type: ignore
 
     def update(self, info: UpdateInfo) -> None:
-        if self._speed != self.player.shootspeed:
-            self._speed = self.player.shootspeed
-            schedule.cancel_job(self.job)
-            self.job = schedule.every(
-                self.player.shootspeed/60).seconds.do(self._make_particle)  # type: ignore
+        self.cooltime -= 1
+        if self.cooltime <= 0 and info.key_pressed[self.skill_key]:
+            self._make_particle()
+            self.cooltime = int(self.player.shootspeed)
 
 
 class LightningSkill(Skill):
-    __slots__ = ("power", "_speed", "job")
+    __slots__ = ("power", "cooltime")
     lightning_img = pg.image.load("image/lightning.png")
+    skill_key = pg.K_f
 
     def __init__(self, bullet_power: float):
         super().__init__()
         self.power = bullet_power
-        self._speed = 10
+        self.cooltime: int = 0
 
     def _make_particle(self):
         self.particle_group.add(LightningParticle(
@@ -242,16 +238,12 @@ class LightningSkill(Skill):
 
     def bind(self, particle_group: Group[SkillParticle], player: Player):
         super().bind(particle_group, player)
-        self._speed = self.player.shootspeed
-        self.job = schedule.every(
-            self.player.shootspeed/60).seconds.do(self._make_particle)  # type: ignore
 
     def update(self, info: UpdateInfo) -> None:
-        if self._speed != self.player.shootspeed:
-            self._speed = self.player.shootspeed
-            schedule.cancel_job(self.job)
-            self.job = schedule.every(
-                self.player.shootspeed/60).seconds.do(self._make_particle)  # type: ignore
+        self.cooltime -= 1
+        if self.cooltime <= 0 and info.key_pressed[self.skill_key]:
+            self._make_particle()
+            self.cooltime = int(self.player.shootspeed)
 
 
 class Player(Entity):
