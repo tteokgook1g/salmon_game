@@ -88,8 +88,7 @@ class Stage1(Scene):
         if self.time % 30 == 0:
             self.spawn_normal()
         if self.time == self.bossspawntime:
-            self.boss.transform.pos = Vector2([100, 100])
-
+            self.boss.transform.pos = self.position_set()
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
 
@@ -183,18 +182,18 @@ class Stage1(Scene):
         Boss.reward_group = self.rewards
 
         self.sound.play(-1)
-
-    def position_set(self):
-        pos = random.randint(30, WORLD_BORDER-30)
-        direction = random.randint(1, 4)
+        
+    def position_set(self) -> None:
+        pos = random.randint(50, WORLD_BORDER-50)
+        direction = random.randint(1,4)
         if direction == 1:
-            return Vector2(30, pos)
+            return Vector2(50, pos)
         elif direction == 2:
-            return Vector2(WORLD_BORDER-30, pos)
+            return Vector2(WORLD_BORDER-50, pos)
         elif direction == 3:
-            return Vector2(pos, 30)
+            return Vector2(pos, 50)
         else:
-            return Vector2(pos, WORLD_BORDER-30)
+            return Vector2(pos, WORLD_BORDER-50)
 
     def spawn_normal(self) -> None:
         normal_img = Surface((30, 30))
