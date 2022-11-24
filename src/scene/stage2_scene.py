@@ -143,8 +143,8 @@ class Stage2(Scene):
 
     def _draw_background(self, camera_surface: CameraSurface):
         rect = Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        rect.center = int(camera_surface.camera.pos.x), int(
-            camera_surface.camera.pos.y)
+        rect.center = int(camera_surface.pos.x), int(
+            camera_surface.pos.y)
         topleft = max(rect.left, 0), max(rect.top, 0)
         rightbottom = (min(rect.right, WORLD_BORDER),
                        min(rect.bottom, WORLD_BORDER))
