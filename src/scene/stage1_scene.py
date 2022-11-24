@@ -57,6 +57,7 @@ class Stage1(Scene):
         schedule.run_pending()
         info.player = self.player
         self.player.update(info)
+        self.camera_surface.update()
         self.boss.update(info)
         for enemy in self.enemies:
             enemy.update(info)
@@ -139,8 +140,8 @@ class Stage1(Scene):
 
     def _draw_background(self, camera_surface: CameraSurface):
         rect = Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        rect.center = int(camera_surface.camera.pos.x), int(
-            camera_surface.camera.pos.y)
+        rect.center = int(camera_surface.pos.x), int(
+            camera_surface.pos.y)
         topleft = max(rect.left, 0), max(rect.top, 0)
         rightbottom = (min(rect.right, WORLD_BORDER),
                        min(rect.bottom, WORLD_BORDER))
@@ -200,7 +201,7 @@ class Stage1(Scene):
         pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)
         self.enemies.add(Enemy(normal_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
             1 + min(self.difficulty * 0.02, 0.3), self.position_set(), Vector2(0, 1))))
-        
+
     def spawn_rare(self) -> None:
         rare_img = Surface((35, 35))
         rare_img.fill((0, 0, 200))
