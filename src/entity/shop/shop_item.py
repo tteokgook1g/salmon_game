@@ -11,7 +11,7 @@ from pygame.surface import Surface
 
 from src.entity.abstract_entity import Entity, Transform
 from src.entity.button import Button
-from src.entity.player import GunSkill
+from src.entity.player import BombSkill, GunSkill, LightningSkill
 from src.helper.update_info import UpdateInfo
 
 if TYPE_CHECKING:
@@ -134,8 +134,52 @@ class MaxHealthPotion(ShopItem):
             self.player.fullhp += self.max_health_plus
 
 
-class bomb(Entity):
-    pass
+class BombItem(ShopItem):
+    def __init__(self, img: Surface, power_plus: float, price: int) -> None:
+        super().__init__(img)
+        self.power_plus = power_plus
+        self.price = price
+        self.bomb: BombSkill | None = None
+
+    def buy(self):
+        try:
+            self.bomb = self.player.skills["bomb"]  # type: ignore
+        except KeyError:
+            pass
+
+        if self.player.money >= self.price:
+            self.player.money -= self.price
+            if self.bomb is None:
+                bomb_skill = BombSkill(2)
+                self.player.skills["bomb"] = bomb_skill
+                bomb_skill.bind(self.player.skill_particles, self.player)
+                self.bomb = bomb_skill
+            else:
+                self.bomb.power += self.power_plus
+
+
+class LightningItem(ShopItem):
+    def __init__(self, img: Surface, power_plus: float, price: int) -> None:
+        super().__init__(img)
+        self.power_plus = power_plus
+        self.price = price
+        self.lightning: LightningSkill | None = None
+
+    def buy(self):
+        try:
+            self.lightning = self.player.skills["lightning"]  # type: ignore
+        except KeyError:
+            pass
+
+        if self.player.money >= self.price:
+            self.player.money -= self.price
+            if self.lightning is None:
+                lightning_skill = LightningSkill(5)
+                self.player.skills["lightning"] = lightning_skill
+                lightning_skill.bind(self.player.skill_particles, self.player)
+                self.lightning = lightning_skill
+            else:
+                self.lightning.power += self.power_plus
 
 
 class lightning(Entity):
