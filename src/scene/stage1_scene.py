@@ -10,8 +10,7 @@ from pygame.surface import Surface
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.abstract_entity import Reward, Transform
 from src.entity.enemy import Boss, BossSkillParticle, Enemy
-from src.entity.player import (BombSkill, GunSkill, LightningSkill, Player,
-                               SkillParticle)
+from src.entity.player import GunSkill, Player, SkillParticle
 from src.entity.shop.shop import Shop
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
@@ -174,14 +173,17 @@ class Stage1(Scene):
 
         # binding references
         gun_skill = GunSkill(10)
-        self.player.skills.append(gun_skill)
+        self.player.skills["gun"] = gun_skill
         gun_skill.bind(self.skill_particles, self.player)
-        bomb_skill = BombSkill(1)
-        self.player.skills.append(bomb_skill)
-        bomb_skill.bind(self.skill_particles, self.player)
-        lightning_skill = LightningSkill(10)
-        self.player.skills.append(lightning_skill)
-        lightning_skill.bind(self.skill_particles, self.player)
+
+        # bomb_skill = BombSkill(1)
+        # self.player.skills["bomb"] = bomb_skill
+        # bomb_skill.bind(self.skill_particles, self.player)
+        # lightning_skill = LightningSkill(10)
+        # self.player.skills["lightning"] = lightning_skill
+        # lightning_skill.bind(self.skill_particles, self.player)
+
+        self.player.skill_particles = self.skill_particles
         Enemy.reward_group = self.rewards
         Boss.reward_group = self.rewards
 
