@@ -14,7 +14,7 @@ class CameraSurface(Surface):
         super().__init__(size=size, flags=flags | pygame.SRCALPHA)
         self.target = camera  # ref
         self.pos = camera.pos.copy()
-        self.ratio = 0.5
+        self.ratio = 0.1
 
     def update(self):
         self.pos = (self.pos*(1-self.ratio)+self.target.pos*self.ratio)
