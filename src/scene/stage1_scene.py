@@ -47,7 +47,7 @@ class Stage1(Scene):
         self.time = 0
         self.cooltime = 0
         self.playercooltime = self.player.shootspeed
-        self.bossspawntime = 10000
+        self.bossspawntime = 3600
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
             "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")

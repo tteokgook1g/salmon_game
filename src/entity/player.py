@@ -7,6 +7,7 @@ import pygame as pg
 from pygame.surface import Surface
 from pygame.math import Vector2
 from pygame.rect import Rect
+from pygame.mixer import Sound as Sound
 from sympy import li
 from constants import WORLD_RECT, SCREEN_WIDTH, SCREEN_HEIGHT
 import schedule  # type: ignore
@@ -170,7 +171,7 @@ class Skill(ABC):
 
 
 class GunSkill(Skill):
-    __slots__ = ("power", "_speed", "job")
+    __slots__ = ("power", "_speed", "job", "bullet_sound")
     bullet_img = pg.image.load("image/salmon_egg.png")
     bullet_img = pg.transform.scale(bullet_img, (15, 15))
     
@@ -181,7 +182,7 @@ class GunSkill(Skill):
 
     def _make_particle(self):
         self.particle_group.add(GunParticle(
-            self.bullet_img, self.power, 5, self.player
+            self.bullet_img, self.power, 10, self.player
         ))
 
     def bind(self, particle_group: Group[SkillParticle], player: Player):
@@ -233,7 +234,7 @@ class LightningSkill(Skill):
     def __init__(self, bullet_power: float):
         super().__init__()
         self.power = bullet_power
-        self._speed = 10
+        self._speed = 20
 
     def _make_particle(self):
         self.particle_group.add(LightningParticle(
