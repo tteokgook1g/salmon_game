@@ -1,7 +1,7 @@
 import pygame
 from pygame.math import Vector2
 
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_BORDER
 from src.entity.abstract_entity import Transform
 from src.entity.player import Player
 from src.entity.enemy import Boss
@@ -18,16 +18,20 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 player_img = pygame.image.load("image/Salmon 1.png")
 player = Player(player_img, 100, 10, Transform(
-    3, Vector2(100, 100), Vector2(0, 0),), (0, 0, 0, []))
-boss_img = pygame.image.load("image/Salmon 1.png")
-boss = Boss(boss_img, 100, 10, Transform(
-    3, Vector2(100, 100), Vector2(0, 0)))
+    3, Vector2(WORLD_BORDER/2, WORLD_BORDER/2), Vector2(0, 0),), (0, 0, 0, []))
+boss_img = pygame.image.load("image/Boss.png")
+boss1 = Boss(boss_img, 100000, 20, Transform(
+    2.5, Vector2(50, 50), Vector2(0, 0)))
+boss2 = Boss(boss_img, 150000, 25, Transform(
+    3.0, Vector2(50, 50), Vector2(0, 0)))
+boss3 = Boss(boss_img, 300000, 50, Transform(
+    3.5, Vector2(50, 50), Vector2(0, 0)))
 
 scene_manager = SceneManager(SceneId.start_scene, screen)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
 scene_manager.add_scene(SceneId.login_scene, LoginScene())
-scene_manager.add_scene(SceneId.stage1_scene, Stage1(player, boss))
-scene_manager.add_scene(SceneId.stage2_scene, Stage2(player, boss))
-scene_manager.add_scene(SceneId.end_scene, EndScene(player,scene_manager))
+scene_manager.add_scene(SceneId.stage1_scene, Stage1(player, boss1))
+scene_manager.add_scene(SceneId.stage2_scene, Stage2(player, boss2))
+scene_manager.add_scene(SceneId.end_scene, EndScene(player, scene_manager))
 
 scene_manager.run()

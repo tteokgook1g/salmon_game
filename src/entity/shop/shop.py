@@ -7,7 +7,7 @@ from src.entity.player import Player
 from src.helper.update_info import UpdateInfo
 from pygame.math import Vector2
 
-from src.entity.shop.shop_item import HealthPotion, ShopItem, SpeedPotion, PowerPotion
+from src.entity.shop.shop_item import HealthPotion, ShopItem, SpeedPotion, PowerPotion, ShootSpeedPotion, MaxHealthPotion
 
 
 class Shop():
@@ -19,14 +19,19 @@ class Shop():
         self.items.append(HealthPotion(
             pygame.image.load("image/potion 1.png"), 10, 1))
         self.items.append(SpeedPotion(
-            pygame.image.load("image/potion 2.png"), 0.05, 1))
+            pygame.image.load("image/potion 2.png"), 1.025, 1))
         self.items.append(PowerPotion(
             pygame.image.load("image/potion 3.png"), 1, 1))
-
-
+        self.items.append(ShootSpeedPotion(
+            pygame.image.load("image/potion 4.png"), 0.975, 1))
+        self.items.append(MaxHealthPotion(
+            pygame.image.load("image/potion 5.png"), 5, 1))
+        
         HealthPotion.player = player
         SpeedPotion.player = player
         PowerPotion.player = player
+        ShootSpeedPotion.player = player
+        MaxHealthPotion.player = player
 
         for i, item in enumerate(self.items):
             item.transform.pos = Vector2(100+i*70, 300)

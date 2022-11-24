@@ -13,6 +13,7 @@ from src.entity.abstract_entity import Entity, Transform
 if TYPE_CHECKING:
     from src.entity.player import Player
 
+
 class ShopItem(Sprite, ABC):
     button_img: Surface = pg.image.load("image/buy_button.png")
     player: Player
@@ -68,7 +69,8 @@ class SpeedPotion(ShopItem):
     def buy(self):
         if self.player.money >= self.price:
             self.player.money -= self.price
-            self.player.transform.velocity += self.speed_plus
+            self.player.transform.velocity *= self.speed_plus
+
 
 class PowerPotion(ShopItem):
     def __init__(self, img: Surface, power_plus: float, price: int) -> None:
@@ -81,18 +83,33 @@ class PowerPotion(ShopItem):
             self.player.money -= self.price
             self.player.power += self.power_plus
 
-# class SpeedPotion(ShopItem):
-#     def __init__(self, img: Surface, attackspeed_plus: float, price: int) -> None:
-#         super().__init__(img)
-#         self.speed_plus = attackspeed_plus
-#         self.price = price
 
-#     def buy(self):
-#         if self.player.money >= self.price:
-#             self.player.money -= self.price
+class ShootSpeedPotion(ShopItem):
+    def __init__(self, img: Surface, shootspeed_decrese: float, price: int) -> None:
+        super().__init__(img)
+        self.shootspeed_decrease = shootspeed_decrese
+        self.price = price
+
+    def buy(self):
+        if self.player.money >= self.price:
+            self.player.money -= self.price
+            self.player.shootspeed *= self.shootspeed_decrease
+
+class MaxHealthPotion(ShopItem):
+    def __init__(self, img: Surface, max_health_plus: float, price: int) -> None:
+        super().__init__(img)
+        self.max_health_plus = max_health_plus
+        self.price = price
+
+    def buy(self):
+        if self.player.money >= self.price:
+            self.player.money -= self.price
+            self.player.fullhp += self.max_health_plus
+
 
 class bomb(Entity):
     pass
+
 
 class lightning(Entity):
     pass

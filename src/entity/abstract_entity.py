@@ -27,23 +27,19 @@ class Transform:
     def __init__(self, velocity: float, initial_pos: Vector2, initial_direction: Vector2):
         self.velocity = velocity
         self.pos = initial_pos
-        self._dir = initial_direction
+        self.direction = initial_direction
 
     def move(self) -> None:
         """moves towards direction"""
-        self.pos += self.velocity*self._dir
+        self.pos += self.velocity*self.direction
 
     def towards(self, pos: Vector2) -> None:
         """changes direction towards pos"""
-        if self.pos == pos:
-            return
-        self._dir = (pos-self.pos).normalize()
+        self.direction = (pos-self.pos)
 
     def away_from(self, pos: Vector2) -> None:
         """changes direction away from pos"""
-        if self.pos == pos:
-            return
-        self._dir = -(pos-self.pos).normalize()
+        self.direction = -(pos-self.pos)
 
     @property
     def direction(self) -> Vector2:
@@ -59,10 +55,7 @@ class Transform:
 
 class Entity(Sprite):
     """base class for entities"""
-    __slots__ = ("_health", "power", "transform", "fullhp")
-    _health: float
-    power: float
-    transform: Transform
+
     rect: Rect
     image: Surface
 
@@ -72,10 +65,10 @@ class Entity(Sprite):
         self.rect = img.get_rect()
 
         self.rect.center = int(transform.pos.x), int(transform.pos.y)
-        self._health = health
-        self.power = power
-        self.transform = transform
-        self.fullhp = health
+        self._health: float = health
+        self.power: float = power
+        self.transform: Transform = transform
+        self.fullhp: float = health
 
     @property
     def health(self):
@@ -87,10 +80,6 @@ class Entity(Sprite):
 
     def update(self, info: UpdateInfo) -> None:  # type: ignore
         """update the entity. you can use key and mouse if you need. """
-        self.key_pressed = info.key_pressed
-        self.mouse_pos = info.mouse_pos
-        self.mouse_click = info.mouse_click
-
         if self.isinbox():
             self.transform.move()
         self.rect.center = int(self.transform.pos.x), int(self.transform.pos.y)
@@ -119,7 +108,7 @@ class Reward(Entity, PlayerCollidable):
     __slots__ = ("xp", "money")
     xp: int
     money: int
-    lifetime = 5
+    lifetime = 5000
 
     img = Surface((20, 20))
     img.fill((200, 200, 50))
@@ -130,9 +119,7 @@ class Reward(Entity, PlayerCollidable):
         self.money = money
         schedule.every(self.lifetime).seconds.do(self.kill)
 
-
     def handle_collide(self, player: Player):
-        player.money += self.money
         player.xp += self.xp
+        player.money += self.money
         self.kill()
-    
