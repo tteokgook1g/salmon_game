@@ -46,9 +46,8 @@ class Stage1(Scene):
         self.bossspawn = False
         self.time = 0
         self.cooltime = 0
-        self.normal_cooltime = 600
         self.playercooltime = self.player.shootspeed
-        self.bossspawntime = 3000
+        self.bossspawntime = 10000
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
             "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
@@ -85,7 +84,7 @@ class Stage1(Scene):
 
         if self.time % 600 == 0:
             self.difficulty += 1
-        if self.time % 120 == 0:
+        if self.time % 30 == 0:
             self.spawn_normal()
         if self.time == self.bossspawntime:
             self.boss.transform.pos = Vector2([100, 100])

@@ -95,6 +95,17 @@ class ShootSpeedPotion(ShopItem):
             self.player.money -= self.price
             self.player.shootspeed *= self.shootspeed_decrease
 
+class MaxHealthPotion(ShopItem):
+    def __init__(self, img: Surface, max_health_plus: float, price: int) -> None:
+        super().__init__(img)
+        self.max_health_plus = max_health_plus
+        self.price = price
+
+    def buy(self):
+        if self.player.money >= self.price:
+            self.player.money -= self.price
+            self.player.fullhp += self.max_health_plus
+
 
 class bomb(Entity):
     pass
