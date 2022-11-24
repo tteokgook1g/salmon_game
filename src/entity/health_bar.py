@@ -3,7 +3,6 @@ from pygame.math import Vector2
 from pygame.rect import Rect
 from src.entity.abstract_entity import Entity, Transform
 
-
 class HealthBar():
     padding = 20
 

@@ -23,7 +23,7 @@ class Stage1(Stage):
     def __init__(self, player: Player, boss: Boss) -> None:
         super().__init__(player, boss)
 
-        self.bossspawntime = 36
+        self.bossspawntime = 3600
 
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
@@ -56,16 +56,12 @@ class Stage1(Stage):
 
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 0))
-        self.cooltime += 1
-        if self.time >= self.bossspawntime:
-            self.bossspawn = True
-
         if self.time % 600 == 0:
             self.difficulty += 1
-        if self.time % 30 == 0:
+        if self.time % 120 == 0:
             self.spawn_normal()
         if self.time == self.bossspawntime:
-            self.boss.transform.pos = self.position_set()
+            self.boss.transform.pos = Vector2([100, 100])
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
@@ -113,7 +109,7 @@ class Stage1(Stage):
         for reward in self.rewards:
             reward.draw(camera_surface)
         self.player.draw(camera_surface)
-        if self.time >= self.bossspawntime:
+        if self.time - 1 >= self.bossspawntime:
             self.boss.draw(camera_surface)
 
     def _draw_background(self, camera_surface: CameraSurface):
@@ -143,21 +139,10 @@ class Stage1(Stage):
         return self.switch
 
     def start_scene(self) -> None:
-        normal_particle_img = Surface((10, 10))
-        normal_particle_img.fill((255, 0, 255))
 
-        # binding references
         gun_skill = GunSkill(10)
         self.player.skills["gun"] = gun_skill
         gun_skill.bind(self.skill_particles, self.player)
-
-        # bomb_skill = BombSkill(1)
-        # self.player.skills["bomb"] = bomb_skill
-        # bomb_skill.bind(self.skill_particles, self.player)
-        # lightning_skill = LightningSkill(10)
-        # self.player.skills["lightning"] = lightning_skill
-        # lightning_skill.bind(self.skill_particles, self.player)
-
         self.player.skill_particles = self.skill_particles
         Enemy.reward_group = self.rewards
         Boss.reward_group = self.rewards
@@ -177,6 +162,7 @@ class Stage1(Stage):
             return Vector2(pos, WORLD_BORDER-50)
 
     def spawn_normal(self) -> None:
+        """spawn enemy"""
         normal_img = Surface((30, 30))
         normal_img.fill((0, 200, 0))
         pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)

@@ -27,9 +27,9 @@ class Shop():
         self.items.append(GunPowerUpgrade(
             pygame.image.load("image/gun.png"), 1, 1))
         self.items.append(BombItem(
-            pygame.image.load("image/bomb.png"), 0.2, 1))
+            pygame.image.load("image/bomb.png"), 0.2, 25))
         self.items.append(LightningItem(
-            pygame.image.load("image/lightning.png"), 0.5, 1))
+            pygame.image.load("image/lightning.png"), 0.5, 25))
 
         for item in self.items:
             item.player = player
