@@ -7,7 +7,7 @@ from src.entity.player import Player
 from src.entity.textbox import TextBox
 from src.helper.update_info import UpdateInfo
 from src.entity.abstract_entity import Transform
-from src.scene.scene import Scene, SceneManager
+from src.scene.scene import Scene, SceneManager, Stage
 from src.scene.scene_id import SceneId
 
 
@@ -44,7 +44,10 @@ class EndScene(Scene):
             SCREEN_WIDTH/2, SCREEN_HEIGHT/2+200), pg.Vector2(1, 0)), f'Your Score : {self.player.xp}', 40, (255,255,255))
         self.textbox = TextBox(pg.font.Font(None, 40).render('press R to restart',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
             SCREEN_WIDTH/2, SCREEN_HEIGHT/2+250), pg.Vector2(1, 0)), 'press R to restart', 40, (255,255,255))
-        self.backgroundimg = pg.image.load('./image/Game Over.jpg')
+        if self.player.clear == True:
+            self.backgroundimg = pg.image.load('./image/clear.png')
+        else:
+            self.backgroundimg = pg.image.load('./image/Game Over.jpg')
 
     def stop_scene(self) -> None:
         return

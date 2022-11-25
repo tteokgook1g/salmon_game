@@ -1,10 +1,11 @@
 """defines abstract classes related to Entity and implements basic functionality"""
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-
 from typing import TYPE_CHECKING
-import schedule
+import pygame
 
+import schedule  # type: ignore
 from pygame.math import Vector2
 from pygame.rect import Rect
 from pygame.sprite import Sprite
@@ -62,6 +63,7 @@ class Entity(Sprite):
     def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
         super().__init__()
         self.image = img
+        self.original_img = img.copy()
         self.rect = img.get_rect()
 
         self.rect.center = int(transform.pos.x), int(transform.pos.y)
@@ -96,6 +98,10 @@ class Entity(Sprite):
         return (self.rect.size[0]/2 < next_pos.x < WORLD_BORDER-self.rect.size[0]/2 and
                 self.rect.size[1]/2 < next_pos.y < WORLD_BORDER-self.rect.size[1]/2)
 
+    def kill(self):  # type: ignore
+        super().kill()
+        return schedule.CancelJob
+
 
 class PlayerCollidable(ABC):
     @abstractmethod
@@ -110,14 +116,15 @@ class Reward(Entity, PlayerCollidable):
     money: int
     lifetime = 5000
 
-    img = Surface((20, 20))
-    img.fill((200, 200, 50))
+    # img = Surface((20, 20))
+    # img.fill((200, 200, 50))
+    img = pygame.image.load("image/reward.png")
 
     def __init__(self, xp: int, money: int, pos: Vector2):
         super().__init__(Reward.img, 1, 0, Transform(0, pos, Vector2(0, 0)))
         self.xp = xp
         self.money = money
-        schedule.every(self.lifetime).seconds.do(self.kill)
+        schedule.every(self.lifetime).seconds.do(self.kill)  # type: ignore
 
     def handle_collide(self, player: Player):
         player.xp += self.xp

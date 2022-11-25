@@ -7,7 +7,7 @@ from src.entity.health_bar import HealthBar
 import pygame as pg
 from abc import ABC, abstractmethod
 from constants import *
-import schedule
+import schedule  # type: ignore
 
 if TYPE_CHECKING:
     from pygame.surface import Surface
@@ -23,9 +23,10 @@ class Enemy(Entity, PlayerCollidable):
     reward_group: Group[Reward]  # ref
     skills: List[BossSkill]
 
-    def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
+    def __init__(self, img: Surface, health: float, power: float, transform: Transform, rewardnum: int) -> None:
         super().__init__(img, health, power, transform)
         self.hpbar = HealthBar(self)
+        self.rewardnum = rewardnum
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
@@ -44,14 +45,14 @@ class Enemy(Entity, PlayerCollidable):
         self.transform.move()
         self.transform.velocity /= -10
 
-    def kill(self) -> None:
-        super().kill()
-        self.reward_group.add(Reward(1, 1, self.transform.pos.copy()))
+    def kill(self):
+        self.reward_group.add(Reward(self.rewardnum, self.rewardnum, self.transform.pos.copy()))
+        return super().kill()
 
 
 class Boss(Enemy):
-    def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
-        super().__init__(img, health, power, transform)
+    def __init__(self, img: Surface, health: float, power: float, transform: Transform, rewardnum: int) -> None:
+        super().__init__(img, health, power, transform, rewardnum)
         self.hpbar = HealthBar(self)
         self.gun = 100
         # self.skill = BossSkill()
@@ -77,9 +78,6 @@ class Boss(Enemy):
         self.transform.move()
         self.transform.velocity /= -10
 
-    def kill(self) -> None:
-        super().kill()
-
 
 class BossSkill(ABC):
     """base class for skill"""
@@ -99,11 +97,7 @@ class BossSkillParticle(Entity, PlayerCollidable):
         self.transform.pos = pg.Vector2(boss.transform.pos.xy)
         self.transform.direction = pg.Vector2(
             pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
-        schedule.every(10).seconds.do(self._kill)
-
-    def _kill(self):
-        super().kill()
-        return schedule.CancelJob
+        schedule.every(10).seconds.do(self.kill)  # type: ignore
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
