@@ -204,6 +204,7 @@ class GunSkill(Skill):
     def __init__(self, bullet_power: float):
         super().__init__(bullet_power)
         self._speed = 5
+        self.job = None
 
     def _make_particle(self):
         self.particle_group.add(GunParticle(
@@ -213,6 +214,8 @@ class GunSkill(Skill):
     def bind(self, particle_group: Group[SkillParticle], player: Player):
         super().bind(particle_group, player)
         self._speed = self.player.shootspeed
+        if self.job is not None:
+            schedule.cancel_job(self.job)
         self.job = schedule.every(
             self.player.shootspeed/60).seconds.do(self._make_particle)  # type: ignore
 
