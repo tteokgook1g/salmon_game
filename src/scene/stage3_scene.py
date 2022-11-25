@@ -37,7 +37,7 @@ class Stage3(Stage):
         self.time += 1
 
         if self.time % 600 == 0:
-            self.difficulty += 1
+            self.difficulty += 0.1
         self.normalcooltime += 1
         self.rarecooltime += 1
         self.epiccooltime += 1

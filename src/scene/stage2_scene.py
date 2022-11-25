@@ -24,7 +24,7 @@ class Stage2(Stage):
         self.normalcooltime = 0
         self.rarespawntime = 360
         self.rarecooltime = 0
-        self.bossspawntime = 12240
+        self.bossspawntime = 50
         self.sound.set_volume(0.2)
 
     def update(self, info: UpdateInfo) -> None:
@@ -36,7 +36,7 @@ class Stage2(Stage):
         self.time += 1
 
         if self.time % 600 == 0:
-            self.difficulty += 1
+            self.difficulty += 0.1
         self.normalcooltime += 1
         self.rarecooltime += 1
         if self.normalcooltime >= self.normalspawntime/self.difficulty:
@@ -47,3 +47,7 @@ class Stage2(Stage):
             self.rarecooltime = 0
         if self.time == self.bossspawntime:
             self.boss.transform.pos = Vector2([100, 100])
+
+    def start_scene(self) -> None:
+        print(self.player.skills)
+        return super().start_scene()
