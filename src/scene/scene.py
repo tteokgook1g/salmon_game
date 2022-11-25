@@ -82,6 +82,7 @@ class Stage(Scene):
         self.bossspawntime = bossspawntime
         self.tile = tile
         self.sound = sound
+        self.congratulations = False
 
     def update(self, info: UpdateInfo) -> None:
         schedule.run_pending()
@@ -218,7 +219,7 @@ class Stage(Scene):
         rare_img = Surface((35, 35))
         rare_img.fill((0, 0, 200))
         pg.draw.rect(rare_img, (70, 20, 0), (0, 0, 35, 35), 3)
-        self.enemies.add(Enemy(rare_img, 15, 15, Transform(
+        self.enemies.add(Enemy(rare_img, 150, 15, Transform(
             1.4, self.position_set(), Vector2(0, 1)), 2))
 
     def spawn_epic(self) -> None:

@@ -288,6 +288,7 @@ class Player(Entity):
         self.hpbar = HealthBar(self)
         self.shootspeed: float = 30
         self.skill_particles: Group[SkillParticle]  # ref
+        self.clear = False
 
     def bind(self, skill_particles: Group[SkillParticle]):
         self.skill_particles = skill_particles
