@@ -19,12 +19,9 @@ class Stage1(Stage):
                              "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
                          )
 
-        self.difficulty = 1
-        self.player.money = 0
-
         self.normalspawntime = 240
         self.normalcooltime = 0
-        self.bossspawntime = 50
+        self.bossspawntime = 3600
         self.sound.set_volume(0.2)
 
     def update(self, info: UpdateInfo) -> None:

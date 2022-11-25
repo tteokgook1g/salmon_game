@@ -19,13 +19,14 @@ class Stage3(Stage):
                          sound=Sound(
                              "sound/bgm/DEAF KEV - Invincible [NCS Release].mp3")
                          )
+        
         self.normalspawntime = 120
         self.normalcooltime = 0
         self.rarespawntime = 240
         self.rarecooltime = 0
         self.epicspawntime = 480
         self.epiccooltime = 0
-        self.bossspawntime = 16380
+        self.bossspawntime = 7200
         self.sound.set_volume(0.2)
 
     def update(self, info: UpdateInfo) -> None:

@@ -24,7 +24,7 @@ class Stage2(Stage):
         self.normalcooltime = 0
         self.rarespawntime = 360
         self.rarecooltime = 0
-        self.bossspawntime = 50
+        self.bossspawntime = 5400
         self.sound.set_volume(0.2)
 
     def update(self, info: UpdateInfo) -> None:
