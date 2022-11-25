@@ -179,6 +179,9 @@ class Stage3(Scene):
         return self.switch
 
     def start_scene(self) -> None:
+        for skill in self.player.skills.values():
+            skill.bind(self.skill_particles, self.player)
+        self.sound.play(-1)
 
         Enemy.reward_group = self.rewards
         Boss.reward_group = self.rewards

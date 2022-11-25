@@ -4,9 +4,17 @@ from abc import ABC, abstractmethod
 from typing import Dict, Tuple
 
 import pygame as pg
+from pygame.surface import Surface
+
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.entity.abstract_entity import Reward
+from src.entity.enemy import Boss, BossSkillParticle, Enemy
+from src.entity.player import Player, SkillParticle
+from src.entity.shop.shop import Shop
+from src.helper.camera_surface import CameraSurface
+from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
 from src.scene.scene_id import SceneId
-from pygame.surface import Surface
 
 
 class Scene(ABC):
@@ -43,9 +51,34 @@ class Scene(ABC):
         """called when the scene is stopped"""
 
 
+class Stage(Scene):
+    """base class for all stages"""
+    __slots__ = ("player", "enemies", "skill_particles", "boss_particles", "rewards", "camera_surface",
+                 "switch", "time", "difficulty", "shop", "boss", "bossspawn", "time", "cooltime")
+
+    def __init__(self, player: Player, boss: Boss):
+        self.player = player
+        self.enemies: Group[Enemy] = Group()
+        self.skill_particles: Group[SkillParticle] = Group()
+        self.boss_particles: Group[BossSkillParticle] = Group()
+        self.rewards: Group[Reward] = Group()
+        self.camera_surface = CameraSurface(
+            (SCREEN_WIDTH, SCREEN_HEIGHT), player.transform)
+        self.switch = None
+        self.time = 0
+        self.difficulty = 0
+        self.shop = Shop(player)
+        self.player.money = 100
+        self.boss = boss
+        self.bossspawn = False
+        self.time = 0
+        self.cooltime = 0
+
+
 class SceneManager:
     """manages scenes and game"""
-    __slots__ = ("scenes", "current_id", "screen", "timer", "paused",'running')
+    __slots__ = ("scenes", "current_id", "screen",
+                 "timer", "paused", 'running')
 
     def __init__(self, initial_scene_id: SceneId, screen: pg.surface.Surface):
         self.scenes: Dict[SceneId, Scene] = {}
@@ -96,7 +129,7 @@ class SceneManager:
     def run(self):
         """runs the game loop"""
         self.scenes[self.current_id].start_scene()
-        
+
         while self.running:
             events = pg.event.get()
             key_pressed = pg.key.get_pressed()

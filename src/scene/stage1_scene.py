@@ -8,46 +8,24 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
-from src.entity.abstract_entity import Reward, Transform
-from src.entity.enemy import Boss, BossSkillParticle, Enemy
-from src.entity.player import GunSkill, Player, SkillParticle
-from src.entity.shop.shop import Shop
+from src.entity.abstract_entity import Transform
+from src.entity.enemy import Boss, Enemy
+from src.entity.player import GunSkill, Player
 from src.helper.camera_surface import CameraSurface
-from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
-from src.scene.scene import Scene
+from src.scene.scene import Stage
 from src.scene.scene_id import SceneId
 
 
-class Stage1(Scene):
+class Stage1(Stage):
     """abstract class representing game stages."""
-    __slots__ = ("player", "enemies", "skill_particles",
-                 "camera_surface", "rewards", "boss")
-    player: Player
-    enemies: Group[Enemy]
-    skill_particles: Group[SkillParticle]
-    boss_particles: Group[BossSkillParticle]
-    rewards: Group[Reward]
-    camera_surface: CameraSurface
-    boss: Boss
 
     def __init__(self, player: Player, boss: Boss) -> None:
-        super().__init__()
-        self.player = player
-        self.enemies = Group()
-        self.skill_particles = Group()
-        self.boss_particles = Group()
-        self.rewards = Group()
-        self.camera_surface = CameraSurface(
-            (SCREEN_WIDTH, SCREEN_HEIGHT), player.transform)
-        self.switch = None
-        self.time = 0
-        self.difficulty = 1
-        self.shop = Shop(player)
-        self.player.money = 0
-        self.boss = boss
-        self.bossspawn = False
-        self.time = 0
+        super().__init__(player, boss)
+
+        self.difficulty=1
+        self.player.money=0
+        
         self.normalspawntime = 240
         self.normalcooltime = 0
         self.bossspawntime = 9960
