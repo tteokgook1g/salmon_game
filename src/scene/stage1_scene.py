@@ -28,7 +28,7 @@ class Stage1(Stage):
         
         self.normalspawntime = 240
         self.normalcooltime = 0
-        self.bossspawntime = 9960
+        self.bossspawntime = 60
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
             "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")

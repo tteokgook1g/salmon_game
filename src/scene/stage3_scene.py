@@ -42,7 +42,7 @@ class Stage3(Scene):
             (SCREEN_WIDTH, SCREEN_HEIGHT), player.transform)
         self.switch = None
         self.time = 0
-        self.difficulty = 0
+        self.difficulty = 1
         self.shop = Shop(player)
         self.player.money = 0
         self.boss = boss
