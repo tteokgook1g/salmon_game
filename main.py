@@ -23,11 +23,11 @@ player = Player(player_img, 100, 10, Transform(
 boss_img = pygame.image.load("image/Boss 1.png")
 boss_img = pygame.transform.scale(boss_img, (100, 100))
 boss1 = Boss(boss_img, 50000, 10, Transform(
-    5, Vector2(50, 50), Vector2(0, 0)))
+    2.5, Vector2(50, 50), Vector2(0, 0)), 0)
 boss2 = Boss(boss_img, 250000, 12.5, Transform(
-    3.0, Vector2(50, 50), Vector2(0, 0)))
+    3.0, Vector2(50, 50), Vector2(0, 0)), 0)
 boss3 = Boss(boss_img, 1000000, 20, Transform(
-    3.5, Vector2(50, 50), Vector2(0, 0)))
+    3.5, Vector2(50, 50), Vector2(0, 0)), 0)
 
 scene_manager = SceneManager(SceneId.start_scene, screen)
 scene_manager.add_scene(SceneId.start_scene, StartScene())

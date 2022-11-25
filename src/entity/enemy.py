@@ -23,9 +23,10 @@ class Enemy(Entity, PlayerCollidable):
     reward_group: Group[Reward]  # ref
     skills: List[BossSkill]
 
-    def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
+    def __init__(self, img: Surface, health: float, power: float, transform: Transform, rewardnum: int) -> None:
         super().__init__(img, health, power, transform)
         self.hpbar = HealthBar(self)
+        self.rewardnum = rewardnum
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
@@ -45,13 +46,13 @@ class Enemy(Entity, PlayerCollidable):
         self.transform.velocity /= -10
 
     def kill(self):
-        self.reward_group.add(Reward(1, 1, self.transform.pos.copy()))
+        self.reward_group.add(Reward(self.rewardnum, self.rewardnum, self.transform.pos.copy()))
         return super().kill()
 
 
 class Boss(Enemy):
-    def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
-        super().__init__(img, health, power, transform)
+    def __init__(self, img: Surface, health: float, power: float, transform: Transform, rewardnum: int) -> None:
+        super().__init__(img, health, power, transform, rewardnum)
         self.hpbar = HealthBar(self)
         self.gun = 100
         # self.skill = BossSkill()

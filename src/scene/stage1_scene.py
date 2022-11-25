@@ -42,13 +42,15 @@ class Stage1(Scene):
             (SCREEN_WIDTH, SCREEN_HEIGHT), player.transform)
         self.switch = None
         self.time = 0
-        self.difficulty = 0
+        self.difficulty = 1
         self.shop = Shop(player)
-        self.player.money = 100
+        self.player.money = 0
         self.boss = boss
         self.bossspawn = False
         self.time = 0
-        self.bossspawntime = 3600
+        self.normalspawntime = 240
+        self.normalcooltime = 0
+        self.bossspawntime = 9960
         self.tile = pg.image.load("image/Tile 1.png")
         self.sound = Sound(
             "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
@@ -81,9 +83,11 @@ class Stage1(Scene):
         normal_particle_img = Surface((10, 10))
         normal_particle_img.fill((255, 0, 0))
         if self.time % 600 == 0:
-            self.difficulty += 1
-        if self.time % 120 == 0:
+            self.difficulty += 0.1
+        self.normalcooltime += 1
+        if self.normalcooltime >= self.normalspawntime/self.difficulty:
             self.spawn_normal()
+            self.normalcooltime = 0
         if self.time == self.bossspawntime:
             self.boss.transform.pos = Vector2([100, 100])
 
@@ -190,22 +194,22 @@ class Stage1(Scene):
         normal_img = Surface((30, 30))
         normal_img.fill((0, 200, 0))
         pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)
-        self.enemies.add(Enemy(normal_img, 100 + self.difficulty, 10 + self.difficulty, Transform(
-            1 + min(self.difficulty * 0.02, 0.3), self.position_set(), Vector2(0, 1))))
+        self.enemies.add(Enemy(normal_img, 100, 10, Transform(
+            1, self.position_set(), Vector2(0, 1)), 1))
 
     def spawn_rare(self) -> None:
         rare_img = Surface((35, 35))
         rare_img.fill((0, 0, 200))
         pg.draw.rect(rare_img, (70, 20, 0), (0, 0, 35, 35), 3)
-        self.enemies.add(Enemy(rare_img, 150 + self.difficulty, 15 + self.difficulty, Transform(
-            1.4 + min(self.difficulty * 0.02, 0.3), self.position_set(), Vector2(0, 1))))
+        self.enemies.add(Enemy(rare_img, 15, 15, Transform(
+            1.4, self.position_set(), Vector2(0, 1)), 2))
 
     def spawn_epic(self) -> None:
         epic_img = Surface((40, 40))
         epic_img.fill((200, 0, 200))
         pg.draw.rect(epic_img, (70, 20, 0), (0, 0, 40, 40), 3)
-        self.enemies.add(Enemy(epic_img, 400 + self.difficulty, 20 + self.difficulty, Transform(
-            1.8 + min(self.difficulty * 0.02, 0.3), self.position_set(), Vector2(0, 1))))
+        self.enemies.add(Enemy(epic_img, 400, 20, Transform(
+            1.8, self.position_set(), Vector2(0, 1)), 4))
 
     def stop_scene(self) -> None:
         self.sound.stop()
