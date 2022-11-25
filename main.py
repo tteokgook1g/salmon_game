@@ -20,13 +20,14 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 player_img = pygame.image.load("image/Salmon 1 big.png")
 player = Player(player_img, 100, 10, Transform(
     3, Vector2(WORLD_BORDER/2, WORLD_BORDER/2), Vector2(0, 0),), (0, 0, 0, {}))
-boss_img = pygame.image.load("image/Boss 1.png")
-boss_img = pygame.transform.scale(boss_img, (100, 100))
-boss1 = Boss(boss_img, 50, 10, Transform(
+boss1_img = pygame.transform.scale(pygame.image.load("image/Boss 1.png"), (100, 100))
+boss2_img = pygame.transform.scale(pygame.image.load("image/Boss 2.png"), (100, 100))
+boss3_img = pygame.transform.scale(pygame.image.load("image/Boss 2.png"), (100, 100))
+boss1 = Boss(boss1_img, 50, 10, Transform(
     2.5, Vector2(50, 50), Vector2(0, 0)), 0)
-boss2 = Boss(boss_img, 250000, 12.5, Transform(
+boss2 = Boss(boss2_img, 250000, 12.5, Transform(
     3.0, Vector2(50, 50), Vector2(0, 0)), 0)
-boss3 = Boss(boss_img, 1000000, 20, Transform(
+boss3 = Boss(boss3_img, 1000000, 20, Transform(
     3.5, Vector2(50, 50), Vector2(0, 0)), 0)
 
 scene_manager = SceneManager(SceneId.start_scene, screen)
