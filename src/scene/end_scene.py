@@ -3,6 +3,7 @@ import subprocess, os, sys
 import pygame as pg
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.helper.functions import Readfile
 from src.entity.player import Player
 from src.entity.textbox import TextBox
 from src.helper.update_info import UpdateInfo
@@ -12,14 +13,10 @@ from src.scene.scene_id import SceneId
 
 
 class EndScene(Scene):
-    def __init__(self,player:Player, scene_manager:SceneManager) -> None:
+    def __init__(self,player:Player, scene_manager:SceneManager, txt : str) -> None:
         super().__init__()
         self.player = player
         self.scene_manager = scene_manager
-
-    def action(self, typ: str):
-        if typ == 'start_button':
-            self.switch = SceneId.login_scene
 
     def update(self, info: UpdateInfo) -> None:
         self.switch = None
@@ -28,14 +25,12 @@ class EndScene(Scene):
             self.scene_manager.running=False
             path=os.sep.join(os.path.realpath(__file__).split(os.sep)[:-3]+['main.py'])
             subprocess.call([sys.executable, path] + sys.argv[1:])
-            
-
 
     def draw(self, screen: pg.surface.Surface) -> None:
         screen.blit(self.backgroundimg,(0,0))
         screen.blit(self.scorebox.image,self.scorebox.rect.topleft)
         screen.blit(self.textbox.image,self.textbox.rect.topleft)
-
+        
     def check_scene_switch(self) -> SceneId | None:
         return self.switch
 
@@ -49,5 +44,10 @@ class EndScene(Scene):
         else:
             self.backgroundimg = pg.image.load('./image/Game Over.jpg')
 
+        self.txt = self.scene_manager.scenes[SceneId.login_scene].txt
+        self.dic = self.scene_manager.scenes[SceneId.login_scene].infodic.dic
+        
+        Readfile().write()
+
     def stop_scene(self) -> None:
-        return
+        return 

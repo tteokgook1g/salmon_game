@@ -1,5 +1,1 @@
-Save Users Game Data
-
-Nickname Stage Level Money
-
-Salmon 1 100 10000
+Salmon 1 100 100 10000 True True

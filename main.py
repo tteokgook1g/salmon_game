@@ -32,7 +32,7 @@ boss3 = Boss(boss3_img, 20000, 20, Transform(
 
 scene_manager = SceneManager(SceneId.start_scene, screen)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
-scene_manager.add_scene(SceneId.login_scene, LoginScene())
+scene_manager.add_scene(SceneId.login_scene, LoginScene(player))
 scene_manager.add_scene(SceneId.stage1_scene, Stage1(player, boss1))
 scene_manager.add_scene(SceneId.stage2_scene, Stage2(player, boss2))
 scene_manager.add_scene(SceneId.stage3_scene, Stage3(player, boss3))

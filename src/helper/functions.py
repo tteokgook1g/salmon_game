@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar
+from typing import Callable, Dict, List, Tuple, TypeVar
 import pygame
 from pygame.color import Color
 from pygame.surface import Surface
@@ -37,3 +37,18 @@ def convert_color(
         for x, color in enumerate(row):
             result.set_at((x, y), color)
     return result
+
+class Readfile:
+    def read(self): 
+        f = open('./save.txt', 'r')
+        lst = f.readlines()[:-1]
+        lst = [i.strip().split(' ') for i in lst]
+        self.dic = {i[0]:tuple(eval(i[j]) for j in range(1,7)) for i in lst}
+        f.close()
+
+    def write(self, info : Dict):
+        f = open('./save.txt','w')
+        for i,j in info:
+            s = f'{i} {j[0]} {j[1]} {j[2]} {j[3]} {j[4]} {j[5]} {j[6]}\n'
+            f.write(s)
+        f.close()
