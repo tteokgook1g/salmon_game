@@ -35,8 +35,6 @@ class Stage2(Stage):
         self.collide()
         self.time += 1
 
-        if self.time % 600 == 0:
-            self.difficulty += 0.1
         self.normalcooltime += 1
         self.rarecooltime += 1
         if self.normalcooltime >= self.normalspawntime/self.difficulty:
@@ -47,7 +45,3 @@ class Stage2(Stage):
             self.rarecooltime = 0
         if self.time == self.bossspawntime:
             self.boss.transform.pos = Vector2([100, 100])
-
-    def start_scene(self) -> None:
-        print(self.player.skills)
-        return super().start_scene()

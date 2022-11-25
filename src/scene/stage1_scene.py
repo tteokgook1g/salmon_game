@@ -32,8 +32,6 @@ class Stage1(Stage):
         self.collide()
         self.time += 1
 
-        if self.time % 600 == 0:
-            self.difficulty += 0.1
         self.normalcooltime += 1
         if self.normalcooltime >= self.normalspawntime/self.difficulty:
             self.spawn_normal()

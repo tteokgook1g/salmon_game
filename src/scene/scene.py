@@ -1,15 +1,15 @@
 """defines Abstract class Scene, class Stage, class SceneManager"""
 
-from abc import ABC, abstractmethod
 import random
+from abc import ABC, abstractmethod
 from typing import Dict, Tuple
 
 import pygame as pg
 import schedule  # type: ignore
+from pygame.math import Vector2
 from pygame.mixer import Sound
 from pygame.rect import Rect
 from pygame.surface import Surface
-from pygame.math import Vector2
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.abstract_entity import Reward, Transform
@@ -63,7 +63,7 @@ class Stage(Scene):
 
     def __init__(self, player: Player, boss: Boss, bossspawntime: int, tile: Surface, sound: Sound):
         super().__init__()
-        self.player = player
+        self.player = player 
         self.enemies: Group[Enemy] = Group()
         self.skill_particles: Group[SkillParticle] = Group()
         self.boss_particles: Group[BossSkillParticle] = Group()
@@ -101,6 +101,9 @@ class Stage(Scene):
             self.player.health += 100
             self.switch = SceneId.end_scene
             schedule.cancel_job(all)  # type: ignore
+        if self.time % 600 == 0:
+            self.difficulty += 0.1
+        
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
@@ -175,9 +178,11 @@ class Stage(Scene):
             camera_surface.blit(row_tile, row_rect)
 
     def check_scene_switch(self) -> SceneId | None:
+        """make to go to next stage"""
         return self.switch
 
     def start_scene(self) -> None:
+        
         for skill in self.player.skills.values():
             skill.bind(self.skill_particles, self.player)
         self.sound.play(-1)
@@ -188,6 +193,7 @@ class Stage(Scene):
         self.player.skill_particles = self.skill_particles
 
     def position_set(self):
+        """set enemy spawn position"""
         pos = random.randint(50, WORLD_BORDER-50)
         direction = random.randint(1, 4)
         if direction == 1:
@@ -200,7 +206,7 @@ class Stage(Scene):
             return Vector2(pos, WORLD_BORDER-50)
 
     def spawn_normal(self) -> None:
-        """spawn enemy"""
+        """spawn normal enemy"""
         normal_img = Surface((30, 30))
         normal_img.fill((0, 200, 0))
         pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)
@@ -208,6 +214,7 @@ class Stage(Scene):
             1, self.position_set(), Vector2(0, 1)), 1))
 
     def spawn_rare(self) -> None:
+        """spawn rare enemy"""
         rare_img = Surface((35, 35))
         rare_img.fill((0, 0, 200))
         pg.draw.rect(rare_img, (70, 20, 0), (0, 0, 35, 35), 3)
@@ -215,6 +222,7 @@ class Stage(Scene):
             1.4, self.position_set(), Vector2(0, 1)), 2))
 
     def spawn_epic(self) -> None:
+        """spawn epic enemy"""
         epic_img = Surface((40, 40))
         epic_img.fill((200, 0, 200))
         pg.draw.rect(epic_img, (70, 20, 0), (0, 0, 40, 40), 3)
@@ -222,6 +230,7 @@ class Stage(Scene):
             1.8, self.position_set(), Vector2(0, 1)), 4))
 
     def stop_scene(self) -> None:
+        """sound stop when scene changes"""
         self.sound.stop()
 
 
