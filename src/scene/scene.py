@@ -103,7 +103,7 @@ class Stage(Scene):
             self.player.health += 100
             self.switch = SceneId.end_scene
             schedule.cancel_job(all)  # type: ignore
-        if self.time % 600 == 0:
+        if self.time % 1200 == 0:
             self.difficulty += 0.1
 
         self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
@@ -227,27 +227,33 @@ class Stage(Scene):
 
     def spawn_normal(self) -> None:
         """spawn normal enemy"""
-        normal_img = Surface((30, 30))
-        normal_img.fill((0, 200, 0))
-        pg.draw.rect(normal_img, (70, 20, 0), (0, 0, 30, 30), 3)
+        normal_img = pg.image.load("image/NormalEnemy.png")
         self.enemies.add(Enemy(normal_img, 100, 10, Transform(
             1, self.position_set(), Vector2(0, 1)), 1))
 
     def spawn_rare(self) -> None:
         """spawn rare enemy"""
-        rare_img = Surface((35, 35))
-        rare_img.fill((0, 0, 200))
-        pg.draw.rect(rare_img, (70, 20, 0), (0, 0, 35, 35), 3)
+        rare_img = pg.image.load("image/RareEnemy.png")
         self.enemies.add(Enemy(rare_img, 150, 15, Transform(
             1.4, self.position_set(), Vector2(0, 1)), 2))
 
     def spawn_epic(self) -> None:
         """spawn epic enemy"""
-        epic_img = Surface((40, 40))
-        epic_img.fill((200, 0, 200))
-        pg.draw.rect(epic_img, (70, 20, 0), (0, 0, 40, 40), 3)
+        epic_img = pg.image.load("image/EpicEnemy.png")
         self.enemies.add(Enemy(epic_img, 400, 20, Transform(
             1.8, self.position_set(), Vector2(0, 1)), 4))
+        
+    def spawn_rush(self) -> None:
+        """spawn rush enemy"""
+        rush_img = pg.image.load("image/RushEnemy.png")
+        self.enemies.add(Enemy(rush_img, 10, 1, Transform(
+            5, self.position_set(), Vector2(0, 1)), 3))
+        
+    def spawn_tank(self) -> None:
+        """spawn rush enemy"""
+        tank_img = pg.image.load("image/TankEnemy.png")
+        self.enemies.add(Enemy(tank_img, 1000, 1, Transform(
+            0.5, self.position_set(), Vector2(0, 1)), 3))
 
     def stop_scene(self) -> None:
         """sound stop when scene changes"""

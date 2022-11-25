@@ -22,10 +22,14 @@ class Stage3(Stage):
         
         self.normalspawntime = 120
         self.normalcooltime = 0
-        self.rarespawntime = 240
+        self.rarespawntime = 360
         self.rarecooltime = 0
-        self.epicspawntime = 480
+        self.epicspawntime = 720
         self.epiccooltime = 0
+        self.rushspawntime = 360
+        self.rushcooltime = 0
+        self.tankspawntime = 1080
+        self.tankcooltime = 0
         self.bossspawntime = 7200
         self.sound.set_volume(0.2)
 
@@ -41,6 +45,8 @@ class Stage3(Stage):
         self.normalcooltime += 1
         self.rarecooltime += 1
         self.epiccooltime += 1
+        self.rushcooltime += 1
+        self.tankcooltime += 1
         if self.normalcooltime >= self.normalspawntime/self.difficulty:
             self.spawn_normal()
             self.normalcooltime = 0
@@ -50,5 +56,11 @@ class Stage3(Stage):
         if self.epiccooltime >= self.epicspawntime/self.difficulty:
             self.spawn_epic()
             self.epiccooltime = 0
+        if self.rushcooltime >= self.rushspawntime/self.difficulty:
+            self.spawn_rush()
+            self.rushcooltime = 0
+        if self.tankcooltime >= self.tankspawntime/self.difficulty:
+            self.spawn_tank()
+            self.tankcooltime = 0
         if self.time == self.bossspawntime:
             self.boss.transform.pos = Vector2([100, 100])
