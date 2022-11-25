@@ -17,13 +17,13 @@ class Shop():
         self.player = player
 
         self.items.append(HealthPotion(
-            pygame.image.load("image/potion 1.png"), 10, 1))
+            pygame.image.load("image/HealthPotion.png"), 10, 1))
         self.items.append(SpeedPotion(
-            pygame.image.load("image/potion 2.png"), 1.02, 1))
+            pygame.image.load("image/SpeedPotion.png"), 1.02, 1))
         self.items.append(ShootSpeedPotion(
-            pygame.image.load("image/potion 4.png"), 0.98, 1))
+            pygame.image.load("image/ShootSpeedPotion.png"), 0.98, 1))
         self.items.append(MaxHealthPotion(
-            pygame.image.load("image/potion 5.png"), 5, 1))
+            pygame.image.load("image/MaxHealthPotion.png"), 5, 1))
         self.items.append(GunPowerUpgrade(
             pygame.image.load("image/gun.png"), 1, 1))
         self.items.append(BombItem(

@@ -20,7 +20,7 @@ class Stage3(Stage):
                              "sound/bgm/DEAF KEV - Invincible [NCS Release].mp3")
                          )
         
-        self.normalspawntime = 120
+        self.normalspawntime = 60
         self.normalcooltime = 0
         self.rarespawntime = 240
         self.rarecooltime = 0
