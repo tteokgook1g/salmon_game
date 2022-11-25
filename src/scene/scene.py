@@ -102,7 +102,7 @@ class Stage(Scene):
             self.player.health += 100
             self.switch = SceneId.end_scene
             schedule.cancel_job(all)  # type: ignore
-        if self.time % 600 == 0:
+        if self.time % 1200 == 0:
             self.difficulty += 0.1
         
 
