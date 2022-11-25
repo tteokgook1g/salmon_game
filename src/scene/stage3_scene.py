@@ -19,7 +19,13 @@ class Stage3(Stage):
                          sound=Sound(
                              "sound/bgm/DEAF KEV - Invincible [NCS Release].mp3")
                          )
-
+        self.normalspawntime = 120
+        self.normalcooltime = 0
+        self.rarespawntime = 240
+        self.rarecooltime = 0
+        self.epicspawntime = 480
+        self.epiccooltime = 0
+        self.bossspawntime = 16380
         self.sound.set_volume(0.2)
 
     def update(self, info: UpdateInfo) -> None:
@@ -32,11 +38,17 @@ class Stage3(Stage):
 
         if self.time % 600 == 0:
             self.difficulty += 1
-        if self.time % 60 == 0:
+        self.normalcooltime += 1
+        self.rarecooltime += 1
+        self.epiccooltime += 1
+        if self.normalcooltime >= self.normalspawntime/self.difficulty:
             self.spawn_normal()
-        if self.time % 240 == 0:
+            self.normalcooltime = 0
+        if self.rarecooltime >= self.rarespawntime/self.difficulty:
             self.spawn_rare()
-        if self.time % 600 == 0:
+            self.rarecooltime = 0
+        if self.epiccooltime >= self.epicspawntime/self.difficulty:
             self.spawn_epic()
+            self.epiccooltime = 0
         if self.time == self.bossspawntime:
             self.boss.transform.pos = Vector2([100, 100])

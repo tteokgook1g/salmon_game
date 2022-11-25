@@ -19,6 +19,12 @@ class Stage1(Stage):
                              "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3")
                          )
 
+        self.difficulty = 1
+        self.player.money = 0
+
+        self.normalspawntime = 240
+        self.normalcooltime = 0
+        self.bossspawntime = 360
         self.sound.set_volume(0.2)
 
     def update(self, info: UpdateInfo) -> None:
@@ -30,9 +36,11 @@ class Stage1(Stage):
         self.time += 1
 
         if self.time % 600 == 0:
-            self.difficulty += 1
-        if self.time % 120 == 0:
+            self.difficulty += 0.1
+        self.normalcooltime += 1
+        if self.normalcooltime >= self.normalspawntime/self.difficulty:
             self.spawn_normal()
+            self.normalcooltime = 0
         if self.time == self.bossspawntime:
             self.boss.transform.pos = Vector2([100, 100])
 
@@ -41,4 +49,3 @@ class Stage1(Stage):
         gun_skill = GunSkill(10)
         self.player.skills["gun"] = gun_skill
         gun_skill.bind(self.skill_particles, self.player)
-        self.player.skill_particles = self.skill_particles

@@ -283,7 +283,7 @@ class Player(Entity):
         self.money: int = info[2]
         self.skills: Dict[str, Skill] = info[3]
         self.hpbar = HealthBar(self)
-        self.shootspeed: float = 60
+        self.shootspeed: float = 30
         self.skill_particles: Group[SkillParticle]  # ref
 
     def bind(self, skill_particles: Group[SkillParticle]):
