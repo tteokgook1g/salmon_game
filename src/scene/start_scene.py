@@ -7,7 +7,7 @@ from src.entity.abstract_entity import Transform
 from src.entity.button import Button
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
-
+from src.entity.textbox import TextBox
 
 class StartScene(Scene):
     def action(self, typ: str):
@@ -28,6 +28,7 @@ class StartScene(Scene):
     def draw(self, screen: pg.surface.Surface) -> None:
         screen.blit(pg.image.load('./image/salmon_is_delicious.jpg'),(0,0))
         screen.blit(self.start_button.image, self.start_button.rect.topleft)
+        screen.blit(self.textbox.image,self.textbox.rect.topleft)
 
     def check_scene_switch(self) -> SceneId | None:
         return self.switch
@@ -35,6 +36,8 @@ class StartScene(Scene):
     def start_scene(self) -> None:
         self.start_button = Button(pg.image.load('./image/start_button.png'), 0, 0, Transform(0, pg.Vector2(
             SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), lambda: self.action('start_button'))
+        self.textbox = TextBox(pg.font.Font(None, 100).render('End is salmon sashimi',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2, SCREEN_HEIGHT/2-250), pg.Vector2(1, 0)), 'End is salmon sashimi', 40, (255,255,255))
 
     def stop_scene(self) -> None:
         return

@@ -13,7 +13,7 @@ from src.scene.scene_id import SceneId
 
 
 class EndScene(Scene):
-    def __init__(self,player:Player, scene_manager:SceneManager, txt : str) -> None:
+    def __init__(self,player:Player, scene_manager:SceneManager) -> None:
         super().__init__()
         self.player = player
         self.scene_manager = scene_manager
