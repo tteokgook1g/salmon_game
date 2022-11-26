@@ -50,11 +50,11 @@ class Readfile:
     def read(self): 
         f = open('./save.txt', 'r')
         lst = f.readlines()
-        print(lst)
+
         lst = [i.strip().split(' ') for i in lst]
-        print(lst)
+
         self.dic = {i[0]:[eval(i[j]) for j in range(1,7)] for i in lst}
-        print(self.dic)
+
         f.close()
 
     def write(self):

@@ -344,7 +344,6 @@ class Stage(Scene):
     def stop_scene(self) -> None:
         """sound stop when scene changes"""
         self.sound.stop()
-        print(self.scene_manager.current_id,'############')
         if self.scene_manager.current_id == SceneId.stage1_scene:
             stage = 1
         elif self.scene_manager.current_id == SceneId.stage2_scene:
