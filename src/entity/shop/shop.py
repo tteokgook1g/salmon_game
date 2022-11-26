@@ -1,13 +1,16 @@
 from typing import List
-import pygame
-from pygame.surface import Surface
-from constants import BLACK
-from src.helper.functions import render_text
-from src.entity.player import Player
-from src.helper.update_info import UpdateInfo
-from pygame.math import Vector2
 
-from src.entity.shop.shop_item import BombItem, HealthPotion, LightningItem, ShopItem, SpeedPotion, GunPowerUpgrade, ShootSpeedPotion, MaxHealthPotion
+import pygame
+from pygame.math import Vector2
+from pygame.surface import Surface
+
+from constants import BLACK
+from src.entity.player import Player
+from src.entity.shop.shop_item import (BombItem, GunPowerUpgrade, HealthPotion,
+                                       LightningItem, MaxHealthPotion,
+                                       ShootSpeedPotion, ShopItem, SpeedPotion)
+from src.helper.functions import render_text
+from src.helper.update_info import UpdateInfo
 
 
 class Shop():
@@ -43,7 +46,9 @@ class Shop():
         for item in self.items:
             item.draw(screen)
         screen.blit(render_text(
-            f"$ {self.player.money}", BLACK, 40), (50, 200))
+            f"money: $ {self.player.money}", BLACK, 40), (50, 150))
+        screen.blit(render_text(
+            f"skill point: {self.player.stat.skill_point}", BLACK, 40), (50, 200))
 
     def update(self, info: UpdateInfo):
         for item in self.items:

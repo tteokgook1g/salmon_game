@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from math import pi
-from typing import TYPE_CHECKING, Dict, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Dict, Sequence
 
 import pygame as pg
 import schedule  # type: ignore
@@ -12,10 +12,10 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_RECT
-from src.scene.scene_id import SceneId
 from src.entity.abstract_entity import Entity, Transform
 from src.entity.health_bar import HealthBar, BigHealthBar
 from src.helper.functions import convert_color, lerp, vector_to_tuple
+from src.scene.scene_id import SceneId
 
 if TYPE_CHECKING:
     from entity.enemy import Enemy
@@ -276,13 +276,14 @@ class LightningSkill(Skill):
 
 
 class PlayerStat:
+    set_pause: Callable[..., Any]  # set to pause
+
     def __init__(self, stage: SceneId = SceneId.stage1_scene, xp: int = 0, level: int = 0, money: int = 0, shootspeed: float = 30, skill_point: int = 0) -> None:
         self._xp: int = xp
         self.level = level
         self.money = money
         self.shootspeed = shootspeed
         self.skill_point = skill_point
-        self.next_level_xp = (self.level+1)*10
         self.scene = stage
 
     @property
@@ -293,13 +294,20 @@ class PlayerStat:
     def xp(self, value: int):
         if self._xp < value:
             self._xp = value
-            if self._xp >= self.next_level_xp:
+            if self._xp >= self.next_level_xp(self.level):
                 self.level_up()
 
     def level_up(self):
         self.level += 1
         self.skill_point += 1
-        self.next_level_xp = (self.level+1)*10
+        self.set_pause()
+
+    @classmethod
+    def next_level_xp(cls, level: int):
+        if level <= 15:
+            return (level+1)*10
+        else:
+            return int(10*1.2**level)
 
 
 class Player(Entity):
@@ -315,7 +323,6 @@ class Player(Entity):
         self.skills["gun"] = gun_skill
 
         self.hpbar = HealthBar(self)
-        self.shootspeed: float = 30
         self.skill_particles: Group[SkillParticle]  # ref
         self.clear = False
 
@@ -342,6 +349,14 @@ class Player(Entity):
     @money.setter
     def money(self, value: int):
         self.stat.money = value
+
+    @property
+    def shootspeed(self):
+        return self.stat.shootspeed
+
+    @shootspeed.setter
+    def shootspeed(self, value: float):
+        self.stat.shootspeed = value
 
     def bind(self, skill_particles: Group[SkillParticle]):
         self.skill_particles = skill_particles

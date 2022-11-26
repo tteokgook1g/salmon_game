@@ -12,15 +12,16 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
-from src.helper.user_data import UserData, UserDataFileStream
-from src.entity.textbox import TextBox2
+from src.helper.functions import vector_to_tuple
 from src.entity.abstract_entity import Reward, Transform
 from src.entity.enemy import Boss, BossSkillParticle, Enemy
-from src.entity.player import Player, SkillParticle
+from src.entity.player import Player, PlayerStat, SkillParticle
 from src.entity.shop.shop import Shop
+from src.entity.textbox import TextBox2
 from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
+from src.helper.user_data import UserData, UserDataFileStream
 from src.scene.scene_id import SceneId
 from src.entity.health_bar import BigHealthBar
 
@@ -72,6 +73,10 @@ class SceneManager:
         self.timer = pg.time.Clock()
         self.paused: bool = False
         self.running = True
+
+        def set_pause(*args, **kwargs):  # type: ignore
+            self.paused = True
+        PlayerStat.set_pause = set_pause
 
     def add_scene(self, scene_id: SceneId, scene: Scene) -> None:
         """add a scene to the scene manager"""
@@ -148,17 +153,20 @@ class SceneManager:
 
     def save_userdata(self):
         stat = self.player.stat
+        nickname: str = self.scenes[SceneId.login_scene].txt  # type: ignore
         data = UserData(
-            self.scenes[SceneId.login_scene].txt,  # type: ignore
+            nickname,
             stat.scene,
             stat.xp,
             stat.money,
             stat.level,
             stat.skill_point,
             "bomb" in self.player.skills,
-            "lightning" in self.player.skills
+            "lightning" in self.player.skills,
+            self.player.fullhp,
+            self.player.transform.velocity,
+            self.player.shootspeed
         )
-        print(data)
         stream = UserDataFileStream()
         stream.append_userdata(data)
 
@@ -280,8 +288,7 @@ class Stage(Scene):
 
     def _draw_background(self, camera_surface: CameraSurface):
         rect = Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        rect.center = int(camera_surface.pos.x), int(
-            camera_surface.pos.y)
+        rect.center = vector_to_tuple(camera_surface.pos)
         topleft = max(rect.left, 0), max(rect.top, 0)
         rightbottom = (min(rect.right, WORLD_BORDER),
                        min(rect.bottom, WORLD_BORDER))

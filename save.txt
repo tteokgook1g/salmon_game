@@ -1,2 +1,0 @@
-Salmon 1 100 100 10000 True True
-inputyournickname 1 0 0 0 False False

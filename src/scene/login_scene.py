@@ -25,11 +25,15 @@ class LoginScene(Scene):
                 return
 
             # Nickname Stage XP Level Money skill1 skill2
-            self.switch=SceneId(data.scene)
+            self.switch = SceneId(data.scene)
             self.player.xp = data.xp
             self.player.level = data.level
             self.player.money = data.money
-            self.player.stat.skill_point=data.skill_point
+            self.player.stat.skill_point = data.level
+            self.player.fullhp = data.fullhp
+            self.player.health = self.player.fullhp
+            self.player.transform.velocity = data.speed
+            self.player.shootspeed = data.shootspeed
 
             if data.bomb_skill:
                 self.player.skills['bomb'] = BombSkill(2)
