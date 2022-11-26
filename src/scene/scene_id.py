@@ -1,10 +1,10 @@
 """defines SceneId. you must add id when you add a new scene."""
 
 
-from enum import Enum, auto
+from enum import IntEnum, auto
 
 
-class SceneId(Enum):
+class SceneId(IntEnum):
     main_scene = auto()
     start_scene = auto()
     login_scene = auto()

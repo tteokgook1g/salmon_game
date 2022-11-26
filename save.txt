@@ -1,4 +1,2 @@
 Salmon 1 100 100 10000 True True
-inputyournickname 2 49 0 13 True True
-GameMaster 3 10000 10000 10000 True True
- 1 0 0 0 False False
+inputyournickname 1 0 0 0 False False

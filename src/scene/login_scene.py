@@ -1,8 +1,8 @@
 import pygame as pg
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.helper.user_data import UserDataFileStream
 from src.entity.player import BombSkill, LightningSkill, Player
-from src.helper.functions import Readfile
 from src.helper.update_info import UpdateInfo
 from src.entity.textbox import TextBox
 from src.entity.abstract_entity import Transform
@@ -13,31 +13,28 @@ from src.scene.scene_id import SceneId
 
 
 class LoginScene(Scene):
-    def __init__(self,player : Player):
+    def __init__(self, player: Player):
         self.player = player
-    
+
     def action(self, typ: str):
         if typ == 'confirm_button':
-            self.infodic = Readfile()
-            self.infodic.read()
-            try:
-                #Nickname Stage XP Level Money skill1 skill2
-                self.startinfo = self.infodic.dic[self.txt]
-                if self.startinfo[0]==1:
-                    self.switch = SceneId.stage1_scene
-                elif self.startinfo[0]==2:
-                    self.switch = SceneId.stage2_scene
-                elif self.startinfo[0]==3:
-                    self.switch = SceneId.stage3_scene
-                self.player.xp = self.startinfo[1]
-                self.player.level = self.startinfo[2]
-                self.player.money = self.startinfo[3]
-                if self.startinfo[4]:
-                    self.player.skills['bomb'] = BombSkill
-                if self.startinfo[5]:
-                    self.player.skills['lightning'] = LightningSkill
-            except:
+            stream = UserDataFileStream()
+            data = stream.get_userdata(self.txt)
+            if data is None:
                 self.switch = SceneId.stage1_scene
+                return
+
+            # Nickname Stage XP Level Money skill1 skill2
+            self.switch=SceneId(data.scene)
+            self.player.xp = data.xp
+            self.player.level = data.level
+            self.player.money = data.money
+            self.player.stat.skill_point=data.skill_point
+
+            if data.bomb_skill:
+                self.player.skills['bomb'] = BombSkill(2)
+            if data.lightning_skill:
+                self.player.skills['lightning'] = LightningSkill(5)
 
         elif typ == 'id_button':
             self.txt = self.inputbox.text
