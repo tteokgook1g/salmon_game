@@ -19,10 +19,13 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 player_img = pygame.image.load("image/Salmon 1 big.png")
 player = Player(player_img, 100, 10, Transform(
-    3, Vector2(WORLD_BORDER/2, WORLD_BORDER/2), Vector2(0, 0),), (0, 0, 0, {}))
-boss1_img = pygame.transform.scale(pygame.image.load("image/Boss 1.png"), (100, 100))
-boss2_img = pygame.transform.scale(pygame.image.load("image/Boss 2.png"), (100, 100))
-boss3_img = pygame.transform.scale(pygame.image.load("image/Boss 3.png"), (100, 100))
+    3, Vector2(WORLD_BORDER/2, WORLD_BORDER/2), Vector2(0, 0),))
+boss1_img = pygame.transform.scale(
+    pygame.image.load("image/Boss 1.png"), (100, 100))
+boss2_img = pygame.transform.scale(
+    pygame.image.load("image/Boss 2.png"), (100, 100))
+boss3_img = pygame.transform.scale(
+    pygame.image.load("image/Boss 3.png"), (100, 100))
 boss1 = Boss(boss1_img, 5000, 10, Transform(
     2.4, Vector2(50, 50), Vector2(0, 0)), 0)
 boss2 = Boss(boss2_img, 10000, 12.5, Transform(
@@ -30,12 +33,15 @@ boss2 = Boss(boss2_img, 10000, 12.5, Transform(
 boss3 = Boss(boss3_img, 20000, 20, Transform(
     3.6, Vector2(50, 50), Vector2(0, 0)), 0)
 
-scene_manager = SceneManager(SceneId.start_scene, screen)
+scene_manager = SceneManager(SceneId.start_scene, screen, player)
 scene_manager.add_scene(SceneId.start_scene, StartScene())
 scene_manager.add_scene(SceneId.login_scene, LoginScene(player))
-scene_manager.add_scene(SceneId.stage1_scene, Stage1(player, boss1,scene_manager))
-scene_manager.add_scene(SceneId.stage2_scene, Stage2(player, boss2,scene_manager))
-scene_manager.add_scene(SceneId.stage3_scene, Stage3(player, boss3,scene_manager))
+scene_manager.add_scene(SceneId.stage1_scene,
+                        Stage1(player, boss1, scene_manager))
+scene_manager.add_scene(SceneId.stage2_scene,
+                        Stage2(player, boss2, scene_manager))
+scene_manager.add_scene(SceneId.stage3_scene,
+                        Stage3(player, boss3, scene_manager))
 scene_manager.add_scene(SceneId.end_scene, EndScene(player, scene_manager))
 
 scene_manager.run()

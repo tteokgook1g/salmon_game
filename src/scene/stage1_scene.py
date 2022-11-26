@@ -1,10 +1,9 @@
 import pygame as pg
 import schedule  # type: ignore
-from pygame.math import Vector2
 from pygame.mixer import Sound
 
 from src.entity.enemy import Boss
-from src.entity.player import GunSkill, Player
+from src.entity.player import Player
 from src.helper.update_info import UpdateInfo
 from src.scene.scene import SceneManager, Stage
 from src.scene.scene_id import SceneId
@@ -13,12 +12,11 @@ from src.scene.scene_id import SceneId
 class Stage1(Stage):
     """abstract class representing game stages."""
 
-    def __init__(self, player: Player, boss: Boss,scene_manager:SceneManager) -> None:
+    def __init__(self, player: Player, boss: Boss, scene_manager: SceneManager) -> None:
         super().__init__(player, boss, bossspawntime=3600,
                          tile=pg.image.load("image/Tile 1.png"), sound=Sound(
                              "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3"),
-                             scene_manager = scene_manager)
-                         
+                         scene_manager=scene_manager)
 
         self.normalspawntime = 180
         self.normalcooltime = 0
@@ -42,6 +40,3 @@ class Stage1(Stage):
 
     def start_scene(self) -> None:
         super().start_scene()
-        gun_skill = GunSkill(10)
-        self.player.skills["gun"] = gun_skill
-        gun_skill.bind(self.skill_particles, self.player)

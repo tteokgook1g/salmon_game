@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from math import pi
-from typing import TYPE_CHECKING, Dict, Sequence, Tuple
+from typing import TYPE_CHECKING, Dict, Sequence
 
 import pygame as pg
 import schedule  # type: ignore
@@ -12,6 +12,7 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_RECT
+from src.scene.scene_id import SceneId
 from src.entity.abstract_entity import Entity, Transform
 from src.entity.health_bar import HealthBar
 from src.helper.functions import convert_color, lerp, vector_to_tuple
@@ -222,7 +223,7 @@ class GunSkill(Skill):
     def update(self, info: UpdateInfo) -> None:
         if self._speed != self.player.shootspeed:
             self._speed = self.player.shootspeed
-            schedule.cancel_job(self.job)
+            schedule.cancel_job(self.job)  # type: ignore
             self.job = schedule.every(
                 self.player.shootspeed/60).seconds.do(self._make_particle)  # type: ignore
 
@@ -274,21 +275,73 @@ class LightningSkill(Skill):
             self.cooltime = int(self.player.shootspeed)
 
 
+class PlayerStat:
+    def __init__(self, stage: SceneId = SceneId.stage1_scene, xp: int = 0, level: int = 0, money: int = 0, shootspeed: float = 30, skill_point: int = 0) -> None:
+        self._xp: int = xp
+        self.level = level
+        self.money = money
+        self.shootspeed = shootspeed
+        self.skill_point = skill_point
+        self.next_level_xp = (self.level+1)*10
+        self.scene = stage
+
+    @property
+    def xp(self):
+        return self._xp
+
+    @xp.setter
+    def xp(self, value: int):
+        if self._xp < value:
+            self._xp = value
+            if self._xp >= self.next_level_xp:
+                self.level_up()
+
+    def level_up(self):
+        self.level += 1
+        self.skill_point += 1
+        self.next_level_xp = (self.level+1)*10
+
+
 class Player(Entity):
     """class for player"""
-    __slots__ = ("xp", "level", "money", "skills")
 
-    def __init__(self, img: Surface, health: float, power: float, transform: Transform, info: Tuple[int, int, int, Dict[str, Skill]]) -> None:
+    def __init__(self, img: Surface, health: float, power: float, transform: Transform,) -> None:
         """info[0] is xp, info[1] is level, info[2] is money"""
         super().__init__(img, health, power, transform)
-        self.xp: int = info[0]
-        self.level: int = info[1]
-        self.money: int = info[2]
-        self.skills: Dict[str, Skill] = info[3]
+        self.stat = PlayerStat()
+
+        self.skills: Dict[str, Skill] = {}
+        gun_skill = GunSkill(10)
+        self.skills["gun"] = gun_skill
+
         self.hpbar = HealthBar(self)
         self.shootspeed: float = 30
         self.skill_particles: Group[SkillParticle]  # ref
         self.clear = False
+
+    @property
+    def xp(self):
+        return self.stat.xp
+
+    @xp.setter
+    def xp(self, value: int):
+        self.stat.xp = value
+
+    @property
+    def level(self):
+        return self.stat.level
+
+    @level.setter
+    def level(self, value: int):
+        self.stat.level = value
+
+    @property
+    def money(self):
+        return self.stat.money
+
+    @money.setter
+    def money(self, value: int):
+        self.stat.money = value
 
     def bind(self, skill_particles: Group[SkillParticle]):
         self.skill_particles = skill_particles

@@ -12,8 +12,8 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
-from src.helper.functions import Readfile
-from src.entity.textbox import TextBox, TextBox2
+from src.helper.user_data import UserData, UserDataFileStream
+from src.entity.textbox import TextBox2
 from src.entity.abstract_entity import Reward, Transform
 from src.entity.enemy import Boss, BossSkillParticle, Enemy
 from src.entity.player import Player, SkillParticle
@@ -60,10 +60,11 @@ class Scene(ABC):
 
 class SceneManager:
     """manages scenes and game"""
-    __slots__ = ("scenes", "current_id", "screen",
+    __slots__ = ("player", "scenes", "current_id", "screen",
                  "timer", "paused", 'running')
 
-    def __init__(self, initial_scene_id: SceneId, screen: pg.surface.Surface):
+    def __init__(self, initial_scene_id: SceneId, screen: pg.surface.Surface, player: Player):
+        self.player = player
         self.scenes: Dict[SceneId, Scene] = {}
         self.current_id: SceneId = initial_scene_id
         self.screen = screen
@@ -141,15 +142,34 @@ class SceneManager:
 
         self.scenes[self.current_id].stop_scene()
 
+        # save data
+        self.save_userdata()
+
+    def save_userdata(self):
+        stat = self.player.stat
+        data = UserData(
+            self.scenes[SceneId.login_scene].txt,  # type: ignore
+            stat.scene,
+            stat.xp,
+            stat.money,
+            stat.level,
+            stat.skill_point,
+            "bomb" in self.player.skills,
+            "lightning" in self.player.skills
+        )
+        print(data)
+        stream = UserDataFileStream()
+        stream.append_userdata(data)
+
 
 class Stage(Scene):
     """base class for all stages"""
     __slots__ = ("player", "enemies", "skill_particles", "boss_particles", "rewards", "camera_surface",
-                 "switch", "time", "difficulty", "shop", "boss", "bossspawn", "time", "cooltime", "bossspawntime", "tile", "sound",'scene_manager')
+                 "switch", "time", "difficulty", "shop", "boss", "bossspawn", "time", "cooltime", "bossspawntime", "tile", "sound", 'scene_manager')
 
     def __init__(self, player: Player, boss: Boss, bossspawntime: int, tile: Surface, sound: Sound, scene_manager: SceneManager):
         super().__init__()
-        self.player = player 
+        self.player = player
         self.enemies: Group[Enemy] = Group()
         self.skill_particles: Group[SkillParticle] = Group()
         self.boss_particles: Group[BossSkillParticle] = Group()
@@ -192,13 +212,12 @@ class Stage(Scene):
         if self.time % 1200 == 0:
             self.difficulty += 0.1
 
-        self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-280), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255,255,255))
-        self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-260), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255,255,255))
-        self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-240), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (255,255,255))
-        
+        self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-280), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
+        self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-260), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255, 255, 255))
+        self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-240), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (255, 255, 255))
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
@@ -281,7 +300,7 @@ class Stage(Scene):
         return self.switch
 
     def start_scene(self) -> None:
-        
+
         for skill in self.player.skills.values():
             skill.bind(self.skill_particles, self.player)
         self.sound.play(-1)
@@ -291,12 +310,12 @@ class Stage(Scene):
 
         self.player.skill_particles = self.skill_particles
 
-        self.hptext = TextBox2(pg.font.Font(None, 30).render(f'HP : {self.player.health}/{self.player.fullhp}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255,255,255))
-        self.xptext = TextBox2(pg.font.Font(None, 30).render(f'XP : {self.player.xp}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255,255,255))
-        self.moneytext = TextBox2(pg.font.Font(None, 30).render(f'MONEY : {self.player.money}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (255,255,255))
+        self.hptext = TextBox2(pg.font.Font(None, 30).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
+        self.xptext = TextBox2(pg.font.Font(None, 30).render(f'XP : {self.player.xp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255, 255, 255))
+        self.moneytext = TextBox2(pg.font.Font(None, 30).render(f'MONEY : {self.player.money}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (255, 255, 255))
 
     def position_set(self):
         """set enemy spawn position"""
@@ -328,13 +347,13 @@ class Stage(Scene):
         epic_img = pg.image.load("image/EpicEnemy.png")
         self.enemies.add(Enemy(epic_img, 400, 20, Transform(
             1.8, self.position_set(), Vector2(0, 1)), 4))
-        
+
     def spawn_rush(self) -> None:
         """spawn rush enemy"""
         rush_img = pg.image.load("image/RushEnemy.png")
         self.enemies.add(Enemy(rush_img, 10, 1, Transform(
             5, self.position_set(), Vector2(0, 1)), 3))
-        
+
     def spawn_tank(self) -> None:
         """spawn rush enemy"""
         tank_img = pg.image.load("image/TankEnemy.png")
@@ -344,29 +363,4 @@ class Stage(Scene):
     def stop_scene(self) -> None:
         """sound stop when scene changes"""
         self.sound.stop()
-        if self.scene_manager.current_id == SceneId.stage1_scene:
-            stage = 1
-        elif self.scene_manager.current_id == SceneId.stage2_scene:
-            stage =2
-        elif self.scene_manager.current_id == SceneId.stage3_scene:
-            stage =3
-
-        try:
-            s = self.player.skills['bomb']
-            skill1 = True
-        except:
-            skill1 = False
-        try:
-            s = self.player.skills['lightning']
-            skill2 = True
-        except:
-            skill2 = False
-
-        xp = self.player.xp
-        level = self.player.level
-        money = self.player.money
-        nick = self.scene_manager.scenes[SceneId.login_scene].txt
-        file = Readfile()
-        file.read()
-        file.dic[nick] = (stage,xp,level,money,skill1,skill2)
-        file.write()
+        self.player.stat.scene = self.scene_manager.current_id
