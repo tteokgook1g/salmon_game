@@ -37,7 +37,7 @@ class StartScene(Scene):
         self.start_button = Button(pg.image.load('./image/start_button.png'), 0, 0, Transform(0, pg.Vector2(
             SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), lambda: self.action('start_button'))
         self.textbox = TextBox(pg.font.Font(None, 100).render('End is salmon sashimi',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2, SCREEN_HEIGHT/2-250), pg.Vector2(1, 0)), 'End is salmon sashimi', 40, (255,255,255))
+            SCREEN_WIDTH/2, SCREEN_HEIGHT/2-250), pg.Vector2(1, 0)), 'End is salmon sashimi', 100, (255,255,255))
 
     def stop_scene(self) -> None:
         return

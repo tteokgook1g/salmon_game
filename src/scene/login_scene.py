@@ -33,9 +33,9 @@ class LoginScene(Scene):
                 self.player.level = self.startinfo[2]
                 self.player.money = self.startinfo[3]
                 if self.startinfo[4]:
-                    self.player.skills['bomb']=BombSkill
+                    self.player.skills['bomb'] = BombSkill
                 if self.startinfo[5]:
-                    self.player.skills['lightning']=LightningSkill
+                    self.player.skills['lightning'] = LightningSkill
             except:
                 self.switch = SceneId.stage1_scene
 
@@ -53,18 +53,21 @@ class LoginScene(Scene):
         screen.fill((255, 255, 255))
         screen.blit(self.confirm_button.image,
                     self.confirm_button.rect.topleft)
+        screen.blit(self.textbox.image,self.textbox.rect.topleft)
         self.inputbox.draw(screen)
 
     def check_scene_switch(self) -> SceneId | None:
         return self.switch
 
     def start_scene(self) -> None:
-        self.txt = 'inputyournickname'
+        self.txt = ''
 
         self.confirm_button = Button(pg.font.Font(None, 35).render('confirm', True, (255, 255, 255), (0, 0, 0)), 0, 0, Transform(
             0, pg.Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2+50), pg.Vector2(1, 0)), lambda: self.action('confirm_button'))
         self.inputbox = InputBox(pg.font.Font(None, 40).render(self.txt, True, (0, 0, 0), (0, 0, 0)), 0, 0, Transform(
             0, pg.Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2-50), pg.Vector2(1, 0)), self.txt, 40, (0, 0, 0), lambda: self.action('id_button'))
+        self.textbox = TextBox(pg.font.Font(None, 40).render('input your nickname here',True,(0, 0, 0)), 1,0,Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2, SCREEN_HEIGHT/2-100), pg.Vector2(1, 0)), 'input your nickname here', 40, (0, 0, 0))
 
     def stop_scene(self) -> None:
         return

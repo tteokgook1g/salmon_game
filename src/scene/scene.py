@@ -22,6 +22,7 @@ from src.helper.camera_surface import CameraSurface
 from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
 from src.scene.scene_id import SceneId
+from src.entity.health_bar import BigHealthBar
 
 
 class Scene(ABC):
@@ -170,6 +171,7 @@ class Stage(Scene):
         self.sound = sound
         self.congratulations = False
         self.scene_manager = scene_manager
+        self.hpbar = BigHealthBar(player)
 
     def update(self, info: UpdateInfo) -> None:
         schedule.run_pending()
@@ -177,6 +179,7 @@ class Stage(Scene):
         self.player.update(info)
         self.camera_surface.update()
         self.boss.update(info)
+        self.hpbar.update()
         for enemy in self.enemies:
             enemy.update(info)
         for particle in self.skill_particles:
@@ -192,12 +195,13 @@ class Stage(Scene):
         if self.time % 1200 == 0:
             self.difficulty += 0.1
 
-        self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-280), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255,255,255))
-        self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-260), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255,255,255))
-        self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}',True,(255,255,255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-240), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (255,255,255))
+
+        self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}',True,(255, 255, 255)), 1,0,Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-280), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
+        self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}',True,(0, 0, 0)), 1,0,Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-260), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (0, 0, 0))
+        self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}',True,(0, 0, 0)), 1,0,Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-240), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (0, 0, 0))
         
 
     def update_paused(self, info: UpdateInfo) -> None:
@@ -208,6 +212,7 @@ class Stage(Scene):
         self.draw_on_camera_surface(self.camera_surface)
         screen.blit(self.camera_surface, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
 
+        self.hpbar.draw(screen)
         self.hptext.draw(screen)
         self.xptext.draw(screen)
         self.moneytext.draw(screen)
@@ -314,7 +319,7 @@ class Stage(Scene):
     def spawn_normal(self) -> None:
         """spawn normal enemy"""
         normal_img = pg.image.load("image/NormalEnemy.png")
-        self.enemies.add(Enemy(normal_img, 100, 10, Transform(
+        self.enemies.add(Enemy(normal_img, 100, 1, Transform(
             1, self.position_set(), Vector2(0, 1)), 1))
 
     def spawn_rare(self) -> None:
