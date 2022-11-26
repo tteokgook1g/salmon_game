@@ -58,6 +58,7 @@ class LoginScene(Scene):
         self.inputbox.draw(screen)
 
     def check_scene_switch(self) -> SceneId | None:
+        self.txt = self.inputbox.text
         return self.switch
 
     def start_scene(self) -> None:
