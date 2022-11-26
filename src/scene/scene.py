@@ -346,7 +346,7 @@ class Stage(Scene):
     def spawn_normal(self) -> None:
         """spawn normal enemy"""
         normal_img = pg.image.load("image/NormalEnemy.png")
-        self.enemies.add(Enemy(normal_img, 100, 1, Transform(
+        self.enemies.add(Enemy(normal_img, 100, 10, Transform(
             1, self.position_set(), Vector2(0, 1)), 1))
 
     def spawn_rare(self) -> None:

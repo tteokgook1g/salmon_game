@@ -18,7 +18,7 @@ class Stage1(Stage):
                              "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3"),
                          scene_manager=scene_manager)
 
-        self.normalspawntime = 180
+        self.normalspawntime = 240
         self.normalcooltime = 0
         self.bossspawntime = 2700
         self.sound.set_volume(0.2)

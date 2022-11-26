@@ -17,7 +17,7 @@ class Stage2(Stage):
                              "sound/bgm/Diviners - Savannah (feat. Philly K) [NCS Release].mp3"),
                              scene_manager = scene_manager)
 
-        self.normalspawntime = 150
+        self.normalspawntime = 180
         self.normalcooltime = 0
         self.rarespawntime = 480
         self.rarecooltime = 0
