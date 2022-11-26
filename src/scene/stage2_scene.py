@@ -44,4 +44,4 @@ class Stage2(Stage):
             self.spawn_rare()
             self.rarecooltime = 0
         if self.time == self.bossspawntime:
-            self.boss.transform.pos = Vector2([100, 100])
+            self.boss.transform.pos = self.position_set()

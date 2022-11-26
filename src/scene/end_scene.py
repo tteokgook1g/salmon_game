@@ -47,7 +47,7 @@ class EndScene(Scene):
         self.txt = self.scene_manager.scenes[SceneId.login_scene].txt
         self.dic = self.scene_manager.scenes[SceneId.login_scene].infodic.dic
         
-        Readfile().write()
+        # Readfile().write()
 
     def stop_scene(self) -> None:
         return 

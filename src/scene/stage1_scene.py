@@ -37,7 +37,7 @@ class Stage1(Stage):
             self.spawn_normal()
             self.normalcooltime = 0
         if self.time == self.bossspawntime:
-            self.boss.transform.pos = Vector2([100, 100])
+            self.boss.transform.pos = self.position_set()
 
     def start_scene(self) -> None:
         super().start_scene()
