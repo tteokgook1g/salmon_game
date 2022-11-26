@@ -12,6 +12,7 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
+from src.helper.functions import Readfile
 from src.entity.textbox import TextBox, TextBox2
 from src.entity.abstract_entity import Reward, Transform
 from src.entity.enemy import Boss, BossSkillParticle, Enemy
@@ -57,12 +58,96 @@ class Scene(ABC):
         """called when the scene is stopped"""
 
 
+class SceneManager:
+    """manages scenes and game"""
+    __slots__ = ("scenes", "current_id", "screen",
+                 "timer", "paused", 'running')
+
+    def __init__(self, initial_scene_id: SceneId, screen: pg.surface.Surface):
+        self.scenes: Dict[SceneId, Scene] = {}
+        self.current_id: SceneId = initial_scene_id
+        self.screen = screen
+        self.timer = pg.time.Clock()
+        self.paused: bool = False
+        self.running = True
+
+    def add_scene(self, scene_id: SceneId, scene: Scene) -> None:
+        """add a scene to the scene manager"""
+        self.scenes[scene_id] = scene
+
+    def update(self, info: UpdateInfo) -> None:
+        """update current scene. you can use key and mouse if you need. """
+        scene = self.scenes[self.current_id]
+        scene.update(info)
+
+        next_id = scene.check_scene_switch()
+        if next_id is not None:
+            scene.stop_scene()
+            self.current_id = next_id
+            self.scenes[next_id].start_scene()
+
+    def update_paused(self, info: UpdateInfo) -> None:
+        """when paused, update current scene. you can use key and mouse if you need. """
+        scene = self.scenes[self.current_id]
+        scene.update_paused(info)
+
+        next_id = scene.check_scene_switch()
+        if next_id is not None:
+            scene.stop_scene()
+            self.current_id = next_id
+            self.scenes[next_id].start_scene()
+
+    def draw(self, screen: pg.surface.Surface) -> None:
+        """draw current scene on screen."""
+        self.scenes[self.current_id].draw(screen)
+
+    def draw_paused(self):
+        self.draw(self.screen)
+        temp = Surface((800, 600))
+        temp.set_alpha(128)
+        temp.fill((100, 100, 100))
+        self.screen.blit(temp, temp.get_rect())
+        self.scenes[self.current_id].draw_paused(self.screen)
+
+    def run(self):
+        """runs the game loop"""
+        self.scenes[self.current_id].start_scene()
+
+        while self.running:
+            events = pg.event.get()
+            key_pressed = pg.key.get_pressed()
+            mouse_pos = pg.mouse.get_pos()
+            mouse_click: Tuple[int, int,
+                               int] = pg.mouse.get_pressed()  # type: ignore
+
+            for event in events:
+                if event.type == pg.QUIT:
+                    self.running = False
+                if event.type == pg.KEYDOWN and key_pressed[pg.K_ESCAPE]:
+                    self.paused = not self.paused
+
+            info = UpdateInfo(key_pressed, mouse_pos,
+                              mouse_click, events, None, self.paused)
+
+            if self.paused:
+                self.draw_paused()
+                self.update_paused(info)
+            else:
+                self.update(info)
+                self.draw(self.screen)
+
+            pg.display.update()
+            self.timer.tick(60)
+
+        self.scenes[self.current_id].stop_scene()
+
+
 class Stage(Scene):
     """base class for all stages"""
     __slots__ = ("player", "enemies", "skill_particles", "boss_particles", "rewards", "camera_surface",
-                 "switch", "time", "difficulty", "shop", "boss", "bossspawn", "time", "cooltime", "bossspawntime", "tile", "sound")
+                 "switch", "time", "difficulty", "shop", "boss", "bossspawn", "time", "cooltime", "bossspawntime", "tile", "sound",'scene_manager')
 
-    def __init__(self, player: Player, boss: Boss, bossspawntime: int, tile: Surface, sound: Sound):
+    def __init__(self, player: Player, boss: Boss, bossspawntime: int, tile: Surface, sound: Sound, scene_manager: SceneManager):
         super().__init__()
         self.player = player 
         self.enemies: Group[Enemy] = Group()
@@ -84,6 +169,7 @@ class Stage(Scene):
         self.tile = tile
         self.sound = sound
         self.congratulations = False
+        self.scene_manager = scene_manager
 
     def update(self, info: UpdateInfo) -> None:
         schedule.run_pending()
@@ -258,87 +344,30 @@ class Stage(Scene):
     def stop_scene(self) -> None:
         """sound stop when scene changes"""
         self.sound.stop()
+        print(self.scene_manager.current_id,'############')
+        if self.scene_manager.current_id == SceneId.stage1_scene:
+            stage = 1
+        elif self.scene_manager.current_id == SceneId.stage2_scene:
+            stage =2
+        elif self.scene_manager.current_id == SceneId.stage3_scene:
+            stage =3
 
+        try:
+            s = self.player.skills['bomb']
+            skill1 = True
+        except:
+            skill1 = False
+        try:
+            s = self.player.skills['lightning']
+            skill2 = True
+        except:
+            skill2 = False
 
-class SceneManager:
-    """manages scenes and game"""
-    __slots__ = ("scenes", "current_id", "screen",
-                 "timer", "paused", 'running')
-
-    def __init__(self, initial_scene_id: SceneId, screen: pg.surface.Surface):
-        self.scenes: Dict[SceneId, Scene] = {}
-        self.current_id: SceneId = initial_scene_id
-        self.screen = screen
-        self.timer = pg.time.Clock()
-        self.paused: bool = False
-        self.running = True
-
-    def add_scene(self, scene_id: SceneId, scene: Scene) -> None:
-        """add a scene to the scene manager"""
-        self.scenes[scene_id] = scene
-
-    def update(self, info: UpdateInfo) -> None:
-        """update current scene. you can use key and mouse if you need. """
-        scene = self.scenes[self.current_id]
-        scene.update(info)
-
-        next_id = scene.check_scene_switch()
-        if next_id is not None:
-            self.current_id = next_id
-            scene.stop_scene()
-            self.scenes[next_id].start_scene()
-
-    def update_paused(self, info: UpdateInfo) -> None:
-        """when paused, update current scene. you can use key and mouse if you need. """
-        scene = self.scenes[self.current_id]
-        scene.update_paused(info)
-
-        next_id = scene.check_scene_switch()
-        if next_id is not None:
-            self.current_id = next_id
-            scene.stop_scene()
-            self.scenes[next_id].start_scene()
-
-    def draw(self, screen: pg.surface.Surface) -> None:
-        """draw current scene on screen."""
-        self.scenes[self.current_id].draw(screen)
-
-    def draw_paused(self):
-        self.draw(self.screen)
-        temp = Surface((800, 600))
-        temp.set_alpha(128)
-        temp.fill((100, 100, 100))
-        self.screen.blit(temp, temp.get_rect())
-        self.scenes[self.current_id].draw_paused(self.screen)
-
-    def run(self):
-        """runs the game loop"""
-        self.scenes[self.current_id].start_scene()
-
-        while self.running:
-            events = pg.event.get()
-            key_pressed = pg.key.get_pressed()
-            mouse_pos = pg.mouse.get_pos()
-            mouse_click: Tuple[int, int,
-                               int] = pg.mouse.get_pressed()  # type: ignore
-
-            for event in events:
-                if event.type == pg.QUIT:
-                    self.running = False
-                if event.type == pg.KEYDOWN and key_pressed[pg.K_ESCAPE]:
-                    self.paused = not self.paused
-
-            info = UpdateInfo(key_pressed, mouse_pos,
-                              mouse_click, events, None, self.paused)
-
-            if self.paused:
-                self.draw_paused()
-                self.update_paused(info)
-            else:
-                self.update(info)
-                self.draw(self.screen)
-
-            pg.display.update()
-            self.timer.tick(60)
-
-        self.scenes[self.current_id].stop_scene()
+        xp = self.player.xp
+        level = self.player.level
+        money = self.player.money
+        nick = self.scene_manager.scenes[SceneId.login_scene].txt
+        file = Readfile()
+        file.read()
+        file.dic[nick] = (stage,xp,level,money,skill1,skill2)
+        file.write()

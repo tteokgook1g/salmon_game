@@ -13,7 +13,7 @@ from src.scene.scene_id import SceneId
 
 
 class EndScene(Scene):
-    def __init__(self,player:Player, scene_manager:SceneManager, txt : str) -> None:
+    def __init__(self,player:Player, scene_manager:SceneManager) -> None:
         super().__init__()
         self.player = player
         self.scene_manager = scene_manager
@@ -44,10 +44,6 @@ class EndScene(Scene):
         else:
             self.backgroundimg = pg.image.load('./image/Game Over.jpg')
 
-        self.txt = self.scene_manager.scenes[SceneId.login_scene].txt
-        self.dic = self.scene_manager.scenes[SceneId.login_scene].infodic.dic
-        
-        Readfile().write()
 
     def stop_scene(self) -> None:
         return 
