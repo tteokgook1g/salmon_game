@@ -9,7 +9,7 @@ from pygame.math import Vector2
 from pygame.sprite import Sprite
 from pygame.surface import Surface
 
-from src.entity.abstract_entity import Entity, Transform
+from src.entity.abstract_entity import Transform
 from src.entity.button import Button
 from src.entity.player import BombSkill, GunSkill, LightningSkill
 from src.helper.update_info import UpdateInfo
@@ -86,30 +86,6 @@ class SpeedPotion(ShopItem):
             self.player.transform.velocity += self.speed_plus
 
 
-class GunPowerUpgrade(ShopItem):
-    def __init__(self, img: Surface, power_plus: float, price: int) -> None:
-        super().__init__(img)
-        self.power_plus = power_plus
-        self.price = price
-        self.gun: GunSkill | None = None
-
-    def buy(self):
-        try:
-            self.gun = self.player.skills["gun"]  # type: ignore
-        except KeyError:
-            pass
-
-        if self.player.money >= self.price:
-            self.player.money -= self.price
-            if self.gun is None:
-                gun_skill = GunSkill(10)
-                self.player.skills["gun"] = gun_skill
-                gun_skill.bind(self.player.skill_particles, self.player)
-                self.gun = gun_skill
-            else:
-                self.gun.power += self.power_plus
-
-
 class ShootSpeedPotion(ShopItem):
     def __init__(self, img: Surface, shootspeed_decrese: float, price: int) -> None:
         super().__init__(img)
@@ -134,6 +110,30 @@ class MaxHealthPotion(ShopItem):
             self.player.fullhp += self.max_health_plus
 
 
+class GunPowerUpgrade(ShopItem):
+    def __init__(self, img: Surface, power_plus: float, price: int) -> None:
+        super().__init__(img)
+        self.power_plus = power_plus
+        self.price = price
+        self.gun: GunSkill | None = None
+
+    def buy(self):
+        try:
+            self.gun = self.player.skills["gun"]  # type: ignore
+        except KeyError:
+            pass
+
+        if self.gun is None and self.player.money >= self.price:
+            self.player.money -= self.price
+            gun_skill = GunSkill(10)
+            self.player.skills["gun"] = gun_skill
+            gun_skill.bind(self.player.skill_particles, self.player)
+            self.gun = gun_skill
+        elif self.gun is not None and self.player.stat.skill_point > 0:
+            self.player.stat.skill_point -= 1
+            self.gun.power += self.power_plus
+
+
 class BombItem(ShopItem):
     def __init__(self, img: Surface, power_plus: float, price: int) -> None:
         super().__init__(img)
@@ -147,15 +147,15 @@ class BombItem(ShopItem):
         except KeyError:
             pass
 
-        if self.player.money >= self.price:
+        if self.bomb is None and self.player.money >= self.price:
             self.player.money -= self.price
-            if self.bomb is None:
-                bomb_skill = BombSkill(2)
-                self.player.skills["bomb"] = bomb_skill
-                bomb_skill.bind(self.player.skill_particles, self.player)
-                self.bomb = bomb_skill
-            else:
-                self.bomb.power += self.power_plus
+            bomb_skill = BombSkill(2)
+            self.player.skills["bomb"] = bomb_skill
+            bomb_skill.bind(self.player.skill_particles, self.player)
+            self.bomb = bomb_skill
+        elif self.bomb is not None and self.player.stat.skill_point > 0:
+            self.player.stat.skill_point -= 1
+            self.bomb.power += self.power_plus
 
 
 class LightningItem(ShopItem):
@@ -171,16 +171,12 @@ class LightningItem(ShopItem):
         except KeyError:
             pass
 
-        if self.player.money >= self.price:
+        if self.lightning is None and self.player.money >= self.price:
             self.player.money -= self.price
-            if self.lightning is None:
-                lightning_skill = LightningSkill(5)
-                self.player.skills["lightning"] = lightning_skill
-                lightning_skill.bind(self.player.skill_particles, self.player)
-                self.lightning = lightning_skill
-            else:
-                self.lightning.power += self.power_plus
-
-
-class lightning(Entity):
-    pass
+            lightning_skill = LightningSkill(5)
+            self.player.skills["lightning"] = lightning_skill
+            lightning_skill.bind(self.player.skill_particles, self.player)
+            self.lightning = lightning_skill
+        elif self.lightning is not None and self.player.stat.skill_point > 0:
+            self.player.stat.skill_point -= 1
+            self.lightning.power += self.power_plus

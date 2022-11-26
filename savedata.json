@@ -1,0 +1,15 @@
+[
+  {
+    "nickname": "inputyournickname",
+    "scene": 4,
+    "xp": 2,
+    "money": 2,
+    "level": 0,
+    "skill_point": 0,
+    "bomb_skill": false,
+    "lightning_skill": false,
+    "fullhp": 100,
+    "speed": 3,
+    "shootspeed": 30
+  }
+]

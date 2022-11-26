@@ -1,6 +1,6 @@
+import json
 from dataclasses import asdict, dataclass
 from typing import Any, Dict, List
-import json
 
 from src.scene.scene_id import SceneId
 
@@ -12,9 +12,12 @@ class UserData:
     xp: int
     money: int
     level: int
-    skill_point:int
+    skill_point: int
     bomb_skill: bool
     lightning_skill: bool
+    fullhp:float
+    speed:float
+    shootspeed:float
 
     @classmethod
     def from_dict(cls, dict: Dict[str, Any]):
@@ -26,7 +29,10 @@ class UserData:
             dict["level"],
             dict["skill_point"],
             dict["bomb_skill"],
-            dict["lightning_skill"]
+            dict["lightning_skill"],
+            dict["fullhp"],
+            dict["speed"],
+            dict["shootspeed"]
         )
 
 

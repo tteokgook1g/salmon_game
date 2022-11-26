@@ -3,8 +3,9 @@ from pygame.math import Vector2
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_BORDER
 from src.entity.abstract_entity import Transform
-from src.entity.player import Player
 from src.entity.enemy import Boss
+from src.entity.player import Player
+from src.scene.end_scene import EndScene
 from src.scene.login_scene import LoginScene
 from src.scene.scene import SceneManager
 from src.scene.scene_id import SceneId
@@ -12,7 +13,6 @@ from src.scene.stage1_scene import Stage1
 from src.scene.stage2_scene import Stage2
 from src.scene.stage3_scene import Stage3
 from src.scene.start_scene import StartScene
-from src.scene.end_scene import EndScene
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

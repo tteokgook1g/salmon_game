@@ -1,6 +1,5 @@
 import pygame as pg
 import schedule  # type: ignore
-from pygame.math import Vector2
 from pygame.mixer import Sound
 
 from src.entity.enemy import Boss
@@ -11,8 +10,6 @@ from src.scene.scene_id import SceneId
 
 
 class Stage2(Stage):
-    """abstract class representing game stages."""
-
     def __init__(self, player: Player, boss: Boss, scene_manager : SceneManager) -> None:
         super().__init__(player, boss, bossspawntime=3600,
                          tile=pg.image.load("image/Tile 2.png"),
@@ -24,7 +21,7 @@ class Stage2(Stage):
         self.normalcooltime = 0
         self.rarespawntime = 480
         self.rarecooltime = 0
-        self.bossspawntime = 5400
+        self.bossspawntime = 3900
         self.sound.set_volume(0.2)
 
     def update(self, info: UpdateInfo) -> None:
