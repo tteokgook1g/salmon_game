@@ -44,10 +44,6 @@ class EndScene(Scene):
         else:
             self.backgroundimg = pg.image.load('./image/Game Over.jpg')
 
-        self.txt = self.scene_manager.scenes[SceneId.login_scene].txt
-        self.dic = self.scene_manager.scenes[SceneId.login_scene].infodic.dic
-        
-        # Readfile().write()
 
     def stop_scene(self) -> None:
         return 

@@ -40,7 +40,7 @@ class InputBox(Entity):
                         self.action()
                     elif event.key == pg.K_BACKSPACE:
                         self.text = self.text[:-1]
-                    elif len(self.text) < 50:
+                    elif len(self.text) < 50 and event.key!=pg.K_SPACE:
                         self.text += event.unicode
                     # Re-render the text.
                     if len(self.text) < 30:

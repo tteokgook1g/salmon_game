@@ -39,16 +39,27 @@ def convert_color(
     return result
 
 class Readfile:
+    nickname = 'Salmon'
+    stage = 1
+    xp = 0
+    money = 0
+    level = 1
+    skill1 = False
+    skill2 = False
+
     def read(self): 
         f = open('./save.txt', 'r')
-        lst = f.readlines()[:-1]
+        lst = f.readlines()
+
         lst = [i.strip().split(' ') for i in lst]
-        self.dic = {i[0]:tuple(eval(i[j]) for j in range(1,7)) for i in lst}
+
+        self.dic = {i[0]:[eval(i[j]) for j in range(1,7)] for i in lst}
+
         f.close()
 
-    def write(self, info : Dict):
+    def write(self):
         f = open('./save.txt','w')
-        for i,j in info:
-            s = f'{i} {j[0]} {j[1]} {j[2]} {j[3]} {j[4]} {j[5]} {j[6]}\n'
+        for i,j in self.dic.items():
+            s = f'{i} {j[0]} {j[1]} {j[2]} {j[3]} {j[4]} {j[5]}\n'
             f.write(s)
         f.close()

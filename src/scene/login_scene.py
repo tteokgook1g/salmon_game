@@ -59,7 +59,7 @@ class LoginScene(Scene):
         return self.switch
 
     def start_scene(self) -> None:
-        self.txt = 'input your nickname'
+        self.txt = 'inputyournickname'
 
         self.confirm_button = Button(pg.font.Font(None, 35).render('confirm', True, (255, 255, 255), (0, 0, 0)), 0, 0, Transform(
             0, pg.Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2+50), pg.Vector2(1, 0)), lambda: self.action('confirm_button'))
