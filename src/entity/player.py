@@ -13,7 +13,7 @@ from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_RECT
 from src.entity.abstract_entity import Entity, Transform
-from src.entity.health_bar import HealthBar, BigHealthBar
+from src.entity.health_bar import HealthBar
 from src.helper.functions import convert_color, lerp, vector_to_tuple
 from src.scene.scene_id import SceneId
 

@@ -32,7 +32,7 @@ class HealthBar():
         result.blit(hp, (1, 1))
         screen.blit(result, bar_rect)
 
-class BigHealthBar():
+class PlayerHealthBar():
     padding = 20
 
     def __init__(self, entity: Entity):
@@ -58,5 +58,34 @@ class BigHealthBar():
             hp.fill((255, 25500*hp_per/35, 0))
         bar_rect = Rect(0, 0, bar_width+2, bar_height+2)
         bar_rect.center = 210, 18
+        result.blit(hp, (1, 1))
+        screen.blit(result, bar_rect)
+
+class BossHealthBar():
+    padding = 20
+
+    def __init__(self, entity: Entity):
+        self.entity = entity
+        self.transform = Transform(
+            0, self.entity.transform.pos-Vector2(0, 40), Vector2(1, 0))
+
+    def update(self) -> None:
+        self.transform = Transform(
+            0, self.entity.transform.pos-Vector2(0, 40), Vector2(1, 0))
+
+    def draw(self, screen: Surface) -> None:
+        bar_width, bar_height = 400, 20
+        result = Surface((bar_width+2, bar_height+2))
+        hp_per = self.entity.health/self.entity.fullhp
+        result.fill((0, 0, 0))
+        hp = Surface((abs(hp_per*bar_width), bar_height))
+        if hp_per >= 0.6:
+            hp.fill((0, 255, 0))
+        elif hp_per >= 0.35:
+            hp.fill((25500*((0.6-hp_per)*0.04), 255, 0))
+        else:
+            hp.fill((255, 25500*hp_per/35, 0))
+        bar_rect = Rect(0, 0, bar_width+2, bar_height+2)
+        bar_rect.center = SCREEN_WIDTH -210, SCREEN_HEIGHT - 18
         result.blit(hp, (1, 1))
         screen.blit(result, bar_rect)
