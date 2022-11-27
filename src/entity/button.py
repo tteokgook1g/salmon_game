@@ -3,9 +3,9 @@ from typing import Any, Callable, Tuple
 import pygame as pg
 from pygame.rect import Rect
 from pygame.surface import Surface
-from src.helper.update_info import UpdateInfo
 
 from src.entity.abstract_entity import Entity, Transform
+from src.helper.update_info import UpdateInfo
 
 
 class Button(Entity):

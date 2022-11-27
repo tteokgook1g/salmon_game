@@ -13,7 +13,7 @@ from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
 from src.entity.abstract_entity import Reward, Transform
-from src.entity.enemy import Boss, BossSkillParticle, Enemy
+from src.entity.enemy import Boss, Enemy
 from src.entity.health_bar import BossHealthBar, PlayerHealthBar
 from src.entity.player import Player, PlayerStat, SkillParticle
 from src.entity.shop.shop import Shop
@@ -194,7 +194,6 @@ class Stage(Scene):
         super().__init__(player)
         self.enemies: Group[Enemy] = Group()
         self.skill_particles: Group[SkillParticle] = Group()
-        self.boss_particles: Group[BossSkillParticle] = Group()
         self.rewards: Group[Reward] = Group()
         self.camera_surface = CameraSurface(
             (SCREEN_WIDTH, SCREEN_HEIGHT), player.transform)
@@ -229,8 +228,6 @@ class Stage(Scene):
             particle.update(info)
         for reward in self.rewards:
             reward.update(info)
-        for particle in self.boss_particles:
-            particle.update(info)
         if self.player.health <= 0:
             self.player.health += 100
             self.switch = SceneId.end_scene
@@ -248,7 +245,6 @@ class Stage(Scene):
             100, 80), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (0, 0, 0))
         self.bosshptext = TextBox2(pg.font.Font(None, 40).render(f'BOSS HP : {self.boss.health}/{self.boss.fullhp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
             SCREEN_WIDTH - 40, 40), pg.Vector2(1, 0)), f'BOSS HP : {self.boss.health}/{self.boss.fullhp}', 20, (0, 0, 0))
-        
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
@@ -274,10 +270,6 @@ class Stage(Scene):
             if pg.sprite.collide_rect(self.player, enemy):
                 enemy.handle_collide(self.player)
 
-        for boss_particle in self.boss_particles:
-            if pg.sprite.collide_rect(self.player, boss_particle):
-                boss_particle.handle_collide(self.player)
-
         if pg.sprite.collide_rect(self.player, self.boss) and self.time >= self.bossspawntime:
             self.boss.handle_collide(self.player)
 
@@ -298,8 +290,6 @@ class Stage(Scene):
         for enemy in self.enemies:
             enemy.draw(camera_surface)
         for particle in self.skill_particles:
-            particle.draw(camera_surface)
-        for particle in self.boss_particles:
             particle.draw(camera_surface)
         for reward in self.rewards:
             reward.draw(camera_surface)

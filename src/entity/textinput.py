@@ -3,7 +3,6 @@ from typing import Any, Callable, Sequence, Tuple
 import pygame as pg
 from pygame.event import Event
 from pygame.surface import Surface
-from pygame.mixer import Sound
 
 from src.entity.abstract_entity import Entity, Transform
 from src.helper.update_info import UpdateInfo
@@ -12,6 +11,7 @@ pg.init()
 
 
 class InputBox(Entity):
+    """사용자에게 텍스트를 입력받는 기능"""
 
     def __init__(self, img: Surface, health: int, power: int, transform: Transform, text: str, size: int, color: Tuple[int, int, int], action: Callable[[], Any]):
         super().__init__(img, health, power, transform)
@@ -40,7 +40,7 @@ class InputBox(Entity):
                         self.action()
                     elif event.key == pg.K_BACKSPACE:
                         self.text = self.text[:-1]
-                    elif len(self.text) < 50 and event.key!=pg.K_SPACE:
+                    elif len(self.text) < 50 and event.key != pg.K_SPACE:
                         self.text += event.unicode
                     # Re-render the text.
                     if len(self.text) < 30:

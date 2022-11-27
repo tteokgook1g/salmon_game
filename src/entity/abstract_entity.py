@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
-import pygame
 
+import pygame
 import schedule  # type: ignore
 from pygame.math import Vector2
 from pygame.rect import Rect
@@ -93,6 +93,7 @@ class Entity(Sprite):
         screen.blit(self.image, self.rect)
 
     def isinbox(self):
+        """엔티티가 경계 안에 있는지 확인한다. false를 리턴하면 업데이트 시 움직이지 않는다."""
         next_pos = (self.transform.pos+self.transform.direction *
                     self.transform.velocity)
         return (self.rect.size[0]/2 < next_pos.x < WORLD_BORDER-self.rect.size[0]/2 and
