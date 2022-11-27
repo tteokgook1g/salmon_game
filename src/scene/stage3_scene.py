@@ -29,7 +29,7 @@ class Stage3(Stage):
         self.rushcooltime = 0
         self.tankspawntime = 1080
         self.tankcooltime = 0
-        self.bossspawntime = 5400
+        self.bossspawntime = 7200
         self.sound.set_volume(0.2)
 
     def update(self, info: UpdateInfo) -> None:

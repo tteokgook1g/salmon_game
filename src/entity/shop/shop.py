@@ -3,6 +3,7 @@ from typing import List
 import pygame
 from pygame.math import Vector2
 from pygame.surface import Surface
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 
 from constants import BLACK
 from src.entity.player import Player
@@ -32,23 +33,23 @@ class Shop():
         self.items.append(BombItem(
             pygame.image.load("image/bomb.png"), 5, 5))
         self.items.append(LightningItem(
-            pygame.image.load("image/lightning.png"), 5, 10))
+            pygame.image.load("image/lightning.png"), 5, 20))
 
         for item in self.items:
             item.player = player
 
-        x = 100
+        x = 360
         for item in (self.items):
-            item.transform.pos = Vector2(x, 300)
+            item.transform.pos = Vector2(x, SCREEN_HEIGHT/2)
             x += item.image.get_rect().w
 
     def draw(self, screen: Surface):
         for item in self.items:
             item.draw(screen)
         screen.blit(render_text(
-            f"money: $ {self.player.money}", BLACK, 40), (50, 150))
+            f"money: $ {self.player.money}", BLACK, 40), (360, 200))
         screen.blit(render_text(
-            f"skill point: {self.player.stat.skill_point}", BLACK, 40), (50, 200))
+            f"skill point: {self.player.stat.skill_point}", BLACK, 40), (360, 250))
 
     def update(self, info: UpdateInfo):
         for item in self.items:

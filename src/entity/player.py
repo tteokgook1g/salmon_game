@@ -13,7 +13,7 @@ from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_RECT
 from src.entity.abstract_entity import Entity, Transform
-from src.entity.health_bar import HealthBar, BigHealthBar
+from src.entity.health_bar import HealthBar
 from src.helper.functions import convert_color, lerp, vector_to_tuple
 from src.scene.scene_id import SceneId
 
@@ -245,7 +245,7 @@ class BombSkill(Skill):
         self.cooltime -= 1
         if self.cooltime <= 0 and info.key_pressed[self.skill_key]:
             self._make_particle()
-            self.cooltime = int(self.player.shootspeed)
+            self.cooltime = 60
 
 
 class LightningSkill(Skill):
@@ -269,13 +269,13 @@ class LightningSkill(Skill):
         self.cooltime -= 1
         if self.cooltime <= 0 and info.key_pressed[self.skill_key]:
             self._make_particle()
-            self.cooltime = int(self.player.shootspeed)
+            self.cooltime = 60
 
 
 class PlayerStat:
     set_pause: Callable[..., Any]  # set to pause
 
-    def __init__(self, stage: SceneId = SceneId.stage1_scene, xp: int = 0, level: int = 0, money: int = 0, shootspeed: float = 30, skill_point: int = 0) -> None:
+    def __init__(self, stage: SceneId = SceneId.stage1_scene, xp: int = 0, level: int = 0, money: int = 0, shootspeed: float = 20, skill_point: int = 0) -> None:
         self._xp: int = xp
         self.level = level
         self.money = money

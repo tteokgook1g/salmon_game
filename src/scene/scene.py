@@ -23,15 +23,15 @@ from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
 from src.helper.user_data import UserData, UserDataFileStream
 from src.scene.scene_id import SceneId
-from src.entity.health_bar import BigHealthBar
+from src.entity.health_bar import PlayerHealthBar, BossHealthBar
 
 
 class Scene(ABC):
     """interface Scene"""
-    __slots__ = ("_scene_manager","player")
+    __slots__ = ("_scene_manager", "player")
 
-    def __init__(self, player:Player):
-        self.player= player
+    def __init__(self, player: Player):
+        self.player = player
 
     @property
     def scene_manager(self) -> "SceneManager":
@@ -124,7 +124,7 @@ class SceneManager:
 
     def draw_paused(self):
         self.draw(self.screen)
-        temp = Surface((800, 600))
+        temp = Surface((1280, 720))
         temp.set_alpha(128)
         temp.fill((100, 100, 100))
         self.screen.blit(temp, temp.get_rect())
@@ -211,7 +211,8 @@ class Stage(Scene):
         self.tile = tile
         self.sound = sound
         self.congratulations = False
-        self.hpbar = BigHealthBar(player)
+        self.hpbar = PlayerHealthBar(player)
+        self.bosshpbar = BossHealthBar(boss)
 
     def update(self, info: UpdateInfo) -> None:
         schedule.run_pending()
@@ -220,6 +221,8 @@ class Stage(Scene):
         self.camera_surface.update()
         self.boss.update(info)
         self.hpbar.update()
+        if self.bossspawn == True:
+            self.bosshpbar.update()
         for enemy in self.enemies:
             enemy.update(info)
         for particle in self.skill_particles:
@@ -234,6 +237,8 @@ class Stage(Scene):
             schedule.cancel_job(all)  # type: ignore
         if self.time % 1200 == 0:
             self.difficulty += 0.1
+        if self.time >= self.bossspawntime:
+            self.bossspawn = True
 
         self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
             SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-280), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
@@ -251,6 +256,9 @@ class Stage(Scene):
         screen.blit(self.camera_surface, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
 
         self.hpbar.draw(screen)
+        if self.bossspawn == True:
+            self.bosshpbar.draw(screen)
+            self.bosshptext.draw(screen)
         self.hptext.draw(screen)
         self.xptext.draw(screen)
         self.moneytext.draw(screen)
@@ -334,11 +342,13 @@ class Stage(Scene):
         self.player.skill_particles = self.skill_particles
 
         self.hptext = TextBox2(pg.font.Font(None, 30).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
+            100, 20), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
+        self.bosshptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.boss.health}/{self.boss.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH - 100, 20), pg.Vector2(1, 0)), f'HP : {self.boss.health}/{self.boss.fullhp}', 20, (255, 255, 255))
         self.xptext = TextBox2(pg.font.Font(None, 30).render(f'XP : {self.player.xp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255, 255, 255))
+            100, 40), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255, 255, 255))
         self.moneytext = TextBox2(pg.font.Font(None, 30).render(f'MONEY : {self.player.money}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (255, 255, 255))
+            100, 60), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (255, 255, 255))
 
     def position_set(self):
         """set enemy spawn position"""
@@ -357,19 +367,19 @@ class Stage(Scene):
         """spawn normal enemy"""
         normal_img = pg.image.load("image/NormalEnemy.png")
         self.enemies.add(Enemy(normal_img, 100, 10, Transform(
-            1, self.position_set(), Vector2(0, 1)), 1))
+            1, self.position_set(), Vector2(0, 1)), 2))
 
     def spawn_rare(self) -> None:
         """spawn rare enemy"""
         rare_img = pg.image.load("image/RareEnemy.png")
         self.enemies.add(Enemy(rare_img, 150, 15, Transform(
-            1.4, self.position_set(), Vector2(0, 1)), 2))
+            1.4, self.position_set(), Vector2(0, 1)), 5))
 
     def spawn_epic(self) -> None:
         """spawn epic enemy"""
         epic_img = pg.image.load("image/EpicEnemy.png")
         self.enemies.add(Enemy(epic_img, 400, 20, Transform(
-            1.8, self.position_set(), Vector2(0, 1)), 4))
+            1.8, self.position_set(), Vector2(0, 1)), 12))
 
     def spawn_rush(self) -> None:
         """spawn rush enemy"""
@@ -381,7 +391,7 @@ class Stage(Scene):
         """spawn rush enemy"""
         tank_img = pg.image.load("image/TankEnemy.png")
         self.enemies.add(Enemy(tank_img, 1000, 1, Transform(
-            0.5, self.position_set(), Vector2(0, 1)), 3))
+            0.5, self.position_set(), Vector2(0, 1)), 9))
 
     def stop_scene(self) -> None:
         """sound stop when scene changes"""
