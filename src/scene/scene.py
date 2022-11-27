@@ -101,6 +101,7 @@ class SceneManager:
         scene = self.scenes[self.current_id]
         scene.update(info)
 
+        # 다음 장면으로 넘어갈지 확인해서 화면 전환
         next_id = scene.check_scene_switch()
         if next_id is not None:
             scene.stop_scene()
@@ -123,6 +124,7 @@ class SceneManager:
         self.scenes[self.current_id].draw(screen)
 
     def draw_paused(self):
+        # 원래 화면에 투명 회색을 씌우고 정지 시 띄울 화면을 그림
         self.draw(self.screen)
         temp = Surface((1280, 720))
         temp.set_alpha(128)
@@ -145,6 +147,7 @@ class SceneManager:
                 if event.type == pg.QUIT:
                     self.running = False
                 if event.type == pg.KEYDOWN and key_pressed[pg.K_ESCAPE]:
+                    # ESC 누르면 멈춤
                     self.paused = not self.paused
 
             info = UpdateInfo(key_pressed, mouse_pos,
@@ -237,6 +240,7 @@ class Stage(Scene):
         if self.time >= self.bossspawntime:
             self.bossspawn = True
 
+        # 화면에 체력 등 정보를 보여줌
         self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
             100, 40), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (0, 0, 0))
         self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
@@ -247,6 +251,7 @@ class Stage(Scene):
             SCREEN_WIDTH - 40, 40), pg.Vector2(1, 0)), f'BOSS HP : {self.boss.health}/{self.boss.fullhp}', 20, (0, 0, 0))
 
     def update_paused(self, info: UpdateInfo) -> None:
+        # 멈춘 상태에서 상점을 보여줌
         self.shop.update(info)
 
     def draw(self, screen: pg.surface.Surface) -> None:
@@ -298,6 +303,7 @@ class Stage(Scene):
             self.boss.draw(camera_surface)
 
     def _draw_background(self, camera_surface: CameraSurface):
+        # 카메라의 위치를 확인해서 타일로 배경 채움
         rect = Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
         rect.center = vector_to_tuple(camera_surface.pos)
         topleft = max(rect.left, 0), max(rect.top, 0)

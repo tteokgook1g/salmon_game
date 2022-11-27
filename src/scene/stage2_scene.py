@@ -10,6 +10,7 @@ from src.scene.scene_id import SceneId
 
 
 class Stage2(Stage):
+    """스테이지 2번"""
     def __init__(self, player: Player, boss: Boss) -> None:
         super().__init__(player, boss, bossspawntime=3600,
                          tile=pg.image.load("image/Tile 2.png"),
@@ -32,6 +33,7 @@ class Stage2(Stage):
         self.collide()
         self.time += 1
 
+        # 두 종류 적 소환
         self.normalcooltime += 1
         self.rarecooltime += 1
         if self.normalcooltime >= self.normalspawntime/self.difficulty:

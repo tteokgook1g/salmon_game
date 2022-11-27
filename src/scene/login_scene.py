@@ -13,11 +13,14 @@ from src.scene.scene_id import SceneId
 
 
 class LoginScene(Scene):
+    """로그인 장면"""
+
     def __init__(self, player: Player):
         super().__init__(player)
 
     def action(self, typ: str):
         if typ == 'confirm_button':
+            # 버튼을 누르면 기존 데이터를 읽고 다음 장면으로 넘어감
             stream = UserDataFileStream()
             data = stream.get_userdata(self.txt)
             if data is None:
@@ -54,7 +57,7 @@ class LoginScene(Scene):
         screen.fill((255, 255, 255))
         screen.blit(self.confirm_button.image,
                     self.confirm_button.rect.topleft)
-        screen.blit(self.textbox.image,self.textbox.rect.topleft)
+        screen.blit(self.textbox.image, self.textbox.rect.topleft)
         self.inputbox.draw(screen)
 
     def check_scene_switch(self) -> SceneId | None:
@@ -68,7 +71,7 @@ class LoginScene(Scene):
             0, pg.Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2+50), pg.Vector2(1, 0)), lambda: self.action('confirm_button'))
         self.inputbox = InputBox(pg.font.Font(None, 40).render(self.txt, True, (0, 0, 0), (0, 0, 0)), 0, 0, Transform(
             0, pg.Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2-50), pg.Vector2(1, 0)), self.txt, 40, (0, 0, 0), lambda: self.action('id_button'))
-        self.textbox = TextBox(pg.font.Font(None, 40).render('input your nickname here',True,(0, 0, 0)), 1,0,Transform(0, pg.Vector2(
+        self.textbox = TextBox(pg.font.Font(None, 40).render('input your nickname here', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
             SCREEN_WIDTH/2, SCREEN_HEIGHT/2-100), pg.Vector2(1, 0)), 'input your nickname here', 40, (0, 0, 0))
 
     def stop_scene(self) -> None:
