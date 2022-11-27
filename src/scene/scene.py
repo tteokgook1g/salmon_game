@@ -110,7 +110,7 @@ class SceneManager:
 
     def draw_paused(self):
         self.draw(self.screen)
-        temp = Surface((800, 600))
+        temp = Surface((1280, 720))
         temp.set_alpha(128)
         temp.fill((100, 100, 100))
         self.screen.blit(temp, temp.get_rect())
@@ -230,11 +230,11 @@ class Stage(Scene):
 
 
         self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}',True,(255, 255, 255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-280), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
+            100, 20), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
         self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}',True,(0, 0, 0)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-260), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (0, 0, 0))
+            100, 40), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (0, 0, 0))
         self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}',True,(0, 0, 0)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-240), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (0, 0, 0))
+            100, 60), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (0, 0, 0))
         
 
     def update_paused(self, info: UpdateInfo) -> None:
@@ -331,11 +331,11 @@ class Stage(Scene):
         self.player.skill_particles = self.skill_particles
 
         self.hptext = TextBox2(pg.font.Font(None, 30).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
+            100, 20), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
         self.xptext = TextBox2(pg.font.Font(None, 30).render(f'XP : {self.player.xp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255, 255, 255))
+            100, 40), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255, 255, 255))
         self.moneytext = TextBox2(pg.font.Font(None, 30).render(f'MONEY : {self.player.money}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (255, 255, 255))
+            100, 60), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (255, 255, 255))
 
     def position_set(self):
         """set enemy spawn position"""

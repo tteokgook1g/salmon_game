@@ -45,7 +45,7 @@ class EndScene(Scene):
         if self.player.clear == True:
             self.backgroundimg = pg.image.load('./image/clear.png')
         else:
-            self.backgroundimg = pg.image.load('./image/Game Over.jpg')
+            self.backgroundimg = pg.image.load('./image/GameOver.jpg')
 
     def stop_scene(self) -> None:
         return

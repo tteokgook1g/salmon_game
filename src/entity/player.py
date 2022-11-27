@@ -278,7 +278,7 @@ class LightningSkill(Skill):
 class PlayerStat:
     set_pause: Callable[..., Any]  # set to pause
 
-    def __init__(self, stage: SceneId = SceneId.stage1_scene, xp: int = 0, level: int = 0, money: int = 0, shootspeed: float = 30, skill_point: int = 0) -> None:
+    def __init__(self, stage: SceneId = SceneId.stage1_scene, xp: int = 0, level: int = 0, money: int = 0, shootspeed: float = 20, skill_point: int = 0) -> None:
         self._xp: int = xp
         self.level = level
         self.money = money
