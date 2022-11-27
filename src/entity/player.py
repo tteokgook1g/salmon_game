@@ -24,6 +24,8 @@ if TYPE_CHECKING:
 
 
 class SkillParticle(Entity, ABC):
+    """base class for SkillParticle"""
+
     def __init__(self, img: Surface, power: float, transform: Transform) -> None:
         super().__init__(img, 1, power, transform)
         schedule.every(10).seconds.do(self.kill)  # type: ignore
@@ -87,6 +89,8 @@ class BombParticle(SkillParticle):
             self.active = True
             self.view_radius = self.max_radius/16
             return schedule.CancelJob
+
+        # 일정 시간 후 활성화, 일정 시간 후 삭제
         schedule.every(self.activation_time).seconds.do(  # type: ignore
             set_active)
         schedule.every(self.activation_time +  # type: ignore
@@ -95,6 +99,7 @@ class BombParticle(SkillParticle):
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
         if self.active:
+            # 이미지 크기를 조정함
             self.view_radius = lerp(self.view_radius, self.max_radius, 0.12)
             self.image = pg.transform.scale(
                 self.explosion_img, (self.view_radius*2, self.view_radius*2))
@@ -153,6 +158,7 @@ class LightningParticle(SkillParticle):
         return lightning_img, rect  # type: ignore
 
     def update(self, info: UpdateInfo) -> None:
+        # 반지름 크기를 조정함
         self.view_radius = lerp(self.view_radius, self.length_range, 0.1)
         self.image, self.rect = self.get_arc()
         super().update(info)
@@ -163,6 +169,7 @@ class LightningParticle(SkillParticle):
         return True
 
     def check_collide(self, enemy: Enemy) -> bool:
+        # 떨어진 거리, 이루는 각을 고려하여 충돌 체크
         displacement = enemy.transform.pos-self.transform.pos
         angle = displacement.angle_to(self.transform.direction) % 360
         if displacement.length() <= self.view_radius\
@@ -271,6 +278,7 @@ class LightningSkill(Skill):
 
 
 class PlayerStat:
+    """플레이어의 스텟을 관리함"""
     set_pause: Callable[..., Any]  # set to pause
 
     def __init__(self, stage: SceneId = SceneId.stage1_scene, xp: int = 0, level: int = 0, money: int = 0, shootspeed: float = 20, skill_point: int = 0) -> None:
@@ -308,8 +316,7 @@ class PlayerStat:
 class Player(Entity):
     """class for player"""
 
-    def __init__(self, img: Surface, health: float, power: float, transform: Transform,) -> None:
-        """info[0] is xp, info[1] is level, info[2] is money"""
+    def __init__(self, img: Surface, health: float, power: float, transform: Transform) -> None:
         super().__init__(img, health, power, transform)
         self.stat = PlayerStat()
 
@@ -370,6 +377,7 @@ class Player(Entity):
         self.hpbar.draw(screen)
 
     def handle_key_input(self, key_pressed: Sequence[bool]):
+        # wasd 로 이동
         horizontal = (-key_pressed[pg.K_a]+key_pressed[pg.K_d])
         vertical = (key_pressed[pg.K_s]-key_pressed[pg.K_w])
         self.transform.direction = Vector2(horizontal, vertical)

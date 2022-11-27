@@ -3,7 +3,7 @@ from typing import List
 import pygame
 from pygame.math import Vector2
 from pygame.surface import Surface
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from constants import SCREEN_HEIGHT
 
 from constants import BLACK
 from src.entity.player import Player
@@ -15,6 +15,8 @@ from src.helper.update_info import UpdateInfo
 
 
 class Shop():
+    """상점 기능"""
+
     def __init__(self, player: Player):
         super().__init__()
         self.items: List[ShopItem] = []
@@ -38,6 +40,7 @@ class Shop():
         for item in self.items:
             item.player = player
 
+        # 상점 아이템을 일정 간격으로 띄워서 배치
         x = 360
         for item in (self.items):
             item.transform.pos = Vector2(x, SCREEN_HEIGHT/2)
@@ -46,6 +49,8 @@ class Shop():
     def draw(self, screen: Surface):
         for item in self.items:
             item.draw(screen)
+
+        # 플레이어의 돈과 스킬 포인트를 보여줌
         screen.blit(render_text(
             f"money: $ {self.player.money}", BLACK, 40), (360, 200))
         screen.blit(render_text(

@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class UpdateInfo:
+    """업데이트 함수의 파라미터로 들어감"""
     __slots__ = ("key_pressed", "mouse_pos", "mouse_click",
                  "events", "player", "is_paused")
     key_pressed: Sequence[bool]

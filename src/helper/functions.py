@@ -27,6 +27,7 @@ def convert_color(
         img: Surface,
         convert: Callable[[Color], Color],
 ) -> Surface:
+    # 이미지의 각 픽셀을 convert 함수를 통과시킨 색으로 바꿈
     pixel = pygame.PixelArray(img)
     color_array = [[img.unmap_rgb(pixel[x, y]) for x in range(  # type: ignore
         0, img.get_width())] for y in range(0, img.get_height())]
@@ -37,30 +38,3 @@ def convert_color(
         for x, color in enumerate(row):
             result.set_at((x, y), color)
     return result
-
-
-class Readfile:
-    nickname = 'Salmon'
-    stage = 1
-    xp = 0
-    money = 0
-    level = 1
-    skill1 = False
-    skill2 = False
-
-    def read(self):
-        f = open('./save.txt', 'r')
-        lst = f.readlines()
-
-        lst = [i.strip().split(' ') for i in lst]
-
-        self.dic = {i[0]: [eval(i[j]) for j in range(1, 7)] for i in lst}
-
-        f.close()
-
-    def write(self):
-        f = open('./save.txt', 'w')
-        for i, j in self.dic.items():
-            s = f'{i} {j[0]} {j[1]} {j[2]} {j[3]} {j[4]} {j[5]}\n'
-            f.write(s)
-        f.close()
