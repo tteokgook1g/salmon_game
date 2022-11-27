@@ -202,7 +202,7 @@ class Stage(Scene):
         self.time = 0
         self.difficulty = 1
         self.shop = Shop(player)
-        self.player.money = 100
+        self.player.money = 0
         self.boss = boss
         self.bossspawn = False
         self.time = 0
