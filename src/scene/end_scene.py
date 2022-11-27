@@ -9,15 +9,13 @@ from src.entity.player import Player
 from src.entity.textbox import TextBox
 from src.helper.update_info import UpdateInfo
 from src.entity.abstract_entity import Transform
-from src.scene.scene import Scene, SceneManager
+from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
 
 
 class EndScene(Scene):
-    def __init__(self, player: Player, scene_manager: SceneManager) -> None:
-        super().__init__()
-        self.player = player
-        self.scene_manager = scene_manager
+    def __init__(self, player: Player) -> None:
+        super().__init__(player)
 
     def update(self, info: UpdateInfo) -> None:
         self.switch = None

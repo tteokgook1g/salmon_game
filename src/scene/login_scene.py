@@ -14,7 +14,7 @@ from src.scene.scene_id import SceneId
 
 class LoginScene(Scene):
     def __init__(self, player: Player):
-        self.player = player
+        super().__init__(player)
 
     def action(self, typ: str):
         if typ == 'confirm_button':

@@ -48,7 +48,6 @@ class GunParticle(SkillParticle):
             velocity, pg.Vector2(player.transform.pos.xy), pg.Vector2(
                 pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
         ))
-        self.player = player
 
     def update(self, info: UpdateInfo) -> None:
         super().update(info)
@@ -82,7 +81,6 @@ class BombParticle(SkillParticle):
 
         self.active = False
         super().__init__(self.bomb_img, power, transform)
-        self.player = player
         self.view_radius: float = 0
 
         def set_active():
@@ -139,7 +137,6 @@ class LightningParticle(SkillParticle):
         lightning_img.blit(self.light_img, img_rect)
 
         super().__init__(lightning_img, power, self.transform)
-        self.player = player
         schedule.every(self.lifetime).seconds.do(self.kill)  # type: ignore
 
     def get_arc(self):
