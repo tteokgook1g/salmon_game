@@ -180,5 +180,31 @@
     "fullhp": 105,
     "speed": 4,
     "shootspeed": 20
+  },
+  {
+    "nickname": "input",
+    "scene": 6,
+    "xp": 301,
+    "money": 117,
+    "level": 16,
+    "skill_point": 3,
+    "bomb_skill": true,
+    "lightning_skill": true,
+    "fullhp": 500,
+    "speed": 4.500000000000007,
+    "shootspeed": 20
+  },
+  {
+    "nickname": "TEST",
+    "scene": 4,
+    "xp": 0,
+    "money": 0,
+    "level": 0,
+    "skill_point": 0,
+    "bomb_skill": false,
+    "lightning_skill": false,
+    "fullhp": 100,
+    "speed": 4,
+    "shootspeed": 20
   }
 ]

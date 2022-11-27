@@ -197,7 +197,7 @@ class LightningItem(ShopItem):
         # 스킬 없으면 돈으로 구매
         if self.lightning is None and self.player.money >= self.price:
             self.player.money -= self.price
-            lightning_skill = LightningSkill(5)
+            lightning_skill = LightningSkill(2)
             self.player.skills["lightning"] = lightning_skill
             lightning_skill.bind(self.player.skill_particles, self.player)
             self.lightning = lightning_skill
