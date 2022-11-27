@@ -1,14 +1,15 @@
 
-import subprocess
 import os
+import subprocess
 import sys
+
 import pygame as pg
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.entity.abstract_entity import Transform
 from src.entity.player import Player
 from src.entity.textbox import TextBox
 from src.helper.update_info import UpdateInfo
-from src.entity.abstract_entity import Transform
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
 

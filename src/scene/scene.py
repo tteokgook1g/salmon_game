@@ -12,18 +12,18 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, TILE_WIDTH, WORLD_BORDER
-from src.helper.functions import vector_to_tuple
 from src.entity.abstract_entity import Reward, Transform
 from src.entity.enemy import Boss, BossSkillParticle, Enemy
+from src.entity.health_bar import BossHealthBar, PlayerHealthBar
 from src.entity.player import Player, PlayerStat, SkillParticle
 from src.entity.shop.shop import Shop
 from src.entity.textbox import TextBox2
 from src.helper.camera_surface import CameraSurface
+from src.helper.functions import vector_to_tuple
 from src.helper.group import Group
 from src.helper.update_info import UpdateInfo
 from src.helper.user_data import UserData, UserDataFileStream
 from src.scene.scene_id import SceneId
-from src.entity.health_bar import PlayerHealthBar, BossHealthBar
 
 
 class Scene(ABC):
@@ -202,7 +202,7 @@ class Stage(Scene):
         self.time = 0
         self.difficulty = 1
         self.shop = Shop(player)
-        self.player.money = 0
+        self.player.money = 100
         self.boss = boss
         self.bossspawn = False
         self.time = 0
@@ -240,12 +240,15 @@ class Stage(Scene):
         if self.time >= self.bossspawntime:
             self.bossspawn = True
 
-        self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-280), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
-        self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-260), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (0, 0, 0))
+        self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            100, 40), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (0, 0, 0))
         self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-240), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (0, 0, 0))
+            100, 60), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (0, 0, 0))
+        self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            100, 80), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (0, 0, 0))
+        self.bosshptext = TextBox2(pg.font.Font(None, 40).render(f'BOSS HP : {self.boss.health}/{self.boss.fullhp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH - 40, 40), pg.Vector2(1, 0)), f'BOSS HP : {self.boss.health}/{self.boss.fullhp}', 20, (0, 0, 0))
+        
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
@@ -341,14 +344,14 @@ class Stage(Scene):
 
         self.player.skill_particles = self.skill_particles
 
-        self.hptext = TextBox2(pg.font.Font(None, 30).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            100, 20), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
-        self.bosshptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.boss.health}/{self.boss.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            SCREEN_WIDTH - 100, 20), pg.Vector2(1, 0)), f'HP : {self.boss.health}/{self.boss.fullhp}', 20, (255, 255, 255))
-        self.xptext = TextBox2(pg.font.Font(None, 30).render(f'XP : {self.player.xp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            100, 40), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255, 255, 255))
-        self.moneytext = TextBox2(pg.font.Font(None, 30).render(f'MONEY : {self.player.money}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
-            100, 60), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (255, 255, 255))
+        self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            100, 40), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (0, 0, 0))
+        self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            100, 60), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (0, 0, 0))
+        self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            100, 80), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (0, 0, 0))
+        self.bosshptext = TextBox2(pg.font.Font(None, 40).render(f'BOSS HP : {self.boss.health}/{self.boss.fullhp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH - 40, 40), pg.Vector2(1, 0)), f'BOSS HP : {self.boss.health}/{self.boss.fullhp}', 20, (0, 0, 0))
 
     def position_set(self):
         """set enemy spawn position"""

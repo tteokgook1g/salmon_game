@@ -1,8 +1,9 @@
+import pygame as pg
 from pygame.surface import Surface
 from pygame.rect import Rect
 from constants import SCREEN_WIDTH
-from src.entity.abstract_entity import Entity
-
+from src.entity.abstract_entity import Entity, Transform
+from src.entity.textbox import TextBox2
 
 class HealthBar():
     padding = 20
@@ -55,8 +56,11 @@ class PlayerHealthBar():
             hp.fill((255, 255, 255))
         bar_rect = Rect(0, 0, bar_width+2, bar_height+2)
         bar_rect.center = 320, 18
+        size = Surface((300, 200))
         result.blit(hp, (1, 1))
         screen.blit(result, bar_rect)
+
+
 
 
 class BossHealthBar:

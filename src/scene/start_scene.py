@@ -2,13 +2,13 @@
 import pygame as pg
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_BORDER
-from src.entity.player import Player
-from src.helper.update_info import UpdateInfo
 from src.entity.abstract_entity import Transform
 from src.entity.button import Button
+from src.entity.player import Player
+from src.entity.textbox import TextBox
+from src.helper.update_info import UpdateInfo
 from src.scene.scene import Scene
 from src.scene.scene_id import SceneId
-from src.entity.textbox import TextBox
 
 
 class StartScene(Scene):
