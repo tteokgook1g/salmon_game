@@ -10,7 +10,7 @@ from src.scene.scene_id import SceneId
 
 
 class Stage1(Stage):
-    """abstract class representing game stages."""
+    """스테이지 1번"""
 
     def __init__(self, player: Player, boss: Boss) -> None:
         super().__init__(player, boss, bossspawntime=3600,
@@ -31,6 +31,7 @@ class Stage1(Stage):
         self.collide()
         self.time += 1
 
+        # 기본 적만 생성
         self.normalcooltime += 1
         if self.normalcooltime >= self.normalspawntime/self.difficulty:
             self.spawn_normal()

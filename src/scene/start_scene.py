@@ -1,7 +1,7 @@
 
 import pygame as pg
 
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_BORDER
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from src.entity.abstract_entity import Transform
 from src.entity.button import Button
 from src.entity.player import Player
@@ -12,13 +12,15 @@ from src.scene.scene_id import SceneId
 
 
 class StartScene(Scene):
+    """시작 화면"""
+
     def __init__(self, player: Player):
         super().__init__(player)
         self.start_scene()
-        self.map = pg.rect.Rect(0, 0, WORLD_BORDER, WORLD_BORDER)
 
     def action(self, typ: str):
         if typ == 'start_button':
+            # 시작 버튼 누르면 로그인 화면으로 넘어감
             self.switch = SceneId.login_scene
 
     def update(self, info: UpdateInfo) -> None:
@@ -29,7 +31,7 @@ class StartScene(Scene):
         self.start_button.update(info)
 
     def draw(self, screen: pg.surface.Surface) -> None:
-        screen.blit(pg.image.load('./image/StartScene.jpg'),(0,0))
+        screen.blit(pg.image.load('./image/StartScene.jpg'), (0, 0))
         screen.blit(self.start_button.image, self.start_button.rect.topleft)
         screen.blit(self.textbox.image, self.textbox.rect.topleft)
 

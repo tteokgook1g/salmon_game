@@ -1,4 +1,3 @@
-
 import os
 import subprocess
 import sys
@@ -15,12 +14,15 @@ from src.scene.scene_id import SceneId
 
 
 class EndScene(Scene):
+    """엔딩 장면"""
+
     def __init__(self, player: Player) -> None:
         super().__init__(player)
 
     def update(self, info: UpdateInfo) -> None:
         self.switch = None
         if info.key_pressed[pg.K_r]:
+            # r을 누르면 재시작
             self.scene_manager.running = False
             self.scene_manager.save_userdata()
             pg.quit()
@@ -41,6 +43,8 @@ class EndScene(Scene):
             SCREEN_WIDTH/2, SCREEN_HEIGHT/2+200), pg.Vector2(1, 0)), f'Your Score : {self.player.xp}', 40, (255, 255, 255))
         self.textbox = TextBox(pg.font.Font(None, 40).render('press R to restart', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
             SCREEN_WIDTH/2, SCREEN_HEIGHT/2+250), pg.Vector2(1, 0)), 'press R to restart', 40, (255, 255, 255))
+
+        # 플레이어의 성공 여부에 따라 다른 이미지 사용
         if self.player.clear == True:
             self.backgroundimg = pg.image.load('./image/clear.png')
         else:
