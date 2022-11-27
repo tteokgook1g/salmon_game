@@ -13,16 +13,16 @@
     "shootspeed": 20
   },
   {
-    "nickname": "152333125",
-    "scene": 4,
-    "xp": 6,
-    "money": 6,
-    "level": 0,
-    "skill_point": 0,
-    "bomb_skill": false,
-    "lightning_skill": false,
-    "fullhp": 100,
+    "nickname": "",
+    "scene": 6,
+    "xp": 578,
+    "money": 172,
+    "level": 23,
+    "skill_point": 1,
+    "bomb_skill": true,
+    "lightning_skill": true,
+    "fullhp": 505,
     "speed": 4,
-    "shootspeed": 20
+    "shootspeed": 0.6193198711654406
   }
 ]

@@ -33,7 +33,7 @@ class Shop():
         self.items.append(BombItem(
             pygame.image.load("image/bomb.png"), 5, 5))
         self.items.append(LightningItem(
-            pygame.image.load("image/lightning.png"), 5, 10))
+            pygame.image.load("image/lightning.png"), 5, 20))
 
         for item in self.items:
             item.player = player

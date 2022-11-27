@@ -54,8 +54,10 @@ class PlayerHealthBar():
             hp.fill((0, 255, 0))
         elif hp_per >= 0.35:
             hp.fill((25500*((0.6-hp_per)*0.04), 255, 0))
-        else:
+        elif hp_per >= 0:
             hp.fill((255, 25500*hp_per/35, 0))
+        else:
+            hp.fill((255, 255, 255))
         bar_rect = Rect(0, 0, bar_width+2, bar_height+2)
         bar_rect.center = 320, 18
         result.blit(hp, (1, 1))
@@ -83,9 +85,11 @@ class BossHealthBar():
             hp.fill((0, 255, 0))
         elif hp_per >= 0.35:
             hp.fill((25500*((0.6-hp_per)*0.04), 255, 0))
-        else:
+        elif hp_per >= 0:
             hp.fill((255, 25500*hp_per/35, 0))
+        else:
+            hp.fill((255, 255, 255))
         bar_rect = Rect(0, 0, bar_width+2, bar_height+2)
-        bar_rect.center = SCREEN_WIDTH - 320, 18
+        bar_rect.center = SCREEN_WIDTH/2 + 320, 18
         result.blit(hp, (1, 1))
         screen.blit(result, bar_rect)

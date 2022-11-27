@@ -248,7 +248,7 @@ class BombSkill(Skill):
         self.cooltime -= 1
         if self.cooltime <= 0 and info.key_pressed[self.skill_key]:
             self._make_particle()
-            self.cooltime = int(self.player.shootspeed)
+            self.cooltime = 60
 
 
 class LightningSkill(Skill):
@@ -272,7 +272,7 @@ class LightningSkill(Skill):
         self.cooltime -= 1
         if self.cooltime <= 0 and info.key_pressed[self.skill_key]:
             self._make_particle()
-            self.cooltime = int(self.player.shootspeed)
+            self.cooltime = 60
 
 
 class PlayerStat:
