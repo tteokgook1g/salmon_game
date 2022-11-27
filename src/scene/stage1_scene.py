@@ -5,18 +5,18 @@ from pygame.mixer import Sound
 from src.entity.enemy import Boss
 from src.entity.player import Player
 from src.helper.update_info import UpdateInfo
-from src.scene.scene import SceneManager, Stage
+from src.scene.scene import Stage
 from src.scene.scene_id import SceneId
 
 
 class Stage1(Stage):
     """abstract class representing game stages."""
 
-    def __init__(self, player: Player, boss: Boss, scene_manager: SceneManager) -> None:
+    def __init__(self, player: Player, boss: Boss) -> None:
         super().__init__(player, boss, bossspawntime=3600,
                          tile=pg.image.load("image/Tile 1.png"), sound=Sound(
                              "sound/bgm/Different Heaven - Nekozilla [NCS Release].mp3"),
-                         scene_manager=scene_manager)
+                         )
 
         self.normalspawntime = 240
         self.normalcooltime = 0

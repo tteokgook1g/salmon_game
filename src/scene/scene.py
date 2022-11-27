@@ -28,6 +28,19 @@ from src.entity.health_bar import PlayerHealthBar, BossHealthBar
 
 class Scene(ABC):
     """interface Scene"""
+    __slots__ = ("_scene_manager", "player")
+
+    def __init__(self, player: Player):
+        self.player = player
+
+    @property
+    def scene_manager(self) -> "SceneManager":
+        return self._scene_manager
+
+    @scene_manager.setter
+    def scene_manager(self, value: "SceneManager"):
+        self._scene_manager = value
+
     @abstractmethod
     def update(self, info: UpdateInfo) -> None:
         """update the scene. you can use key and mouse if you need. """
@@ -81,6 +94,7 @@ class SceneManager:
     def add_scene(self, scene_id: SceneId, scene: Scene) -> None:
         """add a scene to the scene manager"""
         self.scenes[scene_id] = scene
+        scene.scene_manager = self
 
     def update(self, info: UpdateInfo) -> None:
         """update current scene. you can use key and mouse if you need. """
@@ -176,9 +190,8 @@ class Stage(Scene):
     __slots__ = ("player", "enemies", "skill_particles", "boss_particles", "rewards", "camera_surface",
                  "switch", "time", "difficulty", "shop", "boss", "bossspawn", "time", "cooltime", "bossspawntime", "tile", "sound", 'scene_manager')
 
-    def __init__(self, player: Player, boss: Boss, bossspawntime: int, tile: Surface, sound: Sound, scene_manager: SceneManager):
-        super().__init__()
-        self.player = player
+    def __init__(self, player: Player, boss: Boss, bossspawntime: int, tile: Surface, sound: Sound):
+        super().__init__(player)
         self.enemies: Group[Enemy] = Group()
         self.skill_particles: Group[SkillParticle] = Group()
         self.boss_particles: Group[BossSkillParticle] = Group()
@@ -198,7 +211,6 @@ class Stage(Scene):
         self.tile = tile
         self.sound = sound
         self.congratulations = False
-        self.scene_manager = scene_manager
         self.hpbar = PlayerHealthBar(player)
         self.bosshpbar = BossHealthBar(boss)
 
@@ -226,18 +238,14 @@ class Stage(Scene):
         if self.time % 1200 == 0:
             self.difficulty += 0.1
         if self.time >= self.bossspawntime:
-            self.bossspawn = True 
+            self.bossspawn = True
 
-
-        self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}',True,(255, 255, 255)), 1,0,Transform(0, pg.Vector2(
-            100, 20), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
-        self.bosshptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.boss.health}/{self.boss.fullhp}',True,(255, 255, 255)), 1,0,Transform(0, pg.Vector2(
-            SCREEN_WIDTH/2 + 125, 20), pg.Vector2(1, 0)), f'HP : {self.boss.health}/{self.boss.fullhp}', 20, (255, 255, 255))
-        self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}',True,(0, 0, 0)), 1,0,Transform(0, pg.Vector2(
-            100, 40), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (0, 0, 0))
-        self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}',True,(0, 0, 0)), 1,0,Transform(0, pg.Vector2(
-            100, 60), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (0, 0, 0))
-        
+        self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-280), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
+        self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-260), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (0, 0, 0))
+        self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH/2-300, SCREEN_HEIGHT/2-240), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (0, 0, 0))
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
@@ -335,7 +343,7 @@ class Stage(Scene):
 
         self.hptext = TextBox2(pg.font.Font(None, 30).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
             100, 20), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (255, 255, 255))
-        self.bosshptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.boss.health}/{self.boss.fullhp}',True,(255, 255, 255)), 1,0,Transform(0, pg.Vector2(
+        self.bosshptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.boss.health}/{self.boss.fullhp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
             SCREEN_WIDTH - 100, 20), pg.Vector2(1, 0)), f'HP : {self.boss.health}/{self.boss.fullhp}', 20, (255, 255, 255))
         self.xptext = TextBox2(pg.font.Font(None, 30).render(f'XP : {self.player.xp}', True, (255, 255, 255)), 1, 0, Transform(0, pg.Vector2(
             100, 40), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (255, 255, 255))

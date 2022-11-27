@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Tuple, TypeVar
+from typing import Callable, TypeVar
 import pygame
 from pygame.color import Color
 from pygame.surface import Surface
@@ -16,10 +16,10 @@ def vector_to_tuple(vec: pygame.math.Vector2):
     return (int(vec.x), int(vec.y))
 
 
-T = TypeVar("T")
+T_Vector = TypeVar("T_Vector")
 
 
-def lerp(a: T, b: T, ratio: float) -> T:
+def lerp(a: T_Vector, b: T_Vector, ratio: float) -> T_Vector:
     return a*(1-ratio)+b*ratio  # type: ignore
 
 
@@ -38,6 +38,7 @@ def convert_color(
             result.set_at((x, y), color)
     return result
 
+
 class Readfile:
     nickname = 'Salmon'
     stage = 1
@@ -47,19 +48,19 @@ class Readfile:
     skill1 = False
     skill2 = False
 
-    def read(self): 
+    def read(self):
         f = open('./save.txt', 'r')
         lst = f.readlines()
 
         lst = [i.strip().split(' ') for i in lst]
 
-        self.dic = {i[0]:[eval(i[j]) for j in range(1,7)] for i in lst}
+        self.dic = {i[0]: [eval(i[j]) for j in range(1, 7)] for i in lst}
 
         f.close()
 
     def write(self):
-        f = open('./save.txt','w')
-        for i,j in self.dic.items():
+        f = open('./save.txt', 'w')
+        for i, j in self.dic.items():
             s = f'{i} {j[0]} {j[1]} {j[2]} {j[3]} {j[4]} {j[5]}\n'
             f.write(s)
         f.close()
