@@ -26,7 +26,7 @@ class StartScene(Scene):
         self.start_button.update(info)
 
     def draw(self, screen: pg.surface.Surface) -> None:
-        screen.blit(pg.image.load('./image/salmon_is_delicious.jpg'),(0,0))
+        screen.blit(pg.image.load('./image/StartScene.jpg'),(0,0))
         screen.blit(self.start_button.image, self.start_button.rect.topleft)
         screen.blit(self.textbox.image,self.textbox.rect.topleft)
 
