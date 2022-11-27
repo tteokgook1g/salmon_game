@@ -128,5 +128,57 @@
     "fullhp": 100,
     "speed": 4,
     "shootspeed": 20
+  },
+  {
+    "nickname": "input\u001b",
+    "scene": 4,
+    "xp": 0,
+    "money": 0,
+    "level": 0,
+    "skill_point": 0,
+    "bomb_skill": false,
+    "lightning_skill": false,
+    "fullhp": 100,
+    "speed": 4,
+    "shootspeed": 20
+  },
+  {
+    "nickname": "",
+    "scene": 4,
+    "xp": 0,
+    "money": 0,
+    "level": 0,
+    "skill_point": 0,
+    "bomb_skill": false,
+    "lightning_skill": false,
+    "fullhp": 100,
+    "speed": 4,
+    "shootspeed": 20
+  },
+  {
+    "nickname": "radfs",
+    "scene": 4,
+    "xp": 68,
+    "money": 5,
+    "level": 4,
+    "skill_point": 0,
+    "bomb_skill": true,
+    "lightning_skill": true,
+    "fullhp": 200,
+    "speed": 4,
+    "shootspeed": 20
+  },
+  {
+    "nickname": "15235",
+    "scene": 4,
+    "xp": 2,
+    "money": 1,
+    "level": 0,
+    "skill_point": 0,
+    "bomb_skill": false,
+    "lightning_skill": false,
+    "fullhp": 105,
+    "speed": 4,
+    "shootspeed": 20
   }
 ]

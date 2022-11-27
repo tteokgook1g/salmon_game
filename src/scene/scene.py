@@ -252,6 +252,18 @@ class Stage(Scene):
 
     def update_paused(self, info: UpdateInfo) -> None:
         self.shop.update(info)
+        if self.bossspawn == True:
+            self.bosshpbar.update()
+
+        self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            100, 40), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (0, 0, 0))
+        self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            100, 60), pg.Vector2(1, 0)), f'MONEY : {self.player.money}', 20, (0, 0, 0))
+        self.xptext = TextBox2(pg.font.Font(None, 40).render(f'XP : {self.player.xp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            100, 80), pg.Vector2(1, 0)), f'XP : {self.player.xp}', 20, (0, 0, 0))
+        self.bosshptext = TextBox2(pg.font.Font(None, 40).render(f'BOSS HP : {self.boss.health}/{self.boss.fullhp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
+            SCREEN_WIDTH - 40, 40), pg.Vector2(1, 0)), f'BOSS HP : {self.boss.health}/{self.boss.fullhp}', 20, (0, 0, 0))
+        
 
     def draw(self, screen: pg.surface.Surface) -> None:
         self.camera_surface.fill((255, 255, 255))
@@ -268,6 +280,14 @@ class Stage(Scene):
 
     def draw_paused(self, screen: pg.surface.Surface) -> None:
         self.shop.draw(screen)
+
+        self.hpbar.draw(screen)
+        if self.bossspawn == True:
+            self.bosshpbar.draw(screen)
+            self.bosshptext.draw(screen)
+        self.hptext.draw(screen)
+        self.xptext.draw(screen)
+        self.moneytext.draw(screen)
 
     def collide(self):
         for enemy in self.enemies:
