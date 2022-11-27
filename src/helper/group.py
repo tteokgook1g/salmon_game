@@ -6,6 +6,8 @@ T_Sprite = TypeVar("T_Sprite", bound=Sprite)
 
 
 class Group(AbstractGroup, Generic[T_Sprite]):
+    """한 종류의 타입을 저장하는 그룹"""
+
     def add(self, *sprites: Union[T_Sprite, Iterable[T_Sprite]]) -> None:  # type: ignore
         return super().add(*sprites)
 
