@@ -1,20 +1,16 @@
 from pygame.surface import Surface
-from pygame.math import Vector2
 from pygame.rect import Rect
-from src.entity.abstract_entity import Entity, Transform
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.entity.abstract_entity import Entity
+
 
 class HealthBar():
     padding = 20
 
     def __init__(self, entity: Entity):
         self.entity = entity
-        self.transform = Transform(
-            0, self.entity.transform.pos-Vector2(0, 40), Vector2(1, 0))
 
     def update(self) -> None:
-        self.transform = Transform(
-            0, self.entity.transform.pos-Vector2(0, 40), Vector2(1, 0))
+        pass
 
     def draw(self, screen: Surface) -> None:
         bar_width, bar_height = 60, 10
@@ -32,17 +28,15 @@ class HealthBar():
         result.blit(hp, (1, 1))
         screen.blit(result, bar_rect)
 
+
 class BigHealthBar():
     padding = 20
 
     def __init__(self, entity: Entity):
         self.entity = entity
-        self.transform = Transform(
-            0, self.entity.transform.pos-Vector2(0, 40), Vector2(1, 0))
 
     def update(self) -> None:
-        self.transform = Transform(
-            0, self.entity.transform.pos-Vector2(0, 40), Vector2(1, 0))
+        pass
 
     def draw(self, screen: Surface) -> None:
         bar_width, bar_height = 400, 20

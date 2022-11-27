@@ -124,7 +124,7 @@ class LightningParticle(SkillParticle):
     lifetime = 0.5
 
     def __init__(self, img: Surface, power: float, player: Player) -> None:
-        self.transform = Transform(
+        transform = Transform(
             0, pg.Vector2(player.transform.pos.xy), pg.Vector2(
                 pg.mouse.get_pos())-pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)/2
         )
@@ -136,7 +136,7 @@ class LightningParticle(SkillParticle):
         img_rect.center = self.rect.center
         lightning_img.blit(self.light_img, img_rect)
 
-        super().__init__(lightning_img, power, self.transform)
+        super().__init__(lightning_img, power, transform)
         schedule.every(self.lifetime).seconds.do(self.kill)  # type: ignore
 
     def get_arc(self):

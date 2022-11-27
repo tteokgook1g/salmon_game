@@ -10,8 +10,6 @@ from src.entity.abstract_entity import Entity, Transform
 
 class Button(Entity):
     __slots__ = ("power", "transform", 'string', 'color')
-    power: float
-    transform: Transform
     rect: Rect
 
     def __init__(self, img: Surface, health: int, power: int, transform: Transform, action: Callable[[], Any], click_range: Tuple[int, int] | None = None) -> None:
