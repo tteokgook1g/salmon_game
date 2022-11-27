@@ -308,9 +308,9 @@ class PlayerStat:
     @classmethod
     def next_level_xp(cls, level: int):
         if level <= 15:
-            return (level+1)*10
+            return (level+1)*15
         else:
-            return int(10*1.2**level)
+            return int(10*1.25**level)
 
 
 class Player(Entity):

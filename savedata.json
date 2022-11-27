@@ -78,7 +78,20 @@
     "shootspeed": 20
   },
   {
-    "nickname": "a",
+    "nickname": "WWWWWW",
+    "scene": 6,
+    "xp": 383,
+    "money": 277,
+    "level": 21,
+    "skill_point": 1,
+    "bomb_skill": true,
+    "lightning_skill": true,
+    "fullhp": 300,
+    "speed": 4.025,
+    "shootspeed": 7.283393601742339
+  },
+  {
+    "nickname": "wo",
     "scene": 4,
     "xp": 0,
     "money": 100,
@@ -91,16 +104,29 @@
     "shootspeed": 20
   },
   {
-    "nickname": "",
-    "scene": 6,
-    "xp": 1323,
-    "money": 759,
-    "level": 27,
+    "nickname": "input",
+    "scene": 4,
+    "xp": 0,
+    "money": 0,
+    "level": 0,
     "skill_point": 0,
-    "bomb_skill": true,
-    "lightning_skill": true,
-    "fullhp": 650,
-    "speed": 4.125000000000002,
-    "shootspeed": 0.6193198711654406
+    "bomb_skill": false,
+    "lightning_skill": false,
+    "fullhp": 100,
+    "speed": 4,
+    "shootspeed": 20
+  },
+  {
+    "nickname": "111",
+    "scene": 4,
+    "xp": 2,
+    "money": 2,
+    "level": 0,
+    "skill_point": 0,
+    "bomb_skill": false,
+    "lightning_skill": false,
+    "fullhp": 100,
+    "speed": 4,
+    "shootspeed": 20
   }
 ]
