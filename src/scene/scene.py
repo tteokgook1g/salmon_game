@@ -256,6 +256,7 @@ class Stage(Scene):
         if self.bossspawn == True:
             self.bosshpbar.update()
 
+        # 멈춘 상태에서 체력바, 돈, xp 등 갱신
         self.hptext = TextBox2(pg.font.Font(None, 40).render(f'HP : {self.player.health}/{self.player.fullhp}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
             100, 40), pg.Vector2(1, 0)), f'HP : {self.player.health}/{self.player.fullhp}', 20, (0, 0, 0))
         self.moneytext = TextBox2(pg.font.Font(None, 40).render(f'MONEY : {self.player.money}', True, (0, 0, 0)), 1, 0, Transform(0, pg.Vector2(
@@ -382,6 +383,7 @@ class Stage(Scene):
         else:
             return Vector2(pos, WORLD_BORDER-50)
 
+    # 적 소환
     def spawn_normal(self) -> None:
         """spawn normal enemy"""
         normal_img = pg.image.load("image/NormalEnemy.png")
