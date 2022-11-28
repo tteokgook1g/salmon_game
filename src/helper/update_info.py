@@ -1,11 +1,13 @@
 """dataclass for parameter of the methods "update" """
 
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Sequence, Tuple
 
 if TYPE_CHECKING:
     from pygame.event import Event
+
     from src.entity.player import Player
 
 

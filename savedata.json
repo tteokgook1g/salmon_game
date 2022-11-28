@@ -89,5 +89,18 @@
     "fullhp": 100,
     "speed": 4,
     "shootspeed": 20
+  },
+  {
+    "nickname": "salmon",
+    "scene": 6,
+    "xp": 206,
+    "money": 98,
+    "level": 13,
+    "skill_point": 0,
+    "bomb_skill": true,
+    "lightning_skill": true,
+    "fullhp": 100,
+    "speed": 4,
+    "shootspeed": 5.379289476652116
   }
 ]

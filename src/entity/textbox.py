@@ -3,8 +3,8 @@ from typing import Tuple
 import pygame as pg
 from pygame.surface import Surface
 
-from src.helper.functions import vector_to_tuple
 from src.entity.abstract_entity import Entity, Transform
+from src.helper.functions import vector_to_tuple
 from src.helper.update_info import UpdateInfo
 
 pg.init()

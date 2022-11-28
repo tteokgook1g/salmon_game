@@ -5,8 +5,8 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
-from src.helper.functions import lerp
 from src.entity.abstract_entity import Transform
+from src.helper.functions import lerp
 
 
 class CameraSurface(Surface):

@@ -1,4 +1,5 @@
 from typing import Callable, TypeVar
+
 import pygame
 from pygame.color import Color
 from pygame.surface import Surface

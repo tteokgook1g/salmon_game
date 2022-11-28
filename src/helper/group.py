@@ -1,6 +1,6 @@
 from typing import Generic, Iterable, Iterator, TypeVar, Union
-from pygame.sprite import Sprite, AbstractGroup
 
+from pygame.sprite import AbstractGroup, Sprite
 
 T_Sprite = TypeVar("T_Sprite", bound=Sprite)
 

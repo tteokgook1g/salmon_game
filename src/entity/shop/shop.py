@@ -3,9 +3,8 @@ from typing import List
 import pygame
 from pygame.math import Vector2
 from pygame.surface import Surface
-from constants import SCREEN_HEIGHT
 
-from constants import BLACK
+from constants import BLACK, SCREEN_HEIGHT
 from src.entity.player import Player
 from src.entity.shop.shop_item import (BombItem, GunPowerUpgrade, HealthPotion,
                                        LightningItem, MaxHealthPotion,
